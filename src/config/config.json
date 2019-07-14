@@ -1,0 +1,5 @@
+{
+  "attention_lstm":{
+    "T_x": 0.5
+  }
+}
