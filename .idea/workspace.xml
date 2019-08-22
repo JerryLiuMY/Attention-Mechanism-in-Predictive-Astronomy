@@ -2,15 +2,70 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Attention-Mechanism-in-Predictive-Astronomy.iml" afterPath="$PROJECT_DIR$/.idea/Attention-Mechanism-in-Predictive-Astronomy.iml" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/note/Attention Model.docx" afterPath="$PROJECT_DIR$/note/Attention Model.docx" />
-      <change beforePath="$PROJECT_DIR$/src/config/config.json" afterPath="$PROJECT_DIR$/src/config/config.json" />
-      <change beforePath="$PROJECT_DIR$/src/model/attention.py" afterPath="$PROJECT_DIR$/src/model/attention.py" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Attention-Mechanism-in-Predictive-Astronomy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Attention-Mechanism-in-Predictive-Astronomy.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/The Catalina Surveys Data Release 1.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/The Catalina Surveys Data Release 1.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/The Catalina Surveys Data Release 2.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/The Catalina Surveys Data Release 2.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/note/Attention Model.docx" beforeDir="false" afterPath="$PROJECT_DIR$/note/Attention Model.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/note/Attention Model.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/note/Attention Model.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/note/Attention Model.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/note/Attention Model.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/note/Project Main.docx" beforeDir="false" afterPath="$PROJECT_DIR$/note/Project Main.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/astronomy/Light-curve classification in massive variability surveys.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/astronomy/Light-curve classification in massive variability surveys.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/astronomy/THE ELEVENTH AND TWELFTH DATA RELEASES OF THE SLOAN DIGITAL SKY SURVEY.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/astronomy/THE ELEVENTH AND TWELFTH DATA RELEASES OF THE SLOAN DIGITAL SKY SURVEY.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/astronomy/The analysis of indexed astronomical time series.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/astronomy/The analysis of indexed astronomical time series.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/attention_model/Attention Is All You Need.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/attention_model/Attention Is All You Need.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/attention_model/Neural Image Caption Generation with Visual Attention.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/attention_model/Neural Image Caption Generation with Visual Attention.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/ml_astronomy/Deep-Learnt Classification of Light Curves.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/ml_astronomy/Deep-Learnt Classification of Light Curves.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/ml_astronomy/Joint Segmentation of Multivariate Astronomical Time Series - Bayesian Sampling With a Hierarchical Model.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/ml_astronomy/Joint Segmentation of Multivariate Astronomical Time Series - Bayesian Sampling With a Hierarchical Model.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/ml_astronomy/Time Series Forecasting using RNNs - an Extended Attention Mechanism to Model Periods and Handle Missing Values.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/ml_astronomy/Time Series Forecasting using RNNs - an Extended Attention Mechanism to Model Periods and Handle Missing Values.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/ml_astronomy/Transfer Learning in Astronomy - A New Machine-Learning Paradigm.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/ml_astronomy/Transfer Learning in Astronomy - A New Machine-Learning Paradigm.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/ml_astronomy/Using transfer learning to detect galaxy mergers.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/ml_astronomy/Using transfer learning to detect galaxy mergers.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/A Full Probabilistic Model for Yes:No Type Crowdsourcing in Multi-Class Classification.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/A Full Probabilistic Model for Yes:No Type Crowdsourcing in Multi-Class Classification.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/AUTOMATIC CLASSIFICATION OF VARIABLE STARS IN CATALOGS WITH MISSING DATA.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/AUTOMATIC CLASSIFICATION OF VARIABLE STARS IN CATALOGS WITH MISSING DATA.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/AUTOMATIC SURVEY-INVARIANT CLASSIFICATION OF VARIABLE STARS.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/AUTOMATIC SURVEY-INVARIANT CLASSIFICATION OF VARIABLE STARS.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/CLUSTERING-BASED FEATURE LEARNING ON VARIABLE STARS.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/CLUSTERING-BASED FEATURE LEARNING ON VARIABLE STARS.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/Computational Intelligence Challenges and Applications on Large-Scale Astronomical Time Series Databases.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/Computational Intelligence Challenges and Applications on Large-Scale Astronomical Time Series Databases.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/Deep Learning for Image Sequence Classification of Astronomical Events.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/Deep Learning for Image Sequence Classification of Astronomical Events.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/Efficient Optimization of Echo State Networks for Time Series Datasets.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/Efficient Optimization of Echo State Networks for Time Series Datasets.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/FATS FEATURE ANALYSIS FOR TIME SERIES.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/FATS FEATURE ANALYSIS FOR TIME SERIES.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/Finding anomalous periodic time series.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/Finding anomalous periodic time series.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/Finding outlier light curves in catalogues of periodic variable stars.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/Finding outlier light curves in catalogues of periodic variable stars.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/Kernels for Periodic Time Series Arising in Astronomy.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/Kernels for Periodic Time Series Arising in Astronomy.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/META-CLASSIFICATION FOR VARIABLE STARS.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/META-CLASSIFICATION FOR VARIABLE STARS.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/Markov Chain Monte Carlo Methods for Bayesian Data Analysis in Astronomy.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/Markov Chain Monte Carlo Methods for Bayesian Data Analysis in Astronomy.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/T-CGAN Conditional Generative Adversarial Network for Data Augmentation in Noisy Time Series with Irregular Sampling.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/T-CGAN Conditional Generative Adversarial Network for Data Augmentation in Noisy Time Series with Irregular Sampling.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/pavlos_research/The TAOS Project Statistical Analysis of Multi-Telescope Time Series Data.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/pavlos_research/The TAOS Project Statistical Analysis of Multi-Telescope Time Series Data.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/time_series_analysis/Focusing on What is Relevant - Time-Series Learning and Understanding using Attention.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/time_series_analysis/Focusing on What is Relevant - Time-Series Learning and Understanding using Attention.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/.ipynb_checkpoints/Neural Machine Translation-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/.ipynb_checkpoints/Neural Machine Translation-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/Neural Machine Translation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/Neural Machine Translation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/Neural Machine Translation.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/Neural Machine Translation.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/images/attn_mechanism.png" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/images/attn_mechanism.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/images/attn_model.png" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/images/attn_model.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/images/date_attention.png" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/images/date_attention.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/images/date_attention2.png" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/images/date_attention2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/images/poorly_trained_model.png" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/images/poorly_trained_model.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/images/table.png" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/images/table.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reference/machine_translator/nmt_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/reference/machine_translator/nmt_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/attention.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/attention.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/data_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/data_loader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/API/AstroCV Documentation.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/API/AstroCV Documentation.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/API/AstroML.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/API/AstroML.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/API/FATs Documentation.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/API/FATs Documentation.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/API/astroML Documentation.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/API/astroML Documentation.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/A Beginner's Guide to Attention Mechanisms and Memory Networks.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/attention_model/A Beginner's Guide to Attention Mechanisms and Memory Networks.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/A Brief Overview of Attention Mechanism.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/attention_model/A Brief Overview of Attention Mechanism.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/Paper Dissected- Attention is All You Need Explained.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/attention_model/Paper Dissected- Attention is All You Need Explained.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/Soft &amp; Hard Attention.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/attention_model/Soft &amp; Hard Attention.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/pavlos_research/Pavlos Protopapas @ Astroinformatics 2018 in Heidelberg.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/pavlos_research/Pavlos Protopapas @ Astroinformatics 2018 in Heidelberg.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Machine Learning on Time Series Data.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/time_series/Machine Learning on Time Series Data.pdf" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,11 +73,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="attention.py" pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/model/attention.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="103" column="14" lean-forward="false" selection-start-line="103" selection-start-column="14" selection-end-line="103" selection-end-column="14" />
+            <state relative-caret-position="15">
+              <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -30,12 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.json" pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/config/config.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="15">
-              <caret line="1" column="17" lean-forward="false" selection-start-line="1" selection-start-column="3" selection-end-line="1" selection-end-column="17" />
-              <folding />
+              <caret line="1" column="17" selection-start-line="1" selection-start-column="3" selection-end-line="1" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -63,22 +117,10 @@
     <option name="height" value="800" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
-      <flattenPackages />
-      <showMembers />
-      <showModules />
-      <showLibraryContents />
-      <hideEmptyPackages />
-      <abbreviatePackageNames />
-      <autoscrollToSource />
-      <autoscrollFromSource />
-      <sortByType />
-      <manualOrder />
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -101,11 +143,13 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -118,9 +162,6 @@
         </RuleState>
       </list>
     </option>
-  </component>
-  <component name="ShelveChangesManager" show_recycled="false">
-    <option name="remove_strategy" value="false" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -136,69 +177,43 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1280" height="800" extended-state="0" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24947146" />
+      <window_info id="Structure" order="1" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager />
-    <watches-manager />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/model/attention.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="15">
+          <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="14" lean-forward="false" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/config/config.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
-          <caret line="1" column="17" lean-forward="false" selection-start-line="1" selection-start-column="3" selection-end-line="1" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/attention.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="103" column="14" lean-forward="false" selection-start-line="103" selection-start-column="14" selection-end-line="103" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+          <caret line="1" column="17" selection-start-line="1" selection-start-column="3" selection-end-line="1" selection-end-column="17" />
         </state>
       </provider>
     </entry>
