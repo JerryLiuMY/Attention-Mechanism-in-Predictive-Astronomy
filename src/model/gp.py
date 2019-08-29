@@ -7,16 +7,11 @@ import matplotlib.pyplot as plt
 np.random.seed(1)
 
 class GP():
-    def __init__(self, kernel, mean):
+    def __init__(self, kernel, mean_function=None) :
         self.kernel = kernel
-        self.mean_function = mean
+        self.mean_function = mean_function
 
     np.random.seed(1)
-
-    @staticmethod
-    def f(x):
-        """The function to predict."""
-        return x * np.sin(x)
 
     def fit_gaussian(self, X, y, ):
         # ----------------------------------------------------------------------
@@ -42,7 +37,6 @@ class GP():
         # Plot the function, the prediction and the 95% confidence interval based on
         # the MSE
         plt.figure()
-        plt.plot(x, f(x), 'r:', label=r'$f(x) = x\,\sin(x)$')
         plt.plot(X, y, 'r.', markersize=10, label='Observations')
         plt.plot(x, y_pred, 'b-', label='Prediction')
         plt.fill(np.concatenate([x, x[::-1]]),
@@ -89,5 +83,3 @@ class GP():
         plt.ylabel('$f(x)$')
         plt.ylim(-10, 20)
         plt.legend(loc='upper left')
-
-        plt.show()

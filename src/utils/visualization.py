@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from global_setting import DATA_FOLDER
 
 def plot_series():
-    plt.figure(figsize=(15, 18))
+    plt.figure(figsize=(15, 15))
     i = 0
     for file in glob.glob(os.path.join(DATA_FOLDER, '*.csv')):
         i += 1
@@ -19,9 +19,11 @@ def plot_series():
             plt.xlabel('MJD')
             plt.ylabel('Mag')
 
+    plt.show()
+
 
 def plot_series_short():
-    plt.figure(figsize=(15, 12))
+    plt.figure(figsize=(15, 15))
     i = 0
     for file in glob.glob(os.path.join(DATA_FOLDER, '*.csv')):
         i += 1
@@ -34,3 +36,5 @@ def plot_series_short():
             plt.errorbar(MJD, mag_list, yerr=magerr_list, fmt='o')
             plt.xlabel('MJD')
             plt.ylabel('Mag')
+
+    plt.show()
