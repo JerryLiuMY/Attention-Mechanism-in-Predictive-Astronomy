@@ -4,6 +4,7 @@ import os
 import glob
 import matplotlib.pyplot as plt
 from global_setting import DATA_FOLDER
+from utils.data_loader import data_loader
 
 def plot_series():
     plt.figure(figsize=(15, 15))
@@ -13,11 +14,12 @@ def plot_series():
         with open(file) as handle:
             content = pd.read_csv(handle)
             mag_list = np.array(content['Mag'])
-            MJD = np.array(content['MJD'])
+            mjd = np.array(content['MJD'])
             plt.subplot(5, 2, i)
-            plt.scatter(MJD, mag_list)
+            plt.scatter(mjd, mag_list)
             plt.xlabel('MJD')
             plt.ylabel('Mag')
+            plt.title(file.partition(file)[0])
 
     plt.show()
 
@@ -31,10 +33,11 @@ def plot_series_short():
             content = pd.read_csv(handle)
             mag_list = np.array(content['Mag'])[0:30]
             magerr_list = np.array(content['Magerr'])[0:30]
-            MJD = np.array(content['MJD'])[0:30]
+            mjd = np.array(content['MJD'])[0:30]
             plt.subplot(5, 2, i)
-            plt.errorbar(MJD, mag_list, yerr=magerr_list, fmt='o')
+            plt.errorbar(mjd, mag_list, yerr=magerr_list, fmt='o')
             plt.xlabel('MJD')
             plt.ylabel('Mag')
+            plt.title(file.partition(file)[0])
 
     plt.show()

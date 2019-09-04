@@ -12,4 +12,3 @@ class MCMC():
         self.walker = walker
         self.sampler = sampler
         self.method = method
-        
