@@ -6,7 +6,8 @@ from keras.layers import Bidirectional, Input, LSTM, Softmax
 from keras.layers import RepeatVector, Concatenate, Dense, Dot, Activation, Lambda
 from keras.models import Model
 
-class attention_lstm():
+
+class AttentionLstm():
     '''
 
     ------------------------------
@@ -31,7 +32,7 @@ class attention_lstm():
         self.load_config()
 
     def load_config(self):
-        with open(attention_lstm.config_path) as json_file:
+        with open(AttentionLstm.config_path) as json_file:
             config = json.load(json_file)
         self.config = config
         self.dim = config['attention_lstm']['config']

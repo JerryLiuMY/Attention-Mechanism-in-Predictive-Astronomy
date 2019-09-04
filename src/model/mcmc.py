@@ -5,8 +5,8 @@ import os
 import sklearn
 import matplotlib.pyplot as plt
 
-class MCMC():
 
+class MCMC():
     def __init__(self, ineteration, walker, sampler, method):
         self.ineteration = ineteration
         self.walker = walker

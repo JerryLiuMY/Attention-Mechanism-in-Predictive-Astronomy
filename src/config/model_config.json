@@ -1,5 +1,10 @@
 {
   "attention_lstm":{
     "T_x": 0.5
+  },
+  "carma": {
+    "p": 3,
+    "q": 0,
+    "nwalkers": 1000
   }
 }
