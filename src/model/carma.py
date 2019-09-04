@@ -38,7 +38,7 @@ class Carma():
 
         return self.sample
 
-    def power_spectrum(self):
+    def plot_power_spectrum(self):
         psd_low, psd_hi, psd_mid, frequencies = self.sample.plot_power_spectrum(percentile=95.0, nsamples=5000)
         dt = self.t_list_train[1:] - self.t_list_train[:-1]
         noise_level = 2.0 * np.mean(dt) * np.mean(self.magerr_list_train ** 2)
@@ -55,59 +55,56 @@ class Carma():
         plt.annotate('Measurement Noise Level', (1.25 * plt.xlim()[0], noise_level / 1.5))
         plt.show()
 
-    def sample_interpolation(self, n_paths=3):
+    def simulate_sample_process(self, n_paths=3):
         # Training plot
         plt.errorbar(self.t_list_train, self.mag_list_train, yerr=self.magerr_list_train, fmt='k.')
+
+        # Cross validation plot
+        plt.errorbar(self.t_list_cross, self.mag_list_cross, yerr=self.magerr_list_cross, fmt='k.')
 
         # Interpolation plot
         num = (self.t_list_train.max() - self.t_list_train.min())/0.2
         t_inter = np.linspace(self.t_list_train.min(), self.t_list_train.max(), num=num)
         for i in range(n_paths):
             y_inter = self.sample.simulate(t_inter, bestfit='random')
-            plt.plot(t_inter, y_inter)
-
-        # Decoration
-        plt.xlim(self.t_list_train.min(), self.t_list_train.max())
-        plt.xlabel('Time [days]')
-        plt.ylabel('Magnitude')
-        plt.title('Simulated Interpolation Paths')
-
-    def average_forecasting(self):
-        # Training plot
-        plt.errorbar(self.t_list_train, self.mag_list_train, yerr=self.magerr_list_train, fmt='k.')
-
-        # Cross validation plot
-        plt.errorbar(self.t_list_cross, self.mag_list_cross, yerr=self.magerr_list_cross, fmt='k.')
-
-        # Forecasting plot
-        num = (self.t_list_cross.max() - self.t_list_cross.min())/0.2
-        t_fore = np.linspace(self.t_list_cross.min(), self.t_list_cross.max(), num=num)
-        y_fore, y_var = self.sample.predict(t_fore)
-        plt.plot(t_fore, y_fore, 'b-')
-        plt.fill_between(t_fore, y1=y_fore + np.sqrt(y_var), y2=y_fore - np.sqrt(y_var), color='DodgerBlue', alpha=0.5)
-
-        # Decoration
-        plt.xlim(self.t_list_train.min(), self.t_list_cross.max())
-        plt.xlabel('Time[days]')
-        plt.ylabel('Magnitude')
-        plt.title('Expected Forecasting Value')
-
-    def sample_forecasting(self, n_paths=3):
-        # Training plot
-        plt.errorbar(self.t_list_train, self.mag_list_train, yerr=self.magerr_list_train, fmt='k.')
-
-        # Cross validation plot
-        plt.errorbar(self.t_list_cross, self.mag_list_cross, yerr=self.magerr_list_cross, fmt='k.')
+            plt.plot(t_inter, y_inter, color='green', alpha=(1-i/float(n_paths)))
 
         # Forecasting plot
         num = (self.t_list_cross.max() - self.t_list_cross.min())/0.2
         t_fore = np.linspace(self.t_list_cross.min(), self.t_list_cross.max(), num=num)
         for i in range(n_paths):
             y_fore = self.sample.simulate(t_fore, bestfit='random')
-            plt.plot(t_fore, y_fore)
+            plt.plot(t_fore, y_fore, color='blue', alpha=(1-i/float(n_paths)))
 
         # Decoration
         plt.xlim(self.t_list_train.min(), self.t_list_cross.max())
         plt.xlabel('Time[days]')
         plt.ylabel('Magnitude')
-        plt.title('Simulated Forecasting Paths')
+        plt.title('Simulated Paths')
+
+    def simulate_average_process(self):
+        # Training plot
+        plt.errorbar(self.t_list_train, self.mag_list_train, yerr=self.magerr_list_train, fmt='k.')
+
+        # Cross validation plot
+        plt.errorbar(self.t_list_cross, self.mag_list_cross, yerr=self.magerr_list_cross, fmt='k.')
+
+        # Interpolation plot
+        num = (self.t_list_train.max() - self.t_list_train.min())/0.2
+        t_inter = np.linspace(self.t_list_train.min(), self.t_list_train.max(), num=num)
+        y_inter, y_var = self.sample.predict(t_inter)
+        plt.plot(t_inter, y_inter, color='green', ls='-')
+        plt.fill_between(t_inter, y1=y_inter+np.sqrt(y_var), y2=y_inter-np.sqrt(y_var), color='limegreen', alpha=0.5)
+
+        # Forecasting plot
+        num = (self.t_list_cross.max() - self.t_list_cross.min())/0.2
+        t_fore = np.linspace(self.t_list_cross.min(), self.t_list_cross.max(), num=num)
+        y_fore, y_var = self.sample.predict(t_fore)
+        plt.plot(t_fore, y_fore, color='blue', ls='-')
+        plt.fill_between(t_fore, y1=y_fore + np.sqrt(y_var), y2=y_fore - np.sqrt(y_var), color='DodgerBlue', alpha=0.5)
+
+        # Decoration
+        plt.xlim(self.t_list_train.min(), self.t_list_cross.max())
+        plt.xlabel('Time[days]')
+        plt.ylabel('Magnitude')
+        plt.title('Expected Value with Variance')
