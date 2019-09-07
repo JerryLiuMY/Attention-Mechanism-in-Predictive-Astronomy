@@ -2,9 +2,42 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/carma_test-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/.ipynb_checkpoints/carma_test-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/carma_test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/carma_test.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/carma.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/carma.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/note/Attention Model.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/note/Attention Model.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/astronomy/CRTS Data Release.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/astronomy/PROBING THE OUTER GALACTIC HALO WITH RR LYRAE FROM THE CATALINA SURVEYS.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/astronomy/THE ELEVENTH AND TWELFTH DATA RELEASES OF THE SLOAN DIGITAL SKY SURVEY.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/attention_model/Attend and Diagnose Clinical Time Series Analysis Using Attention Models.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/attention_model/Attention Is All You Need.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/attention_model/Neural Image Caption Generation with Visual Attention.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/ml_astronomy/Time Series Forecasting using RNNs - an Extended Attention Mechanism to Model Periods and Handle Missing Values.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/main_pipeline-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/.ipynb_checkpoints/main_pipeline-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main_pipeline.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/main_pipeline.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/gp.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/gp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/Ariadne/Covariance Functions.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/Ariadne/Optimization.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/Ariadne/Quick How-to.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/Ariadne/Tutorial.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/AstroCV/AstroCV Documentation.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/AstroML/AstroML.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/AstroML/astroML Documentation.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/FATs/FATs Documentation.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/FATs/FATs Explanation.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/A Beginner's Guide to Attention Mechanisms and Memory Networks.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/A Brief Overview of Attention Mechanism.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/Paper Dissected- Attention is All You Need Explained.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/Soft &amp; Hard Attention.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/emcee/Fitting a Model to Data.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/emcee/Quickstart.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/sklearn/Covariance Function.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/sklearn/Gaussian Process Regressor.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/sklearn/Gaussian Process.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/sklearn/Gaussian Processes Regression Example.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Gaussian Process.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Machine Learning on Time Series Data.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Time-Series Forcasting I.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Time-Series Forcasting II.pdf" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +50,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/utils/data_loader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
+            <state relative-caret-position="165">
+              <caret line="11" column="16" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="16" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -27,10 +60,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/utils/visualization.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="40" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/model/gp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="960">
-              <caret line="64" column="78" lean-forward="true" selection-start-line="64" selection-start-column="78" selection-end-line="64" selection-end-column="78" />
+            <state relative-caret-position="423">
+              <caret line="48" column="29" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -38,11 +83,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/model/carma.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
-              <caret line="57" column="31" selection-start-line="57" selection-start-column="31" selection-end-line="57" selection-end-column="31" />
+            <state relative-caret-position="440">
+              <caret line="95" column="57" selection-start-line="95" selection-start-column="35" selection-end-line="95" selection-end-column="57" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -80,6 +125,18 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/model/attention.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-33">
+              <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -101,6 +158,8 @@
       <find>load_data</find>
       <find>t_list_cross</find>
       <find>fill</find>
+      <find>mse</find>
+      <find>blue</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -113,14 +172,14 @@
         <option value="$PROJECT_DIR$/src/config/config.json" />
         <option value="$PROJECT_DIR$/src/config/data_config.py" />
         <option value="$PROJECT_DIR$/src/global_setting.py" />
-        <option value="$PROJECT_DIR$/src/utils/visualization.py" />
         <option value="$PROJECT_DIR$/src/model/mcmc.py" />
         <option value="$PROJECT_DIR$/src/model/attention.py" />
         <option value="$PROJECT_DIR$/src/config/data_config.json" />
-        <option value="$PROJECT_DIR$/src/model/gp.py" />
         <option value="$PROJECT_DIR$/src/config/model_config.json" />
         <option value="$PROJECT_DIR$/src/utils/data_loader.py" />
         <option value="$PROJECT_DIR$/src/model/carma.py" />
+        <option value="$PROJECT_DIR$/src/utils/visualization.py" />
+        <option value="$PROJECT_DIR$/src/model/gp.py" />
       </list>
     </option>
   </component>
@@ -237,36 +296,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/visualization.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/attention.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/gp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="64" column="78" lean-forward="true" selection-start-line="64" selection-start-column="78" selection-end-line="64" selection-end-column="78" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/config/data_config.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
@@ -284,16 +313,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/data_loader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/config/model_config.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -301,10 +320,50 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/data_loader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="16" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/visualization.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="40" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/model/carma.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="57" column="31" selection-start-line="57" selection-start-column="31" selection-end-line="57" selection-end-column="31" />
+        <state relative-caret-position="440">
+          <caret line="95" column="57" selection-start-line="95" selection-start-column="35" selection-end-line="95" selection-end-column="57" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/gp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="423">
+          <caret line="48" column="29" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/attention.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-33">
+          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

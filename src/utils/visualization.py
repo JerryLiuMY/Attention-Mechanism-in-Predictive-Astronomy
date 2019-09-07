@@ -4,7 +4,7 @@ import os
 import glob
 import matplotlib.pyplot as plt
 from global_setting import DATA_FOLDER
-from utils.data_loader import data_loader
+from utils.data_loader import DataLoader
 
 def plot_series():
     plt.figure(figsize=(15, 15))
