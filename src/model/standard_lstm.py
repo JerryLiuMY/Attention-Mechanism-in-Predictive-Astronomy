@@ -1,47 +1,46 @@
 import numpy as np
 import os
+import json
 import pickle
 import matplotlib.pyplot as plt
 from global_setting import DATA_FOLDER
-import keras
-import json
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense
+from utils.io import delta_list
 np.random.seed(1)
 
 
-class StandardLSTM():
+class StandardLSTM:
     # Note: This need to be run in python2
     def __init__(self, crts_id):
+        # Configuration
         self.crts_id = crts_id
-        self.data_config = json.load(open('./config/data_config.json'))
-        self.model_config = json.load(open('./config/model_config.json'))
-        self.window_len = self.model_config['standard_lstm']['window_len']
-        self.data_load_path = os.path.join(DATA_FOLDER, 'processed_data', str(crts_id) + '.pickle')
-        self.model_save_path = os.path.join(DATA_FOLDER, 'model', 'lstm', str(self.crts_id) + '_window_len_' +
-                                            str(self.model_config['standard_lstm']['window_len']) + '.h5')
-        with open(self.data_load_path, 'rb') as handle:
-            data_dict = pickle.load(handle)
-        self.mag_list_train = data_dict['mag_list_train']
-        self.mag_list_cross = data_dict['mag_list_cross']
-        self.mag_list_test = data_dict['mag_list_test']
-        self.magerr_list_train = data_dict['magerr_list_train']
-        self.magerr_list_cross = data_dict['magerr_list_cross']
-        self.magerr_list_test = data_dict['magerr_list_test']
-        self.t_list_train = data_dict['t_list_train']
-        self.t_list_cross = data_dict['t_list_cross']
-        self.t_list_test = data_dict['t_list_test']
-        self.mag_scaler = None
-        self.delta_t_scaler = None
-
-    def rescale_mag(self):
         self.mag_scaler = MinMaxScaler(feature_range=(0, 1))
-        mag_list = np.concatenate((self.mag_list_train, self.mag_list_cross, self.mag_list_test), axis=0).reshape(-1, 1)
+        self.delta_t_scaler = MinMaxScaler(feature_range=(0, 1))
+        self.model = None
+        self.load_config()
+
+        # Paths
+        self.data_name = str(self.crts_id) + '_window_len_' + str(self.window_len)
+        self.model_name = str(self.crts_id) + '_window_len_' + str(self.window_len) + '_hidden_dim_' + self.hidden_dim
+        self.data_save_path = os.path.join(DATA_FOLDER, 'processed_data', 'standard_lstm', self.data_name + '.pickle')
+        self.model_save_path = os.path.join(DATA_FOLDER, 'model', 'standard_lstm', self.model_name + '.h5')
+
+    def load_config(self):
+        self.model_config = json.load(open('./config/model_config.json'))
+        self.epochs = self.model_config['standard_lstm']['epochs']
+        self.batch_size = self.model_config['standard_lstm']['batch_size']
+        self.hidden_dim = self.model_config['standard_lstm']['hidden_dim']
+        self.window_len = self.model_config['standard_lstm']['window_len']
+
+
+    def rescale_mag(self, mag_list_train, mag_list_cross, mag_list_test):
+        mag_list = np.concatenate((mag_list_train, mag_list_cross, mag_list_test), axis=0).reshape(-1, 1)
         scaled_mag_list = self.mag_scaler.fit_transform(mag_list)
 
-        train_len = len(self.mag_list_train)
-        cross_len = len(self.mag_list_cross)
+        train_len = len(mag_list_train)
+        cross_len = len(mag_list_cross)
 
         scaled_mag_list_train = scaled_mag_list[:train_len]
         scaled_mag_list_cross = scaled_mag_list[train_len:(train_len+cross_len)]
@@ -49,28 +48,18 @@ class StandardLSTM():
 
         return scaled_mag_list_train, scaled_mag_list_cross, scaled_mag_list_test
 
-    @staticmethod
-    def delta_list(raw_list):
-        delta_list = []
-        for i in range(1, len(raw_list)):
-            delta = raw_list[i] - raw_list[i-1]
-            delta_list.append(delta)
-        delta_list = np.array(delta_list)
-
-        return delta_list
-
-    def rescale_delta_t(self):
-        delta_t_list_train = self.delta_list(self.t_list_train)
-        delta_t_list_cross = self.delta_list(self.t_list_cross)
-        delta_t_list_test = self.delta_list(self.t_list_test)
+    def rescale_delta_t(self, t_list_train, t_list_cross, t_list_test):
+        delta_t_list_train = delta_list(t_list_train)
+        delta_t_list_cross = delta_list(t_list_cross)
+        delta_t_list_test = delta_list(t_list_test)
 
         self.delta_t_scaler = MinMaxScaler(feature_range=(0, 1))
         delta_t_list = np.concatenate((delta_t_list_train, delta_t_list_cross, delta_t_list_test), axis=0).reshape(-1, 1)
         scaled_delta_t_list = self.delta_t_scaler.fit_transform(delta_t_list)
         # print(delta_t_list)
 
-        train_len = len(self.t_list_train)
-        cross_len = len(self.t_list_cross)
+        train_len = len(t_list_train)
+        cross_len = len(t_list_cross)
 
         scaled_delta_t_list_train = scaled_delta_t_list[:train_len]
         scaled_delta_t_list_cross = scaled_delta_t_list[train_len:(train_len+cross_len)]
@@ -79,6 +68,7 @@ class StandardLSTM():
         return scaled_delta_t_list_train, scaled_delta_t_list_cross, scaled_delta_t_list_test
 
     def prepare_data(self, scaled_mag_list, scaled_delta_t_list):
+
         X, y = [], []
         for i in range(1, len(scaled_mag_list) - self.window_len):
             features = []
@@ -94,118 +84,87 @@ class StandardLSTM():
         return X, y
 
     def build_model(self):
-        # Build model 
-        lstm_model = Sequential()
-        lstm_model.add(LSTM(4, input_shape=(self.model_config['standard_lstm']['window_len'], 2)))
-        lstm_model.add(Dense(1))
-        lstm_model.compile(loss='mean_squared_error', optimizer='adam')
+        # Build model
+        self.model = Sequential()
+        self.model.add(LSTM(self.hidden_dim, input_shape=(self.window_len, 2)))
+        self.model.add(Dense(1))
+        self.model.compile(loss='mean_squared_error', optimizer='adam')
 
-        return lstm_model
 
-    def fit_model(self):
-        # Input
-        scaled_mag_list_train, scaled_mag_list_cross, scaled_mag_list_test = self.rescale_mag()
-        scaled_delta_t_list_train, scaled_delta_t_list_cross, scaled_delta_t_list_test = self.rescale_delta_t()
-
-        # Load configuration
-        epochs = self.model_config['standard_lstm']['epochs']
-        batch_size = self.model_config['standard_lstm']['batch_size']
-        lstm_model = self.build_model()
-
-        # Load data
-        train_X, train_y = self.prepare_data(scaled_mag_list_train, scaled_delta_t_list_train)
-        cross_X, cross_y = self.prepare_data(scaled_mag_list_cross, scaled_delta_t_list_cross)
-
+    def fit_model(self, train_X, train_y, cross_X, cross_y, test_X, test_y):
         # Train model
-        lstm_model.fit(train_X, train_y, epochs=epochs, batch_size=batch_size, verbose=2)
-        score = lstm_model.evaluate(cross_X, cross_y, batch_size=128)
+        self.model.fit(train_X, train_y, epochs=self.epochs, batch_size=self.batch_size, verbose=2)
+        corss_score = self.model.evaluate(cross_X, cross_y, batch_size=128)
+        test_score = self.model.evaluate(test_X, test_y, batch_size=128)
 
         # Save model
-        lstm_model.save(self.model_save_path)
+        self.model.save(self.model_save_path)
 
-        return score
+        return corss_score, test_score
 
-    def one_step_prediction(self):
+    def one_step_prediction(self, train_X, cross_X, test_X):
         # Input
-        scaled_mag_list_train, scaled_mag_list_cross, scaled_mag_list_test = self.rescale_mag()
-        scaled_delta_t_list_train, scaled_delta_t_list_cross, scaled_delta_t_list_test = self.rescale_delta_t()
         lstm_model = load_model(self.model_save_path)
 
-        train_X, train_y = self.prepare_data(scaled_mag_list_train, scaled_delta_t_list_train)
-        scaled_y_inter = lstm_model.predict(train_X)
-        y_inter = self.mag_scaler.inverse_transform(scaled_y_inter)
-
-        cross_X, cross_y = self.prepare_data(scaled_mag_list_cross, scaled_delta_t_list_cross)
-        scaled_y_pred = lstm_model.predict(cross_X)
-        y_pred = self.mag_scaler.inverse_transform(scaled_y_pred)
-
-        # Specify parameters
-        max_time = self.t_list_test.max()
-        min_time = self.t_list_train.min()
-        upper_limit = max_time
-        lower_limit = min_time
-
-        # Plot the function, the prediction and the 95% confidence interval based on the MSE
-        plt.figure(figsize=(12, 8))
-        plt.errorbar(self.t_list_train, self.mag_list_train, self.magerr_list_train,
-                     fmt='k.', markersize=10, label='Training')
-        plt.errorbar(self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
-                     fmt='k.', markersize=10, label='Validation')
-        plt.errorbar(self.t_list_test, self.mag_list_test, self.magerr_list_test,
-                     fmt='k.', markersize=10, label='Test')
-        plt.scatter(self.t_list_train[self.window_len: -1], y_inter, color='g')
-        plt.scatter(self.t_list_cross[self.window_len: -1], y_pred, color='b')
-        plt.xlim(lower_limit, self.t_list_cross.max())
-        plt.xlabel('MJD')
-        plt.ylabel('Mag')
-        plt.legend(loc='upper left')
-        plt.title('crts_id: ' + str(self.crts_id))
-        plt.show()
-
-    def multiple_step_prediction(self):
-        # Input
-        scaled_mag_list_train, scaled_mag_list_cross, scaled_mag_list_test = self.rescale_mag()
-        scaled_delta_t_list_train, scaled_delta_t_list_cross, scaled_delta_t_list_test = self.rescale_delta_t()
-        lstm_model = load_model(self.model_save_path)
-
-        # Training Interpolation
-        train_X, train_y = self.prepare_data(scaled_mag_list_train, scaled_delta_t_list_train)
+        # Train Interpolation
         scaled_y_inter = lstm_model.predict(train_X)
         y_inter = self.mag_scaler.inverse_transform(scaled_y_inter)
 
         # Cross Prediction
-        cross_X, cross_y = self.prepare_data(scaled_mag_list_cross, scaled_delta_t_list_cross)
+        scaled_cross_y_pred = lstm_model.predict(cross_X)
+        cross_y_pred = self.mag_scaler.inverse_transform(scaled_cross_y_pred)
+
+        # Test Prediction
+        scaled_test_y_pred = lstm_model.predict(test_X)
+        test_y_pred = self.mag_scaler.inverse_transform(scaled_test_y_pred)
+
+        return y_inter, cross_y_pred, test_y_pred
+
+    def multiple_step_prediction(self, train_X, cross_X, test_X, scaled_cross_delta_t_list):
+        # Load Model
+        lstm_model = load_model(self.model_save_path)
+
+        # Train Interpolation
+        scaled_y_inter = lstm_model.predict(train_X)
+        y_inter = self.mag_scaler.inverse_transform(scaled_y_inter)
+
+        # Cross Prediction
         cross_X_step = cross_X[0]
         scaled_y_pred = []
-        for i in range(self.window_len, len(scaled_delta_t_list_cross)-1):
+        for i in range(self.window_len, len(scaled_cross_delta_t_list)-1):
             cross_X_step = np.expand_dims(cross_X_step, axis=0)
             scaled_y_pred_step = lstm_model.predict(cross_X_step)
             scaled_y_pred_step = np.squeeze(scaled_y_pred_step, axis=0)
             scaled_y_pred.append(scaled_y_pred_step)
-            new_feature = np.concatenate((scaled_y_pred_step, scaled_delta_t_list_cross[i+1]), axis=0)
+            new_feature = np.concatenate((scaled_y_pred_step, scaled_cross_delta_t_list[i+1]), axis=0)
             new_feature = np.expand_dims(new_feature, axis=0)
             cross_X_step = np.concatenate((cross_X_step[0, 1:, :], new_feature), axis=0)
 
         scaled_y_pred = np.array(scaled_y_pred)
-        y_pred = self.mag_scaler.inverse_transform(scaled_y_pred)
+        cross_y_pred = self.mag_scaler.inverse_transform(scaled_y_pred)
 
+        return y_inter, cross_y_pred, test_y_pred
+
+    def plot_prediction(self, mag_list_train, mag_list_cross, mag_list_test, t_list_cross, t_list_train, t_list_test,
+                        magerr_list_train, magerr_list_cross, magerr_list_test, y_inter, cross_y_pred, test_y_pred):
         # Specify parameters
-        max_time = self.t_list_test.max()
-        min_time = self.t_list_train.min()
+        max_time = t_list_test.max()
+        min_time = t_list_train.min()
         upper_limit = max_time
         lower_limit = min_time
 
         # Plot the function, the prediction and the 95% confidence interval based on the MSE
         plt.figure(figsize=(12, 8))
-        plt.errorbar(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+        plt.errorbar(t_list_train, mag_list_train, magerr_list_train,
                      fmt='k.', markersize=10, label='Training')
-        plt.errorbar(self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
+        plt.errorbar(t_list_cross, mag_list_cross, magerr_list_cross,
                      fmt='k.', markersize=10, label='Validation')
-        plt.errorbar(self.t_list_test, self.mag_list_test, self.magerr_list_test,
+        plt.errorbar(t_list_test, mag_list_test, magerr_list_test,
                      fmt='k.', markersize=10, label='Test')
-        plt.scatter(self.t_list_train[self.window_len: -1], y_inter, color='g')
-        plt.scatter(self.t_list_cross[self.window_len: -1], y_pred, color='b')
-        plt.xlim(lower_limit, self.t_list_cross.max())
+        plt.scatter(t_list_train[self.window_len: -1], y_inter, color='g')
+        plt.scatter(t_list_cross[self.window_len: -1], cross_y_pred, color='b')
+        plt.scatter(t_list_cross[self.window_len: -1], test_y_pred, color='r')
+        plt.xlim(lower_limit, upper_limit)
         plt.xlabel('MJD')
         plt.ylabel('Mag')
         plt.legend(loc='upper left')

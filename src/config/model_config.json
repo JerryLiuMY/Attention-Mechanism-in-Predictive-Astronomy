@@ -12,6 +12,7 @@
   "standard_lstm": {
     "window_len": 10,
     "epochs": 1000,
-    "batch_size":32
+    "batch_size":32,
+    "hidden_dim": 4
   }
 }
