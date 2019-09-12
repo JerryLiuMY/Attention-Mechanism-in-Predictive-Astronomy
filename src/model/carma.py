@@ -3,12 +3,19 @@ import matplotlib.pyplot as plt
 from utils.data_loader import DataLoader
 import carmcmc as cm
 import json
+from global_setting import DATA_FOLDER
+import os
+import pickle
 np.random.seed(1)
 
 
 class Carma():
     # Note: This need to be run in python2
-    def __init__(self, data_dict):
+    def __init__(self, crts_id):
+        self.crts_id = crts_id
+        self.data_path = os.path.join(DATA_FOLDER, 'processed_data', str(crts_id) + '.pickle')
+        with open('self.data_path', 'rb') as handle:
+            data_dict = pickle.load(handle)
         self.mag_list_train = data_dict['mag_list_train']
         self.mag_list_cross = data_dict['mag_list_cross']
         self.mag_list_test = data_dict['mag_list_test']

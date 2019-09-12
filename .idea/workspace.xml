@@ -2,42 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/note/Attention Model.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/note/Attention Model.pptx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/CRTS Data Release.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/PROBING THE OUTER GALACTIC HALO WITH RR LYRAE FROM THE CATALINA SURVEYS.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/THE ELEVENTH AND TWELFTH DATA RELEASES OF THE SLOAN DIGITAL SKY SURVEY.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/attention_model/Attend and Diagnose Clinical Time Series Analysis Using Attention Models.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/attention_model/Attention Is All You Need.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/attention_model/Neural Image Caption Generation with Visual Attention.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/ml_astronomy/Time Series Forecasting using RNNs - an Extended Attention Mechanism to Model Periods and Handle Missing Values.pdf" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/standard_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/carma_test-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/.ipynb_checkpoints/carma_test-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/main_pipeline-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/.ipynb_checkpoints/main_pipeline-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/test-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/.ipynb_checkpoints/test-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Load Data.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/Load Data.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/carma_test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/carma_test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/data_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/data_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/model_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/model_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/global_setting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/global_setting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main_pipeline.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/main_pipeline.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/carma.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/carma.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/gp.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/gp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/visualization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/Ariadne/Covariance Functions.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/Ariadne/Optimization.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/Ariadne/Quick How-to.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/Ariadne/Tutorial.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/AstroCV/AstroCV Documentation.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/AstroML/AstroML.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/AstroML/astroML Documentation.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/FATs/FATs Documentation.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/FATs/FATs Explanation.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/A Beginner's Guide to Attention Mechanisms and Memory Networks.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/A Brief Overview of Attention Mechanism.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/Paper Dissected- Attention is All You Need Explained.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/attention_model/Soft &amp; Hard Attention.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/emcee/Fitting a Model to Data.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/emcee/Quickstart.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/sklearn/Covariance Function.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/sklearn/Gaussian Process Regressor.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/sklearn/Gaussian Process.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/sklearn/Gaussian Processes Regression Example.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Gaussian Process.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Machine Learning on Time Series Data.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Time-Series Forcasting I.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/time_series/Time-Series Forcasting II.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/data_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/data_processor.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,18 +27,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/data_loader.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="16" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/utils/visualization.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -72,10 +40,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/config/model_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/model/gp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="48" column="29" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+            <state relative-caret-position="393">
+              <caret line="51" selection-start-line="51" selection-end-line="52" selection-end-column="29" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -83,53 +60,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/model/carma.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="95" column="57" selection-start-line="95" selection-start-column="35" selection-end-line="95" selection-end-column="57" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/config/model_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="10" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/config/data_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="13" selection-start-line="3" selection-start-column="2" selection-end-line="3" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/model/mcmc.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="11" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/model/attention.py">
+        <entry file="file://$PROJECT_DIR$/src/model/standard_lstm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-33">
-              <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
+            <state relative-caret-position="-966">
+              <caret line="96" column="22" selection-start-line="96" selection-start-column="22" selection-end-line="96" selection-end-column="22" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -151,8 +86,6 @@
       <find>post_activation_LSTM_cell</find>
       <find>shuffle</find>
       <find>magerr_list_train</find>
-      <find>print</find>
-      <find>data_config</find>
       <find>series_index_partition</find>
       <find>random_index_partition</find>
       <find>load_data</find>
@@ -160,6 +93,19 @@
       <find>fill</find>
       <find>mse</find>
       <find>blue</find>
+      <find>is_short</find>
+      <find>data_loader</find>
+      <find>data_config</find>
+      <find>short</find>
+      <find>DATA_FOLDER</find>
+      <find>array</find>
+      <find>self.model_config</find>
+      <find>t_list</find>
+      <find>t_list_test</find>
+      <find>window_len</find>
+      <find>scaler</find>
+      <find>scal</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -171,15 +117,22 @@
         <option value="$PROJECT_DIR$/src/gobal_setting.py" />
         <option value="$PROJECT_DIR$/src/config/config.json" />
         <option value="$PROJECT_DIR$/src/config/data_config.py" />
-        <option value="$PROJECT_DIR$/src/global_setting.py" />
         <option value="$PROJECT_DIR$/src/model/mcmc.py" />
         <option value="$PROJECT_DIR$/src/model/attention.py" />
-        <option value="$PROJECT_DIR$/src/config/data_config.json" />
-        <option value="$PROJECT_DIR$/src/config/model_config.json" />
-        <option value="$PROJECT_DIR$/src/utils/data_loader.py" />
-        <option value="$PROJECT_DIR$/src/model/carma.py" />
         <option value="$PROJECT_DIR$/src/utils/visualization.py" />
+        <option value="$PROJECT_DIR$/src/utils/dataset_loader.py" />
+        <option value="$PROJECT_DIR$/src/utils/data_loader.py" />
+        <option value="$PROJECT_DIR$/src/global_setting.py" />
+        <option value="$PROJECT_DIR$/src/utils/process_data.py" />
         <option value="$PROJECT_DIR$/src/model/gp.py" />
+        <option value="$PROJECT_DIR$/src/utils/basic_data_processor.py" />
+        <option value="$PROJECT_DIR$/src/utils/lstm_data_processor.py" />
+        <option value="$PROJECT_DIR$/src/model/LSTM.py" />
+        <option value="$PROJECT_DIR$/src/model/carma.py" />
+        <option value="$PROJECT_DIR$/src/config/data_config.json" />
+        <option value="$PROJECT_DIR$/src/utils/data_processor.py" />
+        <option value="$PROJECT_DIR$/src/config/model_config.json" />
+        <option value="$PROJECT_DIR$/src/model/standard_lstm.py" />
       </list>
     </option>
   </component>
@@ -286,20 +239,13 @@
     <entry file="file://$PROJECT_DIR$/src/gobal_setting.py" />
     <entry file="file://$PROJECT_DIR$/src/config/config.json" />
     <entry file="file://$PROJECT_DIR$/src/config/data_config.py" />
-    <entry file="file://$PROJECT_DIR$/src/global_setting.py">
+    <entry file="file://$PROJECT_DIR$/src/model/attention.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="15">
+          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/data_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="13" selection-start-line="3" selection-start-column="2" selection-end-line="3" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -313,22 +259,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/model_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="10" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/data_loader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="16" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/src/Load Data.ipynb">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/utils/visualization.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -340,30 +272,84 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/dataset_loader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="43" column="42" selection-start-line="43" selection-start-column="42" selection-end-line="43" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/global_setting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="44" selection-start-line="4" selection-start-column="44" selection-end-line="4" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/model/carma.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="95" column="57" selection-start-line="95" selection-start-column="35" selection-end-line="95" selection-end-column="57" />
+        <state relative-caret-position="225">
+          <caret line="15" column="68" selection-start-line="15" selection-start-column="68" selection-end-line="15" selection-end-column="68" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/config/data_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/lstm_data_processor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="33" selection-start-line="33" selection-end-line="33" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/data_processor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-430">
+          <caret line="16" column="73" selection-start-line="16" selection-start-column="73" selection-end-line="16" selection-end-column="73" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/model/gp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="48" column="29" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+        <state relative-caret-position="393">
+          <caret line="51" selection-start-line="51" selection-end-line="52" selection-end-column="29" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/attention.py">
+    <entry file="file://$PROJECT_DIR$/src/config/model_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-33">
-          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
+        <state relative-caret-position="195">
+          <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/standard_lstm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-966">
+          <caret line="96" column="22" selection-start-line="96" selection-start-column="22" selection-end-line="96" selection-end-column="22" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

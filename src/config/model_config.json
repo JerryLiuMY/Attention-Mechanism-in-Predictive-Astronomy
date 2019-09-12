@@ -1,10 +1,17 @@
 {
-  "attention_lstm":{
-    "T_x": 0.5
-  },
   "carma": {
     "p": 3,
     "q": 0,
     "nwalkers": 1000
+  },
+  "attention_lstm":{
+    "window_len": 10,
+    "look_back": 50,
+    "T_x": 0.5
+  },
+  "standard_lstm": {
+    "window_len": 10,
+    "epochs": 1000,
+    "batch_size":32
   }
 }
