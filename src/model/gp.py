@@ -29,11 +29,6 @@ class GP():
         self.model_config = json.load(open('./config/model_config.json'))
         self.gp = None
 
-    @staticmethod
-    def mse(y, y_pred):
-        mse = np.mean((y - y_pred) ** 2)
-        return mse
-
     def fit_gaussian(self):
         # Train gaussian process
         kernel = C(1.0, (1e-3, 1e3)) * RBF(10, (1e-2, 1e2))
