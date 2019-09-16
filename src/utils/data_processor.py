@@ -144,8 +144,8 @@ class DataProcessor:
     @staticmethod
     def delta_list(raw_list):
         delta_list = []
-        for i in range(1, len(raw_list)):
-            delta = raw_list[i] - raw_list[i - 1]
+        for i in range(1, len(raw_list[0])):
+            delta = raw_list[0][i] - raw_list[0][i - 1]
             delta_list.append(delta)
         delta_list = np.array(delta_list)
 
@@ -221,6 +221,8 @@ class DataProcessor:
             delta_t_scaler = MinMaxScaler(feature_range=(0, 1))
             delta_t_list = np.concatenate((delta_t_list_train, delta_t_list_cross, delta_t_list_test), axis=0).reshape(
                 -1, 1)
+            print(delta_t_list)
+            print(np.shape(delta_t_list))
             scaled_delta_t_list = delta_t_scaler.fit_transform(delta_t_list)
 
             train_len = len(t_list_train)
@@ -245,13 +247,13 @@ class DataProcessor:
     def prepare_standard_lstm_data(self):
         for crts_id in self.crts_list:
             # Load Scaled Data
-            with open(os.path.join(self.standard_lstm_data_path, 'rescaled_mag' + str(crts_id) + '.pkl'), 'rb') as handle:
+            with open(os.path.join(self.standard_lstm_data_path, 'rescaled_mag_' + str(crts_id) + '.pkl'), 'rb') as handle:
                 scaled_mag_data_dict = pickle.load(handle)
                 scaled_mag_list_train = scaled_mag_data_dict['scaled_mag_list_train']
                 scaled_mag_list_cross = scaled_mag_data_dict['scaled_mag_list_cross']
                 scaled_mag_list_test = scaled_mag_data_dict['scaled_mag_list_test']
 
-            with open(os.path.join(self.standard_lstm_data_path, 'rescaled_delta_t' + str(crts_id) + '.pkl'), 'rb') as handle:
+            with open(os.path.join(self.standard_lstm_data_path, 'rescaled_delta_t_' + str(crts_id) + '.pkl'), 'rb') as handle:
                 scaled_delta_t_data_dict = pickle.load(handle)
                 scaled_delta_t_list_train = scaled_delta_t_data_dict['scaled_delta_t_list_train']
                 scaled_delta_t_list_cross = scaled_delta_t_data_dict['scaled_delta_t_list_cross']
