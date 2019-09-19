@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/papers/ml_astronomy/A recurrent neural network for classification of unevenly sampled variable stars.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/ml_astronomy/A recurrent neural network for classification of unevenly sampled variable stars.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/test.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/data_processor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/phased_lstm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/phased_lstm_layer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/utils/data_processor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3116">
-              <caret line="263" column="37" selection-start-line="263" selection-start-column="37" selection-end-line="263" selection-end-column="37" />
+            <state relative-caret-position="855">
+              <caret line="57" column="52" selection-start-line="57" selection-start-column="52" selection-end-line="57" selection-end-column="52" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -59,11 +59,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/model/standard_lstm.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/utils/phased_lstm_layer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="85" column="49" selection-start-line="85" selection-start-column="42" selection-end-line="85" selection-end-column="49" />
+            <state relative-caret-position="928">
+              <caret line="228" column="66" lean-forward="true" selection-start-line="228" selection-start-column="66" selection-end-line="228" selection-end-column="66" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -94,12 +94,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>mse</find>
-      <find>blue</find>
-      <find>is_short</find>
-      <find>data_loader</find>
-      <find>data_config</find>
-      <find>short</find>
       <find>DATA_FOLDER</find>
       <find>array</find>
       <find>self.model_config</find>
@@ -120,10 +114,16 @@
       <find>shape</find>
       <find>data_dict</find>
       <find>delta_t_list</find>
-      <find>dim</find>
       <find>window</find>
       <find>prepare_standard_lstm_data</find>
       <find>self.standard_lstm_data_path, 'rescaled_mag'</find>
+      <find>dim</find>
+      <find>eager</find>
+      <find>self.units, self.</find>
+      <find>alpha</find>
+      <find>bias_initializer</find>
+      <find>unit_forget_bias</find>
+      <find>_generate_dropout_mask</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -154,6 +154,8 @@
         <option value="$PROJECT_DIR$/src/model/standard_lstm.py" />
         <option value="$PROJECT_DIR$/src/main_pipeline.py" />
         <option value="$PROJECT_DIR$/src/utils/data_processor.py" />
+        <option value="$PROJECT_DIR$/src/model/phased_lstm.py" />
+        <option value="$PROJECT_DIR$/src/utils/phased_lstm_layer.py" />
       </list>
     </option>
   </component>
@@ -374,16 +376,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/standard_lstm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="85" column="49" selection-start-line="85" selection-start-column="42" selection-end-line="85" selection-end-column="49" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main_pipeline.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="279">
@@ -394,12 +386,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/standard_lstm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1275">
+          <caret line="85" column="83" lean-forward="true" selection-start-line="85" selection-start-column="83" selection-end-line="85" selection-end-column="83" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/keras/engine/base_layer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="363" column="8" selection-start-line="363" selection-start-column="8" selection-end-line="363" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/phased_lstm.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/utils/data_processor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3116">
-          <caret line="263" column="37" selection-start-line="263" selection-start-column="37" selection-end-line="263" selection-end-column="37" />
+        <state relative-caret-position="855">
+          <caret line="57" column="52" selection-start-line="57" selection-start-column="52" selection-end-line="57" selection-end-column="52" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/phased_lstm_layer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="928">
+          <caret line="228" column="66" lean-forward="true" selection-start-line="228" selection-start-column="66" selection-end-line="228" selection-end-column="66" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
