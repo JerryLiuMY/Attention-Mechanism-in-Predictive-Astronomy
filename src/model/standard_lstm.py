@@ -19,7 +19,7 @@ class StandardLSTM:
         self.load_config()
 
         # Paths
-        self.model_name = 'model_' + str(self.crts_id) + '_window_len_' + str(self.window_len) + '_hidden_dim_' + self.hidden_dim
+        self.model_name = 'model_' + str(self.crts_id) + '_window_len_' + str(self.window_len) + '_hidden_dim_' + str(self.hidden_dim)
         self.model_path = os.path.join(DATA_FOLDER, 'model', 'standard_lstm', self.model_name + '.h5')
 
         # Scalar

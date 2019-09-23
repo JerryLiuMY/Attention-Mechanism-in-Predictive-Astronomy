@@ -217,7 +217,24 @@ class LSTMCell(Layer):
                                                constraint=self.timegate_constraint)
         self.built = True
 
-    def call(self, inputs, states, training=None):
+    def call(self, inputs_t, states, training=None):
+        inputs = inputs_t[0]
+        t = inputs_t[1]
+
+        period = self.timegate_kernel[0]
+        shift = self.timegate_kernel[1]
+        r_on = self.timegate_kernel[2]
+
+        # modulo operation not implemented in Tensorflow backend, so write explicitly.
+        phi = ((t - shift) - (period * ((t - shift) // period))) / period
+
+        # K.switch not consistent between Theano and Tensorflow backend, so write explicitly.
+        up = K.cast(K.less_equal(phi, r_on * 0.5), K.floatx()) * 2 * phi / r_on
+        mid = K.cast(K.less_equal(phi, r_on), K.floatx()) * \
+              K.cast(K.greater(phi, r_on * 0.5), K.floatx()) * (2 - (2 * phi / r_on))
+        end = K.cast(K.greater(phi, r_on), K.floatx()) * self.alpha * phi
+        k = up + mid + end
+
         if 0 < self.dropout < 1 and self._dropout_mask is None:
             self._dropout_mask = _generate_dropout_mask(
                 K.ones_like(inputs),
@@ -275,8 +292,11 @@ class LSTMCell(Layer):
                                                       self.recurrent_kernel_i))
             f = self.recurrent_activation(x_f + K.dot(h_tm1_f,
                                                       self.recurrent_kernel_f))
-            c = f * c_tm1 + i * self.activation(x_c + K.dot(h_tm1_c,
-                                                            self.recurrent_kernel_c))
+            # intermediate cell update
+            c_hat = f * c_tm1 + i * self.activation(x_c + K.dot(h_tm1 * rec_dp_mask[2],
+                                                                self.recurrent_kernel_c))
+            # final cell update
+            c = k * c_hat + (1 - k) * c_tm1
             o = self.recurrent_activation(x_o + K.dot(h_tm1_o,
                                                       self.recurrent_kernel_o))
         else:
@@ -296,14 +316,22 @@ class LSTMCell(Layer):
 
             i = self.recurrent_activation(z0)
             f = self.recurrent_activation(z1)
-            c = f * c_tm1 + i * self.activation(z2)
+            # intermediate cell update
+            c_hat = f * c_tm1 + i * self.activation(z2)
+            # final cell update
+            c = k * c_hat + (1 - k) * c_tm1
             o = self.recurrent_activation(z3)
 
-        h = o * self.activation(c)
+        # intermediate hidden update
+        h_hat = o * self.activation(c_hat)
+        # final hidden update
+        h = k * h_hat + (1 - k) * h_tm1
+
         if 0 < self.dropout + self.recurrent_dropout:
             if training is None:
                 h._uses_learning_phase = True
-        return h, [h, c]
+
+        return h, [h, c, t]
 
     def get_config(self):
         config = {'units': self.units,

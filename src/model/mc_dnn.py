@@ -28,7 +28,7 @@ def build_dataset(N, noise_std=0.25, is_test=True):
 
 class MCDnn:
 
-    def __init__(self, n_hidden, n_epochs=40, batch_size=128, tau=1.0, dropout=0.05, lengthscale=1e-2):
+    def __init__(self, n_hidden, n_epochs=500, batch_size=128, tau=1.0, dropout=0.05, lengthscale=1e-2):
         self.dropout = dropout
         self.tau = tau
         self.n_hidden = n_hidden
@@ -55,16 +55,15 @@ class MCDnn:
         self.model = Model(inputs, outputs)
 
         self.model.compile(loss='mean_squared_error', optimizer='adam')
-        self.model.fit(X_train, y_train, batch_size=self.batch_size, nb_epoch=self.n_epochs, verbose=0)
+        self.model.fit(X_train, y_train, batch_size=self.batch_size, epochs=self.n_epochs, verbose=0)
 
     def predict(self, X_test, y_test):
         # standard prediction
-        standard_pred = self.model.predict(X_test, batch_size=500, verbose=1)
+        standard_pred = self.model.predict(X_test, batch_size=self.batch_size, verbose=1)
 
         # MC prediction
         T = 10000
-        Yt_hat = np.array([self.model.predict(X_test, batch_size=500, verbose=0) for _ in range(T)])
-        print(Yt_hat)
+        Yt_hat = np.array([self.model.predict(X_test, batch_size=self.batch_size, verbose=0) for _ in range(T)])
         MC_pred = np.mean(Yt_hat, 0)
         MC_std = np.std(Yt_hat, 0)
 
