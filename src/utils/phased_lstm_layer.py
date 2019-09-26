@@ -1,14 +1,9 @@
 import numpy as np
 from keras import backend as K
-from keras import activations
-from keras import initializers
-from keras import regularizers
-from keras import constraints
-from keras.layers import Layer
-from keras.engine import InputSpec
+from keras import activations, initializers, regularizers, constraints
+from keras.layers import Layer, LSTMCell, RNN, LSTM
 from keras.legacy import interfaces
-from keras.layers import Recurrent
-from keras.utils.generic_utils import get_custom_objects
+import warnings
 
 def _timegate_init(shape, dtype=None):
     assert len(shape) == 2
@@ -32,7 +27,7 @@ def _generate_dropout_mask(ones, rate, training=None, count=1):
         training=training)
 
 
-class LSTMCell(Layer):
+class PhasedLSTMCell(Layer):
     """Cell class for the LSTM layer.
     # Arguments
         units: Positive integer, dimensionality of the output space.
@@ -114,7 +109,7 @@ class LSTMCell(Layer):
                  implementation=2,
                  alpha=0.001,
                  **kwargs):
-        super(LSTMCell, self).__init__(**kwargs)
+        super(PhasedLSTMCell, self).__init__(**kwargs)
         self.units = units
         self.activation = activations.get(activation)
         self.recurrent_activation = activations.get(recurrent_activation)
@@ -147,7 +142,7 @@ class LSTMCell(Layer):
         self._recurrent_dropout_mask = None
 
     def build(self, input_shape):
-        input_dim = input_shape[-1]
+        input_dim = input_shape[-1]-1
 
         if type(self.recurrent_initializer).__name__ == 'Identity':
             def recurrent_identity(shape, gain=1., dtype=None):
@@ -218,17 +213,19 @@ class LSTMCell(Layer):
         self.built = True
 
     def call(self, inputs_t, states, training=None):
-        inputs = inputs_t[0]
-        t = inputs_t[1]
+        inputs = inputs_t[:, :-1]  # shape = [batch_size, num_features]
+        t = inputs_t[:, -1:]  # shape = [batch_size, 1]
 
         period = self.timegate_kernel[0]
         shift = self.timegate_kernel[1]
         r_on = self.timegate_kernel[2]
 
         # modulo operation not implemented in Tensorflow backend, so write explicitly.
+        # shape = [batch_size, self.units]
         phi = ((t - shift) - (period * ((t - shift) // period))) / period
 
         # K.switch not consistent between Theano and Tensorflow backend, so write explicitly.
+        # shape = [batch_size, self.units]
         up = K.cast(K.less_equal(phi, r_on * 0.5), K.floatx()) * 2 * phi / r_on
         mid = K.cast(K.less_equal(phi, r_on), K.floatx()) * \
               K.cast(K.greater(phi, r_on * 0.5), K.floatx()) * (2 - (2 * phi / r_on))
@@ -288,17 +285,13 @@ class LSTMCell(Layer):
                 h_tm1_f = h_tm1
                 h_tm1_c = h_tm1
                 h_tm1_o = h_tm1
-            i = self.recurrent_activation(x_i + K.dot(h_tm1_i,
-                                                      self.recurrent_kernel_i))
-            f = self.recurrent_activation(x_f + K.dot(h_tm1_f,
-                                                      self.recurrent_kernel_f))
+            i = self.recurrent_activation(x_i + K.dot(h_tm1_i, self.recurrent_kernel_i))
+            f = self.recurrent_activation(x_f + K.dot(h_tm1_f, self.recurrent_kernel_f))
             # intermediate cell update
-            c_hat = f * c_tm1 + i * self.activation(x_c + K.dot(h_tm1 * rec_dp_mask[2],
-                                                                self.recurrent_kernel_c))
+            c_hat = f * c_tm1 + i * self.activation(x_c + K.dot(h_tm1 * rec_dp_mask[2], self.recurrent_kernel_c))
             # final cell update
             c = k * c_hat + (1 - k) * c_tm1
-            o = self.recurrent_activation(x_o + K.dot(h_tm1_o,
-                                                      self.recurrent_kernel_o))
+            o = self.recurrent_activation(x_o + K.dot(h_tm1_o, self.recurrent_kernel_o))
         else:
             if 0. < self.dropout < 1.:
                 inputs *= dp_mask[0]
@@ -331,7 +324,7 @@ class LSTMCell(Layer):
             if training is None:
                 h._uses_learning_phase = True
 
-        return h, [h, c, t]
+        return h, [h, c]
 
     def get_config(self):
         config = {'units': self.units,
@@ -357,5 +350,271 @@ class LSTMCell(Layer):
                   'dropout': self.dropout,
                   'recurrent_dropout': self.recurrent_dropout,
                   'implementation': self.implementation}
-        base_config = super(LSTMCell, self).get_config()
+        base_config = super(PhasedLSTMCell, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
+
+class PhasedLSTM(RNN):
+    """Long Short-Term Memory layer - Hochreiter 1997.
+    # Arguments
+        units: Positive integer, dimensionality of the output space.
+        activation: Activation function to use
+            (see [activations](../activations.md)).
+            Default: hyperbolic tangent (`tanh`).
+            If you pass `None`, no activation is applied
+            (ie. "linear" activation: `a(x) = x`).
+        recurrent_activation: Activation function to use
+            for the recurrent step
+            (see [activations](../activations.md)).
+            Default: hard sigmoid (`hard_sigmoid`).
+            If you pass `None`, no activation is applied
+            (ie. "linear" activation: `a(x) = x`).
+        use_bias: Boolean, whether the layer uses a bias vector.
+        kernel_initializer: Initializer for the `kernel` weights matrix,
+            used for the linear transformation of the inputs.
+            (see [initializers](../initializers.md)).
+        recurrent_initializer: Initializer for the `recurrent_kernel`
+            weights matrix,
+            used for the linear transformation of the recurrent state.
+            (see [initializers](../initializers.md)).
+        bias_initializer: Initializer for the bias vector
+            (see [initializers](../initializers.md)).
+        unit_forget_bias: Boolean.
+            If True, add 1 to the bias of the forget gate at initialization.
+            Setting it to true will also force `bias_initializer="zeros"`.
+            This is recommended in [Jozefowicz et al. (2015)](
+            http://www.jmlr.org/proceedings/papers/v37/jozefowicz15.pdf).
+        kernel_regularizer: Regularizer function applied to
+            the `kernel` weights matrix
+            (see [regularizer](../regularizers.md)).
+        recurrent_regularizer: Regularizer function applied to
+            the `recurrent_kernel` weights matrix
+            (see [regularizer](../regularizers.md)).
+        bias_regularizer: Regularizer function applied to the bias vector
+            (see [regularizer](../regularizers.md)).
+        activity_regularizer: Regularizer function applied to
+            the output of the layer (its "activation").
+            (see [regularizer](../regularizers.md)).
+        kernel_constraint: Constraint function applied to
+            the `kernel` weights matrix
+            (see [constraints](../constraints.md)).
+        recurrent_constraint: Constraint function applied to
+            the `recurrent_kernel` weights matrix
+            (see [constraints](../constraints.md)).
+        bias_constraint: Constraint function applied to the bias vector
+            (see [constraints](../constraints.md)).
+        dropout: Float between 0 and 1.
+            Fraction of the units to drop for
+            the linear transformation of the inputs.
+        recurrent_dropout: Float between 0 and 1.
+            Fraction of the units to drop for
+            the linear transformation of the recurrent state.
+        implementation: Implementation mode, either 1 or 2.
+            Mode 1 will structure its operations as a larger number of
+            smaller dot products and additions, whereas mode 2 will
+            batch them into fewer, larger operations. These modes will
+            have different performance profiles on different hardware and
+            for different applications.
+        return_sequences: Boolean. Whether to return the last output
+            in the output sequence, or the full sequence.
+        return_state: Boolean. Whether to return the last state
+            in addition to the output. The returned elements of the
+            states list are the hidden state and the cell state, respectively.
+        go_backwards: Boolean (default False).
+            If True, process the input sequence backwards and return the
+            reversed sequence.
+        stateful: Boolean (default False). If True, the last state
+            for each sample at index i in a batch will be used as initial
+            state for the sample of index i in the following batch.
+        unroll: Boolean (default False).
+            If True, the network will be unrolled,
+            else a symbolic loop will be used.
+            Unrolling can speed-up a RNN,
+            although it tends to be more memory-intensive.
+            Unrolling is only suitable for short sequences.
+    # References
+        - [Long short-term memory](
+          http://www.bioinf.jku.at/publications/older/2604.pdf)
+        - [Learning to forget: Continual prediction with LSTM](
+          http://www.mitpressjournals.org/doi/pdf/10.1162/089976600300015015)
+        - [Supervised sequence labeling with recurrent neural networks](
+          http://www.cs.toronto.edu/~graves/preprint.pdf)
+        - [A Theoretically Grounded Application of Dropout in
+           Recurrent Neural Networks](https://arxiv.org/abs/1512.05287)
+    """
+
+    @interfaces.legacy_recurrent_support
+    def __init__(self, units,
+                 activation='tanh',
+                 recurrent_activation='sigmoid',
+                 use_bias=True,
+                 kernel_initializer='glorot_uniform',
+                 recurrent_initializer='orthogonal',
+                 bias_initializer='zeros',
+                 unit_forget_bias=True,
+                 kernel_regularizer=None,
+                 recurrent_regularizer=None,
+                 bias_regularizer=None,
+                 activity_regularizer=None,
+                 kernel_constraint=None,
+                 recurrent_constraint=None,
+                 bias_constraint=None,
+                 dropout=0.,
+                 recurrent_dropout=0.,
+                 implementation=2,
+                 return_sequences=False,
+                 return_state=False,
+                 go_backwards=False,
+                 stateful=False,
+                 unroll=False,
+                 **kwargs):
+        if implementation == 0:
+            warnings.warn('`implementation=0` has been deprecated, '
+                          'and now defaults to `implementation=1`.'
+                          'Please update your layer call.')
+        if K.backend() == 'theano' and (dropout or recurrent_dropout):
+            warnings.warn(
+                'RNN dropout is no longer supported with the Theano backend '
+                'due to technical limitations. '
+                'You can either set `dropout` and `recurrent_dropout` to 0, '
+                'or use the TensorFlow backend.')
+            dropout = 0.
+            recurrent_dropout = 0.
+
+        cell = PhasedLSTMCell(units,
+                              activation=activation,
+                              recurrent_activation=recurrent_activation,
+                              use_bias=use_bias,
+                              kernel_initializer=kernel_initializer,
+                              recurrent_initializer=recurrent_initializer,
+                              unit_forget_bias=unit_forget_bias,
+                              bias_initializer=bias_initializer,
+                              kernel_regularizer=kernel_regularizer,
+                              recurrent_regularizer=recurrent_regularizer,
+                              bias_regularizer=bias_regularizer,
+                              kernel_constraint=kernel_constraint,
+                              recurrent_constraint=recurrent_constraint,
+                              bias_constraint=bias_constraint,
+                              dropout=dropout,
+                              recurrent_dropout=recurrent_dropout,
+                              implementation=implementation)
+
+        super(PhasedLSTM, self).__init__(cell,
+                                         return_sequences=return_sequences,
+                                         return_state=return_state,
+                                         go_backwards=go_backwards,
+                                         stateful=stateful,
+                                         unroll=unroll,
+                                         **kwargs)
+        self.activity_regularizer = regularizers.get(activity_regularizer)
+
+    def call(self, inputs, mask=None, training=None, initial_state=None):
+        self.cell._dropout_mask = None
+        self.cell._recurrent_dropout_mask = None
+        return super(PhasedLSTM, self).call(inputs,
+                                      mask=mask,
+                                      training=training,
+                                      initial_state=initial_state)
+
+    @property
+    def units(self):
+        return self.cell.units
+
+    @property
+    def activation(self):
+        return self.cell.activation
+
+    @property
+    def recurrent_activation(self):
+        return self.cell.recurrent_activation
+
+    @property
+    def use_bias(self):
+        return self.cell.use_bias
+
+    @property
+    def kernel_initializer(self):
+        return self.cell.kernel_initializer
+
+    @property
+    def recurrent_initializer(self):
+        return self.cell.recurrent_initializer
+
+    @property
+    def bias_initializer(self):
+        return self.cell.bias_initializer
+
+    @property
+    def unit_forget_bias(self):
+        return self.cell.unit_forget_bias
+
+    @property
+    def kernel_regularizer(self):
+        return self.cell.kernel_regularizer
+
+    @property
+    def recurrent_regularizer(self):
+        return self.cell.recurrent_regularizer
+
+    @property
+    def bias_regularizer(self):
+        return self.cell.bias_regularizer
+
+    @property
+    def kernel_constraint(self):
+        return self.cell.kernel_constraint
+
+    @property
+    def recurrent_constraint(self):
+        return self.cell.recurrent_constraint
+
+    @property
+    def bias_constraint(self):
+        return self.cell.bias_constraint
+
+    @property
+    def dropout(self):
+        return self.cell.dropout
+
+    @property
+    def recurrent_dropout(self):
+        return self.cell.recurrent_dropout
+
+    @property
+    def implementation(self):
+        return self.cell.implementation
+
+    def get_config(self):
+        config = {'units': self.units,
+                  'activation': activations.serialize(self.activation),
+                  'recurrent_activation':
+                      activations.serialize(self.recurrent_activation),
+                  'use_bias': self.use_bias,
+                  'kernel_initializer':
+                      initializers.serialize(self.kernel_initializer),
+                  'recurrent_initializer':
+                      initializers.serialize(self.recurrent_initializer),
+                  'bias_initializer': initializers.serialize(self.bias_initializer),
+                  'unit_forget_bias': self.unit_forget_bias,
+                  'kernel_regularizer':
+                      regularizers.serialize(self.kernel_regularizer),
+                  'recurrent_regularizer':
+                      regularizers.serialize(self.recurrent_regularizer),
+                  'bias_regularizer': regularizers.serialize(self.bias_regularizer),
+                  'activity_regularizer':
+                      regularizers.serialize(self.activity_regularizer),
+                  'kernel_constraint': constraints.serialize(self.kernel_constraint),
+                  'recurrent_constraint':
+                      constraints.serialize(self.recurrent_constraint),
+                  'bias_constraint': constraints.serialize(self.bias_constraint),
+                  'dropout': self.dropout,
+                  'recurrent_dropout': self.recurrent_dropout,
+                  'implementation': self.implementation}
+        base_config = super(PhasedLSTM, self).get_config()
+        del base_config['cell']
+        return dict(list(base_config.items()) + list(config.items()))
+
+    @classmethod
+    def from_config(cls, config):
+        if 'implementation' in config and config['implementation'] == 0:
+            config['implementation'] = 1
+        return cls(**config)

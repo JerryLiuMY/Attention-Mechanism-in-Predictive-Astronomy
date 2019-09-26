@@ -1,18 +1,16 @@
 import math
-import random
 import numpy as np
 import pandas as pd
 import os
-from global_setting import DATA_FOLDER
-from sklearn.preprocessing import MinMaxScaler
 import json
 import joblib
 import pickle
-import glob, os
+from global_setting import DATA_FOLDER
+from sklearn.preprocessing import MinMaxScaler
 np.random.seed(1)
 
 
-class DataProcessor:
+class BasicDataProcessor:
 
     def __init__(self):
         # Configuration
@@ -37,7 +35,6 @@ class DataProcessor:
                 crts_list.append(file.split('.')[0])
         self.crts_list = crts_list
 
-    # ------------------------- Basic Data Processor -------------------------
     def partition_index(self, length):
         p1 = int(math.floor(length * self.train_percent))
         p2 = int(math.floor(length * (self.train_percent + self.cross_percent)))
@@ -89,58 +86,32 @@ class DataProcessor:
             with open(os.path.join(self.basic_data_path, str(crts_id) + '.pkl'), 'wb') as handle:
                 pickle.dump(data_dict, handle)
 
-    def prepare_basic_dataset(self):
-        mag_lists_train, mag_lists_cross, mag_lists_test = [], [], []
-        magerr_lists_train, magerr_lists_cross, magerr_lists_test = [], [], []
-        t_lists_train, t_lists_cross, t_lists_test = [], [], []
-        for crts_id in self.crts_list:
-            with open(os.path.join(self.basic_data_path, str(crts_id) + '.pkl'), 'rb') as handle:
-                data_dict = pickle.load(handle)
 
-                # Retrieve Individual Data
-                mag_list_train = data_dict['mag_list_train']
-                mag_list_cross = data_dict['mag_list_cross']
-                mag_list_test = data_dict['mag_list_test']
-                magerr_list_train = data_dict['magerr_list_train']
-                magerr_list_cross = data_dict['magerr_list_cross']
-                magerr_list_test = data_dict['magerr_list_test']
-                t_list_train = data_dict['t_list_train']
-                t_list_cross = data_dict['t_list_cross']
-                t_list_test = data_dict['t_list_test']
+class LSTMDataProcessor:
 
-            # Append Individual Data
-            mag_lists_train.append(mag_list_train[0])
-            mag_lists_cross.append(mag_list_cross[0])
-            mag_lists_test.append(mag_list_test[0])
-            magerr_lists_train.append(magerr_list_train[0])
-            magerr_lists_cross.append(magerr_list_cross[0])
-            magerr_lists_test.append(magerr_list_test[0])
-            t_lists_train.append(t_list_train[0])
-            t_lists_cross.append(t_list_cross[0])
-            t_lists_test.append(t_list_test[0])
+    def __init__(self):
+        # Configuration
+        self.load_config()
+        self.load_crts_list()
 
-        # Save All Data
-        print(mag_lists_train)
-        mag_lists_train = np.array(mag_lists_train)
-        mag_lists_cross = np.array(mag_lists_cross)
-        mag_lists_test = np.array(mag_lists_test)
-        magerr_lists_train = np.array(magerr_lists_train)
-        magerr_lists_cross = np.array(magerr_lists_cross)
-        magerr_lists_test = np.array(magerr_lists_test)
-        t_lists_train = np.array(t_lists_train)
-        t_lists_cross = np.array(t_lists_cross)
-        t_lists_test = np.array(t_lists_test)
+        # Paths
+        self.raw_data_path = os.path.join(DATA_FOLDER, 'raw_data')
+        self.basic_data_path = os.path.join(DATA_FOLDER, 'processed_data', 'basic')
+        self.standard_lstm_data_path = os.path.join(DATA_FOLDER, 'processed_data', 'standard_lstm')
 
-        all_data_dict = {'mag_lists_train': mag_lists_train, 'mag_lists_cross': mag_lists_cross,
-                         'mag_lists_test': mag_lists_test, 'magerr_lists_train': magerr_lists_train,
-                         'magerr_lists_cross': magerr_lists_cross, 'magerr_lists_test': magerr_lists_test,
-                         't_lists_train': t_lists_train, 't_lists_cross': t_lists_cross,
-                         't_lists_test': t_lists_test}
+    def load_config(self):
+        self.data_config = json.load(open('./config/data_config.json'))
+        self.train_percent = self.data_config['data_loader']['train_partition']
+        self.cross_percent = self.data_config['data_loader']['cross_partition']
+        self.model_config = json.load(open('./config/model_config.json'))
 
-        with open(os.path.join(self.basic_data_path, 'all.pkl'), 'wb') as handle:
-            pickle.dump(all_data_dict, handle)
+    def load_crts_list(self):
+        crts_list = []
+        for file in os.listdir(os.path.join(DATA_FOLDER, 'raw_data')):
+            if file.endswith(".csv"):
+                crts_list.append(file.split('.')[0])
+        self.crts_list = crts_list
 
-    # ------------------------- LSTM Data Processor -------------------------
     @staticmethod
     def delta_list(raw_list):
         delta_list = []

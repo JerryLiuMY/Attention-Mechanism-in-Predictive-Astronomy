@@ -1,7 +1,6 @@
 import numpy as np
 import os
 import json
-import joblib
 import matplotlib.pyplot as plt
 from global_setting import DATA_FOLDER
 from sklearn.preprocessing import MinMaxScaler
@@ -11,7 +10,6 @@ np.random.seed(1)
 
 
 class StandardLSTM:
-    # Note: This need to be run in python2
     def __init__(self, crts_id):
         # Configuration
         self.crts_id = crts_id
@@ -19,12 +17,8 @@ class StandardLSTM:
         self.load_config()
 
         # Paths
-        self.model_name = 'model_' + str(self.crts_id) + '_window_len_' + str(self.window_len) + '_hidden_dim_' + str(self.hidden_dim)
+        self.model_name = 'model_{}_window_len_{}__hidden_dim_{}'.format(str(self.crts_id), str(self.window_len), str(self.hidden_dim))
         self.model_path = os.path.join(DATA_FOLDER, 'model', 'standard_lstm', self.model_name + '.h5')
-
-        # Scalar
-        self.standard_lstm_data_path = os.path.join(DATA_FOLDER, 'processed_data', 'standard_lstm')
-        self.delta_t_scaler = joblib.load(os.path.join(self.standard_lstm_data_path, 'delta_t_scaler_' + str(crts_id) + '.pkl'))
 
     def load_config(self):
         self.model_config = json.load(open('./config/model_config.json'))
@@ -34,14 +28,12 @@ class StandardLSTM:
         self.window_len = self.model_config['standard_lstm']['window_len']
 
     def build_model(self):
-        # Build model
         self.model = Sequential()
         self.model.add(LSTM(self.hidden_dim, input_shape=(self.window_len, 2)))
         self.model.add(Dense(1))
         self.model.compile(loss='mean_squared_error', optimizer='adam')
 
     def fit_model(self, train_X, train_y, cross_X, cross_y, test_X, test_y):
-        # Train model
         train_score = self.model.fit(train_X, train_y, epochs=self.epochs, batch_size=self.batch_size, verbose=2)
         corss_score = self.model.evaluate(cross_X, cross_y, batch_size=128)
         test_score = self.model.evaluate(test_X, test_y, batch_size=128)
