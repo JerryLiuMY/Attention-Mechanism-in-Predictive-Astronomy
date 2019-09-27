@@ -79,7 +79,7 @@ class StandardLSTM:
             scaled_y_pred_cross.append(scaled_y_pred_cross_step)
             new_feature = np.concatenate((scaled_cross_y_pred_step, scaled_delta_t_list_cross[i+1]), axis=0)
             new_feature = np.expand_dims(new_feature, axis=0)
-            cross_X_step = np.concatenate((cross_X_step[0, 1:, :], new_feature), axis=0)
+            cross_X_step = np.concatenate((cross_X_step[0, 1:, :], new_feature), axis=0)  # TODO: Dataset
 
         scaled_y_pred_cross = np.array(scaled_y_pred_cross)
         y_pred_cross = mag_scaler.inverse_transform(scaled_y_pred_cross)
@@ -94,7 +94,7 @@ class StandardLSTM:
             scaled_y_pred_test.append(scaled_y_pred_test_step)
             new_feature = np.concatenate((scaled_y_pred_test_step, scaled_delta_t_list_test[i+1]), axis=0)
             new_feature = np.expand_dims(new_feature, axis=0)
-            test_X_step = np.concatenate((test_X_step[0, 1:, :], new_feature), axis=0)
+            test_X_step = np.concatenate((test_X_step[0, 1:, :], new_feature), axis=0)  # TODO: Dataset
 
         scaled_y_pred_test = np.array(scaled_y_pred_test)
         y_pred_test = mag_scaler.inverse_transform(scaled_y_pred_test)

@@ -13,9 +13,9 @@ from global_setting import DATA_FOLDER
 class GP():
     def __init__(self, crts_id):
         self.crts_id = crts_id
-        self.data_path = os.path.join(DATA_FOLDER, 'processed_data', 'basic', str(crts_id) + '.pickle')
+        self.data_path = os.path.join(DATA_FOLDER, 'processed_data', 'basic', str(crts_id) + '.pickle') #TODO:Chage path
         with open('self.data_path', 'rb') as handle:
-            data_dict = pickle.load(self.data_path)
+            data_dict = pickle.load(handle)
         self.mag_list_train = data_dict['mag_list_train']
         self.mag_list_cross = data_dict['mag_list_cross']
         self.mag_list_test = data_dict['mag_list_test']
