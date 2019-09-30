@@ -1,12 +1,11 @@
 from utils.phased_lstm_layer import PhasedLSTMCell, PhasedLSTM
 from keras.layers import Dense
 from global_setting import DATA_FOLDER
+from global_setting import phased_lstm_model_path
 import numpy as np
 import os
 import json
 from keras.models import Sequential, load_model
-
-
 
 class PhasedLSTM_:
     # The model is now trained individually for each sample, so we feed in the crts_id for now
@@ -16,9 +15,9 @@ class PhasedLSTM_:
         self.model = None
         self.load_config()
 
-        # Paths
-        self.model_name = 'model_' + str(self.crts_id) + '_window_len_' + str(self.window_len) + '_hidden_dim_' + str(self.hidden_dim)
-        self.model_path = os.path.join(DATA_FOLDER, 'model', 'phased_lstm', self.model_name + '.h5')
+        # Model Path & Name
+        self.phased_lstm_model_name = str(self.crts_id) + '_window_len_' + str(self.window_len) + '_hidden_dim_' + str(self.hidden_dim) + '.h5'
+        self.phased_lstm_model_path = phased_lstm_model_path
 
     def load_config(self):
         self.model_config = json.load(open('./config/model_config.json'))
@@ -26,7 +25,6 @@ class PhasedLSTM_:
         self.batch_size = self.model_config['phased_lstm']['batch_size']
         self.hidden_dim = self.model_config['phased_lstm']['hidden_dim']
         self.window_len = self.model_config['phased_lstm']['window_len']
-
 
     def build_model(self):
         # Build Model
@@ -42,62 +40,62 @@ class PhasedLSTM_:
         test_score = self.model.evaluate(test_X, test_y, batch_size=self.batch_size)
 
         # Save model
-        self.model.save(self.model_path)
+        self.model.save(os.path.join(self.phased_lstm_model_path, self.phased_lstm_model_name))
 
         return train_score, corss_score, test_score
 
     def one_step_prediction(self, train_X, cross_X, test_X, mag_scaler):
         # Load Model
-        lstm_model = load_model(self.model_path)
+        phased_lstm_model = load_model(os.path.join(self.phased_lstm_model_path, self.phased_lstm_model_name))
 
         # Train Interpolation
-        scaled_y_inter = lstm_model.predict(train_X)
+        scaled_y_inter = phased_lstm_model.predict(train_X)
         y_inter = mag_scaler.inverse_transform(scaled_y_inter)
 
         # Cross Prediction
-        scaled_cross_y_pred = lstm_model.predict(cross_X)
+        scaled_cross_y_pred = phased_lstm_model.predict(cross_X)
         cross_y_pred = mag_scaler.inverse_transform(scaled_cross_y_pred)
 
         # Test Prediction
-        scaled_test_y_pred = lstm_model.predict(test_X)
+        scaled_test_y_pred = phased_lstm_model.predict(test_X)
         test_y_pred = mag_scaler.inverse_transform(scaled_test_y_pred)
 
         return y_inter, cross_y_pred, test_y_pred
 
-    def multiple_step_prediction(self, train_X, cross_X, test_X, scaled_delta_t_list_cross, scaled_delta_t_list_test, mag_scaler):
+    def multiple_step_prediction(self, train_X, cross_X, test_X, mag_scaler):
         # Load Model
-        lstm_model = load_model(self.model_path)
+        phased_lstm_model = load_model(os.path.join(self.phased_lstm_model_path, self.phased_lstm_model_name))
 
         # Train Interpolation
-        scaled_y_inter = lstm_model.predict(train_X)
+        scaled_y_inter = phased_lstm_model.predict(train_X)
         y_inter = mag_scaler.inverse_transform(scaled_y_inter)
 
         # Cross Prediction
-        cross_X_step = cross_X[0]
+        cross_X_step = cross_X[[0]]
         scaled_y_pred_cross = []
-        for i in range(self.window_len, len(scaled_delta_t_list_cross)-1):
-            cross_X_step = np.expand_dims(cross_X_step, axis=0)
-            scaled_cross_y_pred_step = lstm_model.predict(cross_X_step)
-            scaled_y_pred_cross_step = np.squeeze(scaled_cross_y_pred_step, axis=0)
-            scaled_y_pred_cross.append(scaled_y_pred_cross_step)
-            new_feature = np.concatenate((scaled_cross_y_pred_step, scaled_delta_t_list_cross[i+1]), axis=0)
-            new_feature = np.expand_dims(new_feature, axis=0)
-            cross_X_step = np.concatenate((cross_X_step[0, 1:, :], new_feature), axis=0)
+        for i in range(np.shape(cross_X)[0]):
+            scaled_cross_y_pred_step = phased_lstm_model.predict(cross_X_step)  # shape = (1, 1)
+            scaled_cross_t_step = cross_X[i+1][[-1], :-1]  # shape = (1, 1)
+            new_feature = np.concatenate((scaled_cross_y_pred_step, scaled_cross_t_step), axis=1)  # shape = (1, 2)
+            cross_X_step = np.concatenate((cross_X[i][1:, :], new_feature), axis=0)  # shape = (window_len, 2)
+            cross_X_step = np.expand_dims(cross_X_step, axis=0)  # shape = (1, window_len, 2)
+
+            scaled_y_pred_cross.append(scaled_cross_y_pred_step[0])
 
         scaled_y_pred_cross = np.array(scaled_y_pred_cross)
         y_pred_cross = mag_scaler.inverse_transform(scaled_y_pred_cross)
 
-        # Test Prediction
-        test_X_step = test_X[0]
+        # Cross Prediction
+        test_X_step = test_X[[0]]
         scaled_y_pred_test = []
-        for i in range(self.window_len, len(scaled_delta_t_list_test)-1):
-            test_X_step = np.expand_dims(test_X_step, axis=0)
-            scaled_y_pred_test_step = lstm_model.predict(test_X_step)
-            scaled_y_pred_test_step = np.squeeze(scaled_y_pred_test_step, axis=0)
-            scaled_y_pred_test.append(scaled_y_pred_test_step)
-            new_feature = np.concatenate((scaled_y_pred_test_step, scaled_delta_t_list_test[i+1]), axis=0)
-            new_feature = np.expand_dims(new_feature, axis=0)
-            test_X_step = np.concatenate((test_X_step[0, 1:, :], new_feature), axis=0)
+        for i in range(np.shape(test_X)[0]):
+            scaled_test_y_pred_step = phased_lstm_model.predict(test_X_step)  # shape = (1, 1)
+            scaled_test_t_step = test_X[i+1][[-1], :-1]  # shape = (1, 1)
+            new_feature = np.concatenate((scaled_test_y_pred_step, scaled_test_t_step), axis=1)  # shape = (1, 2)
+            test_X_step = np.concatenate((test_X[i][1:, :], new_feature), axis=0)  # shape = (window_len, 2)
+            test_X_step = np.expand_dims(test_X_step, axis=0)  # shape = (1, window_len, 2)
+
+            scaled_y_pred_test.append(scaled_test_y_pred_step[0])
 
         scaled_y_pred_test = np.array(scaled_y_pred_test)
         y_pred_test = mag_scaler.inverse_transform(scaled_y_pred_test)
