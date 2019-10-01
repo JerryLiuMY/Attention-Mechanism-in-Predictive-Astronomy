@@ -9,15 +9,9 @@
     "look_back": 50,
     "T_x": 0.5
   },
-  "standard_lstm": {
+  "basic_lstm": {
     "window_len": 10,
-    "epochs": 1000,
-    "batch_size":32,
-    "hidden_dim": 4
-  },
-  "phased_lstm": {
-    "window_len": 10,
-    "epochs": 1000,
+    "epochs": 100,
     "batch_size":32,
     "hidden_dim": 4
   }

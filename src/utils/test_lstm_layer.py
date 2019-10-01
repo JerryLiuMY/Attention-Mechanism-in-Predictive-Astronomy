@@ -5,6 +5,7 @@ from keras.layers import Layer, RNN
 from keras.legacy import interfaces
 import warnings
 
+
 def _timegate_init(shape, dtype=None):
     assert len(shape) == 2
     return K.constant(np.vstack((np.random.uniform(10, 100, shape[1]),
@@ -12,22 +13,7 @@ def _timegate_init(shape, dtype=None):
                                  np.zeros(shape[1]) + 0.05)),
                       dtype=dtype)
 
-def _generate_dropout_mask(ones, rate, training=None, count=1):
-    def dropped_inputs():
-        return K.dropout(ones, rate)
-
-    if count > 1:
-        return [K.in_train_phase(
-            dropped_inputs,
-            ones,
-            training=training) for _ in range(count)]
-    return K.in_train_phase(
-        dropped_inputs,
-        ones,
-        training=training)
-
-
-class PhasedLSTMCell(Layer):
+class LSTMCell(Layer):
     """Cell class for the LSTM layer.
     # Arguments
         units: Positive integer, dimensionality of the output space.
@@ -94,22 +80,22 @@ class PhasedLSTMCell(Layer):
                  kernel_initializer='glorot_uniform',
                  recurrent_initializer='orthogonal',
                  bias_initializer='zeros',
-                 timegate_regularizer=None,
                  unit_forget_bias=True,
-                 timegate_initializer=_timegate_init,
                  kernel_regularizer=None,
                  recurrent_regularizer=None,
                  bias_regularizer=None,
                  kernel_constraint=None,
                  recurrent_constraint=None,
-                 timegate_constraint='non_neg',
                  bias_constraint=None,
                  dropout=0.,
                  recurrent_dropout=0.,
                  implementation=2,
+                 timegate_constraint='non_neg',
+                 timegate_initializer=_timegate_init,
+                 timegate_regularizer=None,
                  alpha=0.001,
                  **kwargs):
-        super(PhasedLSTMCell, self).__init__(**kwargs)
+        super(LSTMCell, self).__init__(**kwargs)
         self.units = units
         self.activation = activations.get(activation)
         self.recurrent_activation = activations.get(recurrent_activation)
@@ -119,30 +105,30 @@ class PhasedLSTMCell(Layer):
         self.recurrent_initializer = initializers.get(recurrent_initializer)
         self.bias_initializer = initializers.get(bias_initializer)
         self.unit_forget_bias = unit_forget_bias
-        self.timegate_initializer = initializers.get(timegate_initializer)
 
         self.kernel_regularizer = regularizers.get(kernel_regularizer)
         self.recurrent_regularizer = regularizers.get(recurrent_regularizer)
         self.bias_regularizer = regularizers.get(bias_regularizer)
-        self.timegate_regularizer = regularizers.get(timegate_regularizer)
 
         self.kernel_constraint = constraints.get(kernel_constraint)
         self.recurrent_constraint = constraints.get(recurrent_constraint)
         self.bias_constraint = constraints.get(bias_constraint)
-        self.timegate_constraint = constraints.get(timegate_constraint)
 
         self.dropout = min(1., max(0., dropout))
         self.recurrent_dropout = min(1., max(0., recurrent_dropout))
         self.implementation = implementation
-        self.alpha = alpha
-
         self.state_size = (self.units, self.units)
         self.output_size = self.units
         self._dropout_mask = None
         self._recurrent_dropout_mask = None
 
+        self.timegate_initializer = initializers.get(timegate_initializer)
+        self.timegate_regularizer = regularizers.get(timegate_regularizer)
+        self.timegate_constraint = constraints.get(timegate_constraint)
+        self.alpha = alpha
+
     def build(self, input_shape):
-        input_dim = input_shape[-1]-1
+        input_dim = input_shape[-1]
 
         if type(self.recurrent_initializer).__name__ == 'Identity':
             def recurrent_identity(shape, gain=1., dtype=None):
@@ -188,8 +174,10 @@ class PhasedLSTMCell(Layer):
         self.kernel_o = self.kernel[:, self.units * 3:]
 
         self.recurrent_kernel_i = self.recurrent_kernel[:, :self.units]
-        self.recurrent_kernel_f = (self.recurrent_kernel[:, self.units: self.units * 2])
-        self.recurrent_kernel_c = (self.recurrent_kernel[:, self.units * 2: self.units * 3])
+        self.recurrent_kernel_f = (
+            self.recurrent_kernel[:, self.units: self.units * 2])
+        self.recurrent_kernel_c = (
+            self.recurrent_kernel[:, self.units * 2: self.units * 3])
         self.recurrent_kernel_o = self.recurrent_kernel[:, self.units * 3:]
 
         if self.use_bias:
@@ -202,43 +190,17 @@ class PhasedLSTMCell(Layer):
             self.bias_f = None
             self.bias_c = None
             self.bias_o = None
-
-        # Time-gate
-        self.timegate_kernel = self.add_weight(shape=(3, self.units),
-                                               name='timegate_kernel',
-                                               initializer=self.timegate_initializer,
-                                               regularizer=self.timegate_regularizer,
-                                               constraint=self.timegate_constraint)
         self.built = True
 
-    def call(self, inputs_t, states, training=None):
-        inputs = inputs_t[:, :-1]  # shape = [batch_size, num_features]
-        t = inputs_t[:, -1:]  # shape = [batch_size, 1]
-
-        period = self.timegate_kernel[0]
-        shift = self.timegate_kernel[1]
-        r_on = self.timegate_kernel[2]
-
-        # modulo operation not implemented in Tensorflow backend, so write explicitly.
-        # shape = [batch_size, self.units]
-        phi = ((t - shift) - (period * ((t - shift) // period))) / period
-
-        # K.switch not consistent between Theano and Tensorflow backend, so write explicitly.
-        # shape = [batch_size, self.units]
-        up = K.cast(K.less_equal(phi, r_on * 0.5), K.floatx()) * 2 * phi / r_on
-        mid = K.cast(K.less_equal(phi, r_on), K.floatx()) * \
-              K.cast(K.greater(phi, r_on * 0.5), K.floatx()) * (2 - (2 * phi / r_on))
-        end = K.cast(K.greater(phi, r_on), K.floatx()) * self.alpha * phi
-        k = up + mid + end
-
+    def call(self, inputs, states, training=None):
         if 0 < self.dropout < 1 and self._dropout_mask is None:
             self._dropout_mask = _generate_dropout_mask(
                 K.ones_like(inputs),
                 self.dropout,
                 training=training,
                 count=4)
-
-        if 0 < self.recurrent_dropout < 1 and self._recurrent_dropout_mask is None:
+        if (0 < self.recurrent_dropout < 1 and
+                self._recurrent_dropout_mask is None):
             self._recurrent_dropout_mask = _generate_dropout_mask(
                 K.ones_like(states[0]),
                 self.recurrent_dropout,
@@ -284,13 +246,14 @@ class PhasedLSTMCell(Layer):
                 h_tm1_f = h_tm1
                 h_tm1_c = h_tm1
                 h_tm1_o = h_tm1
-            i = self.recurrent_activation(x_i + K.dot(h_tm1_i, self.recurrent_kernel_i))
-            f = self.recurrent_activation(x_f + K.dot(h_tm1_f, self.recurrent_kernel_f))
-            # intermediate cell update
-            c_hat = f * c_tm1 + i * self.activation(x_c + K.dot(h_tm1 * rec_dp_mask[2], self.recurrent_kernel_c))
-            # final cell update
-            c = k * c_hat + (1 - k) * c_tm1
-            o = self.recurrent_activation(x_o + K.dot(h_tm1_o, self.recurrent_kernel_o))
+            i = self.recurrent_activation(x_i + K.dot(h_tm1_i,
+                                                      self.recurrent_kernel_i))
+            f = self.recurrent_activation(x_f + K.dot(h_tm1_f,
+                                                      self.recurrent_kernel_f))
+            c = f * c_tm1 + i * self.activation(x_c + K.dot(h_tm1_c,
+                                                            self.recurrent_kernel_c))
+            o = self.recurrent_activation(x_o + K.dot(h_tm1_o,
+                                                      self.recurrent_kernel_o))
         else:
             if 0. < self.dropout < 1.:
                 inputs *= dp_mask[0]
@@ -308,21 +271,13 @@ class PhasedLSTMCell(Layer):
 
             i = self.recurrent_activation(z0)
             f = self.recurrent_activation(z1)
-            # intermediate cell update
-            c_hat = f * c_tm1 + i * self.activation(z2)
-            # final cell update
-            c = k * c_hat + (1 - k) * c_tm1
+            c = f * c_tm1 + i * self.activation(z2)
             o = self.recurrent_activation(z3)
 
-        # intermediate hidden update
-        h_hat = o * self.activation(c_hat)
-        # final hidden update
-        h = k * h_hat + (1 - k) * h_tm1
-
+        h = o * self.activation(c)
         if 0 < self.dropout + self.recurrent_dropout:
             if training is None:
                 h._uses_learning_phase = True
-
         return h, [h, c]
 
     def get_config(self):
@@ -349,10 +304,11 @@ class PhasedLSTMCell(Layer):
                   'dropout': self.dropout,
                   'recurrent_dropout': self.recurrent_dropout,
                   'implementation': self.implementation}
-        base_config = super(PhasedLSTMCell, self).get_config()
+        base_config = super(LSTMCell, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
-class PhasedLSTM(RNN):
+
+class LSTM(RNN):
     """Long Short-Term Memory layer - Hochreiter 1997.
     # Arguments
         units: Positive integer, dimensionality of the output space.
@@ -479,37 +435,36 @@ class PhasedLSTM(RNN):
             dropout = 0.
             recurrent_dropout = 0.
 
-        cell = PhasedLSTMCell(units,
-                              activation=activation,
-                              recurrent_activation=recurrent_activation,
-                              use_bias=use_bias,
-                              kernel_initializer=kernel_initializer,
-                              recurrent_initializer=recurrent_initializer,
-                              unit_forget_bias=unit_forget_bias,
-                              bias_initializer=bias_initializer,
-                              kernel_regularizer=kernel_regularizer,
-                              recurrent_regularizer=recurrent_regularizer,
-                              bias_regularizer=bias_regularizer,
-                              kernel_constraint=kernel_constraint,
-                              recurrent_constraint=recurrent_constraint,
-                              bias_constraint=bias_constraint,
-                              dropout=dropout,
-                              recurrent_dropout=recurrent_dropout,
-                              implementation=implementation)
-
-        super(PhasedLSTM, self).__init__(cell,
-                                         return_sequences=return_sequences,
-                                         return_state=return_state,
-                                         go_backwards=go_backwards,
-                                         stateful=stateful,
-                                         unroll=unroll,
-                                         **kwargs)
+        cell = LSTMCell(units,
+                        activation=activation,
+                        recurrent_activation=recurrent_activation,
+                        use_bias=use_bias,
+                        kernel_initializer=kernel_initializer,
+                        recurrent_initializer=recurrent_initializer,
+                        unit_forget_bias=unit_forget_bias,
+                        bias_initializer=bias_initializer,
+                        kernel_regularizer=kernel_regularizer,
+                        recurrent_regularizer=recurrent_regularizer,
+                        bias_regularizer=bias_regularizer,
+                        kernel_constraint=kernel_constraint,
+                        recurrent_constraint=recurrent_constraint,
+                        bias_constraint=bias_constraint,
+                        dropout=dropout,
+                        recurrent_dropout=recurrent_dropout,
+                        implementation=implementation)
+        super(LSTM, self).__init__(cell,
+                                   return_sequences=return_sequences,
+                                   return_state=return_state,
+                                   go_backwards=go_backwards,
+                                   stateful=stateful,
+                                   unroll=unroll,
+                                   **kwargs)
         self.activity_regularizer = regularizers.get(activity_regularizer)
 
     def call(self, inputs, mask=None, training=None, initial_state=None):
         self.cell._dropout_mask = None
         self.cell._recurrent_dropout_mask = None
-        return super(PhasedLSTM, self).call(inputs,
+        return super(LSTM, self).call(inputs,
                                       mask=mask,
                                       training=training,
                                       initial_state=initial_state)
@@ -608,7 +563,7 @@ class PhasedLSTM(RNN):
                   'dropout': self.dropout,
                   'recurrent_dropout': self.recurrent_dropout,
                   'implementation': self.implementation}
-        base_config = super(PhasedLSTM, self).get_config()
+        base_config = super(LSTM, self).get_config()
         del base_config['cell']
         return dict(list(base_config.items()) + list(config.items()))
 
@@ -617,3 +572,56 @@ class PhasedLSTM(RNN):
         if 'implementation' in config and config['implementation'] == 0:
             config['implementation'] = 1
         return cls(**config)
+
+
+def _generate_dropout_mask(ones, rate, training=None, count=1):
+    def dropped_inputs():
+        return K.dropout(ones, rate)
+
+    if count > 1:
+        return [K.in_train_phase(
+            dropped_inputs,
+            ones,
+            training=training) for _ in range(count)]
+    return K.in_train_phase(
+        dropped_inputs,
+        ones,
+        training=training)
+
+
+def _standardize_args(inputs, initial_state, constants, num_constants):
+    """Standardize `__call__` to a single list of tensor inputs.
+    When running a model loaded from file, the input tensors
+    `initial_state` and `constants` can be passed to `RNN.__call__` as part
+    of `inputs` instead of by the dedicated keyword arguments. This method
+    makes sure the arguments are separated and that `initial_state` and
+    `constants` are lists of tensors (or None).
+    # Arguments
+        inputs: tensor or list/tuple of tensors
+        initial_state: tensor or list of tensors or None
+        constants: tensor or list of tensors or None
+    # Returns
+        inputs: tensor
+        initial_state: list of tensors or None
+        constants: list of tensors or None
+    """
+    if isinstance(inputs, list):
+        assert initial_state is None and constants is None
+        if num_constants is not None:
+            constants = inputs[-num_constants:]
+            inputs = inputs[:-num_constants]
+        if len(inputs) > 1:
+            initial_state = inputs[1:]
+        inputs = inputs[0]
+
+    def to_list_or_none(x):
+        if x is None or isinstance(x, list):
+            return x
+        if isinstance(x, tuple):
+            return list(x)
+        return [x]
+
+    initial_state = to_list_or_none(initial_state)
+    constants = to_list_or_none(constants)
+
+    return inputs, initial_state, constants

@@ -4,11 +4,10 @@ import json
 import pickle
 import joblib
 from global_setting import DATA_FOLDER
-from global_setting import raw_data_path, basic_data_path, standard_lstm_data_path, phased_lstm_data_path
+from global_setting import raw_data_path, basic_data_path, basic_lstm_data_path
 from utils.data_processor import BasicDataProcessor, LSTMDataProcessor
-from model.standard_lstm import StandardLSTM
-from model.phased_lstm import PhasedLSTM
-np.random.seed(1)
+from model.basic_lstm import BasicLSTM
+from model.test_lstm import TestLSTM
 
 
 class MainPipeline:
@@ -22,8 +21,7 @@ class MainPipeline:
         # Data Path
         self.raw_data_path = raw_data_path
         self.basic_data_path = basic_data_path
-        self.standard_lstm_data_path = standard_lstm_data_path
-        self.phased_lstm_data_path = phased_lstm_data_path
+        self.basic_lstm_data_path = basic_lstm_data_path
 
         # Basic Data Name
         self.basic_data_name = str(self.crts_id) + '.pkl'
@@ -33,19 +31,13 @@ class MainPipeline:
         self.mag_scaler_name = str(self.crts_id) + '_mag_scaler' + '.pkl'
         self.rescaled_delta_t_name = str(self.crts_id) + '_rescaled_delta_t' + '.pkl'
         self.delta_t_scaler_name = str(self.crts_id) + '_delta_t_scaler' + '.pkl'
-
-        standard_lstm_window_len = self.model_config['phased_lstm']['window_len']
-        self.standard_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(standard_lstm_window_len) + '.plk'
-
-        phased_lstm_window_len = self.model_config['phased_lstm']['window_len']
-        self.phased_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(phased_lstm_window_len) + '.plk'
+        self.standard_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(self.basic_lstm_window_len) + '.plk'
 
     # ----------------------------------- Load Configuration -----------------------------------
     def laod_config(self):
         self.data_config = json.load(open('./config/data_config.json'))
         self.model_config = json.load(open('./config/model_config.json'))
-        self.standard_lstm_window_len = self.model_config["standard_lstm"]["window_len"]
-        self.phased_lstm_window_len = self.model_config["phased_lstm"]["window_len"]
+        self.basic_lstm_window_len = self.model_config["basic_lstm"]["window_len"]
 
     def load_crts_list(self):
         crts_list = []
@@ -65,8 +57,7 @@ class MainPipeline:
             lstm_data_processor = LSTMDataProcessor(crts_id)
             lstm_data_processor.prepare_rescale_mag()
             lstm_data_processor.prepare_rescale_delta_t()
-            lstm_data_processor.prepare_standard_lstm_data()
-            lstm_data_processor.prepare_phased_lstm_data()
+            lstm_data_processor.prepare_basic_lstm_data()
 
     def prepare_individual_data(self):
         # Basic Data
@@ -77,8 +68,7 @@ class MainPipeline:
         lstm_data_processor = LSTMDataProcessor(self.crts_id)
         lstm_data_processor.prepare_rescale_mag()
         lstm_data_processor.prepare_rescale_delta_t()
-        lstm_data_processor.prepare_standard_lstm_data()
-        lstm_data_processor.prepare_phased_lstm_data()
+        lstm_data_processor.prepare_basic_lstm_data()
 
     def load_individual_data(self):
         # Individual data
@@ -96,13 +86,12 @@ class MainPipeline:
         self.t_list_test = data_dict['t_list_test']
 
     # ----------------------------------- Run Single Model -----------------------------------
-    def run_standard_lstm(self):
-        standard_lstm = StandardLSTM(self.crts_id)
+    def run_standard_lstm(self, implementation='multi'):
+        standard_lstm = BasicLSTM(self.crts_id, phased=False)
         standard_lstm.build_model()
 
-        mag_scaler = joblib.load(self.standard_lstm_data_path, str(self.crts_id) + '_mag_scaler' + '.pkl')
-        X_y_file_name = str(self.crts_id) + 'X_y' + '_window_len_' + str(self.standard_lstm_window_len) + '.plk'
-        with open(os.path.join(self.standard_lstm_data_path, X_y_file_name), 'wb') as handle:
+        mag_scaler = joblib.load(os.path.join(self.basic_lstm_data_path, self.mag_scaler_name))
+        with open(os.path.join(self.basic_lstm_data_path, self.standard_X_y_name), 'rb') as handle:
             X_y_data_dict = pickle.load(handle)
             train_X = X_y_data_dict['train_X']
             train_y = X_y_data_dict['train_y']
@@ -112,18 +101,21 @@ class MainPipeline:
             test_y = X_y_data_dict['test_y']
 
         standard_lstm.fit_model(train_X, train_y, cross_X, cross_y, test_X, test_y)
-        # y_inter, cross_y_pred, test_y_pred = standard_lstm.one_step_prediction(self, train_X, cross_X, test_X, mag_scaler)
-        y_inter, cross_y_pred, test_y_pred = standard_lstm.multiple_step_prediction(train_X, cross_X, test_X, mag_scaler)
+        if implementation == 'multi':
+            y_inter, cross_y_pred, test_y_pred = standard_lstm.multiple_step_prediction(train_X, cross_X, test_X, mag_scaler)
+        else:
+            y_inter, cross_y_pred, test_y_pred = standard_lstm.one_step_prediction(train_X, cross_X, test_X, mag_scaler)
+
         standard_lstm.plot_prediction(self.mag_list_train, self.mag_list_cross, self.mag_list_test, self.t_list_cross,
                                       self.t_list_train, self.t_list_test, self.magerr_list_train,
                                       self.magerr_list_cross, self.magerr_list_test, y_inter, cross_y_pred, test_y_pred)
 
-    def run_phased_lstm(self):
-        phased_lstm = PhasedLSTM(self.crts_id)
+    def run_phased_lstm(self, implementation='multi'):
+        phased_lstm = BasicLSTM(self.crts_id, phased=True)
         phased_lstm.build_model()
 
-        # mag_scaler = joblib.load(self.standard_lstm_data_path, str(self.crts_id) + '_mag_scaler' + '.pkl')
-        with open(os.path.join(self.phased_lstm_data_path, self.phased_X_y_name), 'rb') as handle:
+        mag_scaler = joblib.load(os.path.join(self.basic_lstm_data_path, self.mag_scaler_name))
+        with open(os.path.join(self.basic_lstm_data_path, self.standard_X_y_name), 'rb') as handle:
             X_y_data_dict = pickle.load(handle)
             train_X = X_y_data_dict['train_X']
             train_y = X_y_data_dict['train_y']
@@ -133,14 +125,38 @@ class MainPipeline:
             test_y = X_y_data_dict['test_y']
 
         phased_lstm.fit_model(train_X, train_y, cross_X, cross_y, test_X, test_y)
-        y_inter, cross_y_pred, test_y_pred = phased_lstm.one_step_prediction(self, train_X, cross_X, test_X, mag_scaler)
-        # y_inter, cross_y_pred, test_y_pred = standard_lstm.multiple_step_prediction(train_X, cross_X, test_X,
-        #                                                                             scaled_delta_t_list_cross,
-        #                                                                             scaled_delta_t_list_test,
-        #                                                                             mag_scaler)
-        # standard_lstm.plot_prediction(self.mag_list_train, self.mag_list_cross, self.mag_list_test, self.t_list_cross,
-        #                               self.t_list_train, self.t_list_test, self.magerr_list_train,
-        #                               self.magerr_list_cross, self.magerr_list_test, y_inter, cross_y_pred, test_y_pred)
+        if implementation == 'multi':
+            y_inter, cross_y_pred, test_y_pred = phased_lstm.multiple_step_prediction(train_X, cross_X, test_X, mag_scaler)
+        else:
+            y_inter, cross_y_pred, test_y_pred = phased_lstm.one_step_prediction(train_X, cross_X, test_X, mag_scaler)
+
+        phased_lstm.plot_prediction(self.mag_list_train, self.mag_list_cross, self.mag_list_test, self.t_list_cross,
+                                    self.t_list_train, self.t_list_test, self.magerr_list_train,
+                                    self.magerr_list_cross, self.magerr_list_test, y_inter, cross_y_pred, test_y_pred)
+
+    def run_test_lstm(self, implementation='multi'):
+        phased_lstm = TestLSTM(self.crts_id, phased=True)
+        phased_lstm.build_model()
+
+        mag_scaler = joblib.load(os.path.join(self.basic_lstm_data_path, self.mag_scaler_name))
+        with open(os.path.join(self.basic_lstm_data_path, self.standard_X_y_name), 'rb') as handle:
+            X_y_data_dict = pickle.load(handle)
+            train_X = X_y_data_dict['train_X']
+            train_y = X_y_data_dict['train_y']
+            cross_X = X_y_data_dict['cross_X']
+            cross_y = X_y_data_dict['cross_y']
+            test_X = X_y_data_dict['test_X']
+            test_y = X_y_data_dict['test_y']
+
+        phased_lstm.fit_model(train_X, train_y, cross_X, cross_y, test_X, test_y)
+        if implementation == 'multi':
+            y_inter, cross_y_pred, test_y_pred = phased_lstm.multiple_step_prediction(train_X, cross_X, test_X, mag_scaler)
+        else:
+            y_inter, cross_y_pred, test_y_pred = phased_lstm.one_step_prediction(train_X, cross_X, test_X, mag_scaler)
+
+        phased_lstm.plot_prediction(self.mag_list_train, self.mag_list_cross, self.mag_list_test, self.t_list_cross,
+                                    self.t_list_train, self.t_list_test, self.magerr_list_train,
+                                    self.magerr_list_cross, self.magerr_list_test, y_inter, cross_y_pred, test_y_pred)
 
     # ----------------------------------- Run Hybrid Model -----------------------------------
 

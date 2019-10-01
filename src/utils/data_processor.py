@@ -5,8 +5,7 @@ import os
 import json
 import joblib
 import pickle
-from global_setting import DATA_FOLDER
-from global_setting import raw_data_path, basic_data_path, standard_lstm_data_path, phased_lstm_data_path
+from global_setting import raw_data_path, basic_data_path, basic_lstm_data_path
 from sklearn.preprocessing import MinMaxScaler
 np.random.seed(1)
 
@@ -22,7 +21,6 @@ class BasicDataProcessor:
         # Data Path
         self.raw_data_path = raw_data_path
         self.basic_data_path = basic_data_path
-        self.standard_lstm_data_path = standard_lstm_data_path
 
         # Data Name
         self.basic_data_name = str(self.crts_id) + '.pkl'
@@ -123,8 +121,7 @@ class LSTMDataProcessor:
         # Data Paths
         self.raw_data_path = raw_data_path
         self.basic_data_path = basic_data_path
-        self.standard_lstm_data_path = standard_lstm_data_path
-        self.phased_lstm_data_path = phased_lstm_data_path
+        self.basic_lstm_data_path = basic_lstm_data_path
 
         # Basic Data Name
         self.basic_data_name = str(self.crts_id) + '.pkl'
@@ -135,11 +132,8 @@ class LSTMDataProcessor:
         self.rescaled_delta_t_name = str(self.crts_id) + '_rescaled_delta_t' + '.pkl'
         self.delta_t_scaler_name = str(self.crts_id) + '_delta_t_scaler' + '.pkl'
 
-        standard_lstm_window_len = self.model_config['phased_lstm']['window_len']
-        self.standard_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(standard_lstm_window_len) + '.plk'
-
-        phased_lstm_window_len = self.model_config['phased_lstm']['window_len']
-        self.phased_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(phased_lstm_window_len) + '.plk'
+        basic_lstm_window_len = self.model_config['basic_lstm']['window_len']
+        self.basic_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(basic_lstm_window_len) + '.plk'
 
         # self.prepare_rescale_mag()
         # input: shape(mag_list_train) = (num_train_data, )
@@ -214,16 +208,11 @@ class LSTMDataProcessor:
                                 'scaled_mag_list_test': scaled_mag_list_test}
 
         # Save Scaled Data
-        with open(os.path.join(self.standard_lstm_data_path, self.rescaled_mag_name), 'wb') as handle:
-            pickle.dump(scaled_mag_data_dict, handle)
-        with open(os.path.join(self.phased_lstm_data_path, self.rescaled_mag_name), 'wb') as handle:
+        with open(os.path.join(self.basic_lstm_data_path, self.rescaled_mag_name), 'wb') as handle:
             pickle.dump(scaled_mag_data_dict, handle)
 
         # Save Scaler
-
-        with open(os.path.join(self.standard_lstm_data_path, self.mag_scaler_name), 'wb') as handle:
-            joblib.dump(mag_scaler, handle)
-        with open(os.path.join(self.phased_lstm_data_path, self.mag_scaler_name), 'wb') as handle:
+        with open(os.path.join(self.basic_lstm_data_path, self.mag_scaler_name), 'wb') as handle:
             joblib.dump(mag_scaler, handle)
 
         # print(np.shape(data_dict['mag_list_train'][1:]),
@@ -258,15 +247,11 @@ class LSTMDataProcessor:
                                     'scaled_delta_t_list_test': scaled_delta_t_list_test}
 
         # Save Scaled Data
-        with open(os.path.join(self.standard_lstm_data_path, self.rescaled_delta_t_name), 'wb') as handle:
-            pickle.dump(scaled_delta_t_data_dict, handle)
-        with open(os.path.join(self.phased_lstm_data_path, self.rescaled_delta_t_name), 'wb') as handle:
+        with open(os.path.join(self.basic_lstm_data_path, self.rescaled_delta_t_name), 'wb') as handle:
             pickle.dump(scaled_delta_t_data_dict, handle)
 
         # Save Scaler
-        with open(os.path.join(self.standard_lstm_data_path, self.delta_t_scaler_name), 'wb') as handle:
-            joblib.dump(delta_t_scaler, handle)
-        with open(os.path.join(self.phased_lstm_data_path, self.delta_t_scaler_name), 'wb') as handle:
+        with open(os.path.join(self.basic_lstm_data_path, self.delta_t_scaler_name), 'wb') as handle:
             joblib.dump(delta_t_scaler, handle)
 
         # print(np.shape(self.delta_list(data_dict['t_list_train'])),
@@ -295,21 +280,21 @@ class LSTMDataProcessor:
 
         return X, y
 
-    def prepare_standard_lstm_data(self):
+    def prepare_basic_lstm_data(self):
         # Load Scaled Data
-        with open(os.path.join(self.standard_lstm_data_path, self.rescaled_mag_name), 'rb') as handle:
+        with open(os.path.join(self.basic_lstm_data_path, self.rescaled_mag_name), 'rb') as handle:
             scaled_mag_data_dict = pickle.load(handle)
             scaled_mag_list_train = scaled_mag_data_dict['scaled_mag_list_train']
             scaled_mag_list_cross = scaled_mag_data_dict['scaled_mag_list_cross']
             scaled_mag_list_test = scaled_mag_data_dict['scaled_mag_list_test']
 
-        with open(os.path.join(self.standard_lstm_data_path, self.rescaled_delta_t_name), 'rb') as handle:
+        with open(os.path.join(self.basic_lstm_data_path, self.rescaled_delta_t_name), 'rb') as handle:
             scaled_delta_t_data_dict = pickle.load(handle)
             scaled_delta_t_list_train = scaled_delta_t_data_dict['scaled_delta_t_list_train']
             scaled_delta_t_list_cross = scaled_delta_t_data_dict['scaled_delta_t_list_cross']
             scaled_delta_t_list_test = scaled_delta_t_data_dict['scaled_delta_t_list_test']
 
-        window_len = self.model_config['standard_lstm']['window_len']
+        window_len = self.model_config['basic_lstm']['window_len']
         X_train, y_train = self.create_X_y(scaled_mag_list_train, scaled_delta_t_list_train, window_len)
         X_cross, y_cross = self.create_X_y(scaled_mag_list_cross, scaled_delta_t_list_cross, window_len)
         X_test, y_test = self.create_X_y(scaled_mag_list_test, scaled_delta_t_list_test, window_len)
@@ -318,42 +303,12 @@ class LSTMDataProcessor:
                          'test_X': X_test, 'test_y': y_test}
 
         # Save X, y Data
-        with open(os.path.join(self.standard_lstm_data_path, self.standard_X_y_name), 'wb') as handle:
+        with open(os.path.join(self.basic_lstm_data_path, self.basic_X_y_name), 'wb') as handle:
             pickle.dump(X_y_data_dict, handle)
 
         # print(np.shape(X_train), np.shape(y_train))
         # print(np.shape(X_cross), np.shape(y_cross))
-        # print(np.shape(X_test), np.shape(y_test))
-
-    def prepare_phased_lstm_data(self):
-        # Load Scaled Data
-        with open(os.path.join(self.phased_lstm_data_path, self.rescaled_mag_name), 'rb') as handle:
-            scaled_mag_data_dict = pickle.load(handle)
-            scaled_mag_list_train = scaled_mag_data_dict['scaled_mag_list_train']
-            scaled_mag_list_cross = scaled_mag_data_dict['scaled_mag_list_cross']
-            scaled_mag_list_test = scaled_mag_data_dict['scaled_mag_list_test']
-
-        with open(os.path.join(self.phased_lstm_data_path, self.rescaled_delta_t_name), 'rb') as handle:
-            scaled_delta_t_data_dict = pickle.load(handle)
-            scaled_delta_t_list_train = scaled_delta_t_data_dict['scaled_delta_t_list_train']
-            scaled_delta_t_list_cross = scaled_delta_t_data_dict['scaled_delta_t_list_cross']
-            scaled_delta_t_list_test = scaled_delta_t_data_dict['scaled_delta_t_list_test']
-
-        window_len = self.model_config['phased_lstm']['window_len']
-        X_train, y_train = self.create_X_y(scaled_mag_list_train, scaled_delta_t_list_train, window_len)
-        X_cross, y_cross = self.create_X_y(scaled_mag_list_cross, scaled_delta_t_list_cross, window_len)
-        X_test, y_test = self.create_X_y(scaled_mag_list_test, scaled_delta_t_list_test, window_len)
-
-        X_y_data_dict = {'train_X': X_train, 'train_y': y_train, 'cross_X': X_cross, 'cross_y': y_cross,
-                         'test_X': X_test, 'test_y': y_test}
-
-        # Save X, y Data
-        with open(os.path.join(self.phased_lstm_data_path, self.phased_X_y_name), 'wb') as handle:
-            pickle.dump(X_y_data_dict, handle)
-
-        # print(np.shape(X_train), np.shape(y_train))
-        # print(np.shape(X_cross), np.shape(y_cross))
-        # print(np.shape(X_test), np.shape(y_test))
+        # print(np.shape(X_test), np.shape(y_test)
 
 if __name__ == 'main':
     basic_data_processor = BasicDataProcessor(1001115026824)
@@ -362,5 +317,4 @@ if __name__ == 'main':
     lstm_data_processor = LSTMDataProcessor(1001115026824)
     lstm_data_processor.prepare_rescale_mag()
     lstm_data_processor.prepare_rescale_delta_t()
-    lstm_data_processor.prepare_standard_lstm_data()
-    lstm_data_processor.prepare_phased_lstm_data()
+    lstm_data_processor.prepare_basic_lstm_data()
