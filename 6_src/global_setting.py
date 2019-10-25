@@ -32,3 +32,12 @@ phased_lstm_model_folder = os.path.join(DATA_FOLDER, 'model', 'phased_lstm')
 data_config = json.load(open('./config/data_config.json'))
 model_config = json.load(open('./config/model_config.json'))
 
+
+# ----------------------------------- Models -----------------------------------
+# CARIMA Process / OU Process
+# Gaussian Process
+# Standard LSTM
+# Bayssian / MC Standard LSTM
+# Attention Standard LSTM
+# Phased LSTM
+# Attention Phased LSTM

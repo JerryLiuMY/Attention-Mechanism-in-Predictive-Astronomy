@@ -2,19 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/misc/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/misc/mc_dnn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/AGNs/ARE THE VARIATIONS IN QUASAR OPTICAL FLUX DRIVEN BY THERMAL FLUCTUATIONS?.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/AGNs/ARE THE VARIATIONS IN QUASAR OPTICAL FLUX DRIVEN BY THERMAL FLUCTUATIONS?.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/AGNs/IS QUASAR OPTICAL VARIABILITY A DAMPED RANDOM WALK?.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/papers/AGNs/IS QUASAR OPTICAL VARIABILITY A DAMPED RANDOM WALK?.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/FIRST RESULTS FROM THE CATALINA REAL-TIME TRANSIENT SURVEY.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/FLEXIBLE AND SCALABLE METHODS FOR QUANTIFYING STOCHASTIC VARIABILITY IN THE ERA OF MASSIVE TIME-DOMAIN ASTRONOMICAL DATA SETS.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/Light-curve classification in massive variability surveys.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/Mid-Infrared Variability Of Changing-Look Agns.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/The Catalina Real-Time Transient Survey (CRTS).pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/The Catalina Real-time Transient Survey.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/The analysis of indexed astronomical time series.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/Understanding extreme quasar optical variability with CRTS - Changing-state quasars.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/papers/astronomy/Understanding extreme quasar optical variability with CRTS - Major AGN ares.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/astronomy/Transient Astronomical Event.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/note/Time-Series Forecasting Methods.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/papers/time_series_analysis/Predictive Mining of Time Series Data in Astronom.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/data_test-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/standard_lstm_test-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/model_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/model_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_test.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/global_setting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/global_setting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/basic_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/3_basic_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/carma.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/1_carma.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/gp.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/2_gp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/mc_dnn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/standard_lstm_test.ipynb" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,11 +29,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/global_setting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="28" column="24" selection-start-line="28" selection-end-line="28" selection-end-column="24" />
+            <state relative-caret-position="585">
+              <caret line="39" column="16" selection-start-line="39" selection-start-column="16" selection-end-line="39" selection-end-column="16" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -51,11 +53,32 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/model/basic_lstm.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/config/model_config.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="786">
-              <caret line="81" column="109" selection-start-line="81" selection-start-column="109" selection-end-line="81" selection-end-column="109" />
+            <state relative-caret-position="330">
+              <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/misc/mc_dnn.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="981">
+              <caret line="80" column="37" selection-start-line="80" selection-start-column="37" selection-end-line="80" selection-end-column="37" />
+              <folding>
+                <element signature="e#105#153#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/utils/phased_lstm_layer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1125">
+              <caret line="75" column="21" selection-start-line="75" selection-start-column="18" selection-end-line="75" selection-end-column="21" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -64,22 +87,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/model/test_lstm.py">
+        <entry file="file://$PROJECT_DIR$/src/model/3_basic_lstm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/test_lstm_layer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1305">
-              <caret line="92" selection-start-line="92" selection-end-line="95" selection-end-column="29" />
+            <state relative-caret-position="400">
+              <caret line="31" column="26" lean-forward="true" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -98,14 +109,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.standard_lstm_data_path, str(self.crts_id) + '_mag_scaler' + '.pkl'</find>
-      <find>self.model_path</find>
-      <find>y_pred_cross</find>
-      <find>scaled_mag_list</find>
-      <find>phased</find>
-      <find>standard_lstm_model_path</find>
-      <find>self.standard_lstm_window_len</find>
-      <find>standard_X_y_name</find>
       <find>self.basic_lstm_data_path</find>
       <find>X_y_name</find>
       <find>standard_lstm_data_path</find>
@@ -128,6 +131,14 @@
       <find>loa</find>
       <find>save</find>
       <find>load</find>
+      <find>reg</find>
+      <find>build_model</find>
+      <find>get_default_graph</find>
+      <find>N</find>
+      <find>build_dnn_model</find>
+      <find>tau</find>
+      <find>y_test</find>
+      <find>PHASED</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -154,21 +165,22 @@
         <option value="$PROJECT_DIR$/src/model/mc_lstm.py" />
         <option value="$PROJECT_DIR$/src/model/bayssian_lstm.py" />
         <option value="$PROJECT_DIR$/src/evaluation/aka.py" />
-        <option value="$PROJECT_DIR$/src/model/mc_dnn.py" />
         <option value="$PROJECT_DIR$/src/config/data_config.json" />
         <option value="$PROJECT_DIR$/src/model/gp.py" />
         <option value="$PROJECT_DIR$/src/utils/recurrent_layer.py" />
         <option value="$PROJECT_DIR$/src/model/standard_lstm.py" />
         <option value="$PROJECT_DIR$/src/model/phased_lstm.py" />
-        <option value="$PROJECT_DIR$/src/config/model_config.json" />
         <option value="$PROJECT_DIR$/src/utils/data_processor.py" />
-        <option value="$PROJECT_DIR$/src/global_setting.py" />
         <option value="$PROJECT_DIR$/src/main_pipeline.py" />
         <option value="$PROJECT_DIR$/src/utils/right_lstm_layer.py" />
         <option value="$PROJECT_DIR$/src/utils/phased_lstm_layer.py" />
         <option value="$PROJECT_DIR$/src/utils/test_lstm_layer.py" />
         <option value="$PROJECT_DIR$/src/model/test_lstm.py" />
         <option value="$PROJECT_DIR$/src/model/basic_lstm.py" />
+        <option value="$PROJECT_DIR$/src/model/mc_dnn.py" />
+        <option value="$PROJECT_DIR$/src/config/model_config.json" />
+        <option value="$PROJECT_DIR$/src/misc/mc_dnn.py" />
+        <option value="$PROJECT_DIR$/src/global_setting.py" />
       </list>
     </option>
   </component>
@@ -181,7 +193,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -210,6 +221,12 @@
               <item name="Attention-Mechanism-in-Predictive-Astronomy" type="b2602c69:ProjectViewProjectNode" />
               <item name="Attention-Mechanism-in-Predictive-Astronomy" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="misc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Attention-Mechanism-in-Predictive-Astronomy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Attention-Mechanism-in-Predictive-Astronomy" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="model" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -222,6 +239,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -281,16 +299,6 @@
     <entry file="file://$PROJECT_DIR$/src/gobal_setting.py" />
     <entry file="file://$PROJECT_DIR$/src/config/config.json" />
     <entry file="file://$PROJECT_DIR$/src/config/data_config.py" />
-    <entry file="file://$PROJECT_DIR$/src/model/attention.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Load Data.ipynb" />
     <entry file="file://$PROJECT_DIR$/src/utils/visualization.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -320,21 +328,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/bayssian_lstm.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/evaluation/aka.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/mc_dnn.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="65" column="80" selection-start-line="65" selection-start-column="80" selection-end-line="65" selection-end-column="80" />
-          <folding>
-            <element signature="e#105#123#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/keras/layers/recurrent.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -343,7 +338,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/gp.py">
+    <entry file="file://$PROJECT_DIR$/src/model/2_gp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="96">
           <caret line="17" column="43" selection-start-line="17" selection-start-column="43" selection-end-line="17" selection-end-column="43" />
@@ -353,7 +348,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/carma.py">
+    <entry file="file://$PROJECT_DIR$/src/model/1_carma.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="521">
           <caret line="38" column="24" lean-forward="true" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
@@ -363,9 +358,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/mc_lstm.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main_pipeline.ipynb">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -374,13 +366,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="4" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/model_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="3" selection-start-line="16" selection-start-column="3" selection-end-line="16" selection-end-column="3" />
         </state>
       </provider>
     </entry>
@@ -395,36 +380,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/utils/recurrent_layer.py" />
-    <entry file="file://$PROJECT_DIR$/src/utils/right_lstm_layer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3057">
-          <caret line="290" column="32" selection-start-line="290" selection-start-column="28" selection-end-line="290" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/phased_lstm_layer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="75" column="21" selection-start-line="75" selection-start-column="18" selection-end-line="75" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/global_setting.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="28" column="24" selection-start-line="28" selection-end-line="28" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/mc_dnn.py" />
     <entry file="file://$PROJECT_DIR$/src/main_pipeline.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2145">
@@ -435,9 +391,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/config/model_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/model/test_lstm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
+        <state relative-caret-position="150">
           <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -447,20 +410,76 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/utils/test_lstm_layer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1305">
-          <caret line="92" selection-start-line="92" selection-end-line="95" selection-end-column="29" />
+        <state relative-caret-position="1440">
+          <caret line="96" column="27" lean-forward="true" selection-start-line="96" selection-start-column="27" selection-end-line="96" selection-end-column="27" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/model/basic_lstm.py">
+    <entry file="file://$PROJECT_DIR$/src/model/mc_lstm.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/right_lstm_layer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="786">
-          <caret line="81" column="109" selection-start-line="81" selection-start-column="109" selection-end-line="81" selection-end-column="109" />
+        <state relative-caret-position="4350">
+          <caret line="290" column="32" selection-start-line="290" selection-start-column="28" selection-end-line="290" selection-end-column="32" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/bayssian_lstm.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/phased_lstm_layer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1125">
+          <caret line="75" column="21" selection-start-line="75" selection-start-column="18" selection-end-line="75" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/attention.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-567">
+          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/misc/mc_dnn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="981">
+          <caret line="80" column="37" selection-start-line="80" selection-start-column="37" selection-end-line="80" selection-end-column="37" />
+          <folding>
+            <element signature="e#105#153#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/3_basic_lstm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="31" column="26" lean-forward="true" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/global_setting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="39" column="16" selection-start-line="39" selection-start-column="16" selection-end-line="39" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>

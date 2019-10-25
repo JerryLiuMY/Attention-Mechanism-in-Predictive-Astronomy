@@ -14,5 +14,15 @@
     "epochs": 100,
     "batch_size":32,
     "hidden_dim": 4
+  },
+  "dnn": {
+    "n_layers": 5,
+    "n_units": 800,
+    "dropout": 0.05,
+    "tau": 0.75,
+    "epochs": 5120,
+    "walkers": 500,
+    "batch_size": 128,
+    "lengthscale": 1e-2
   }
 }
