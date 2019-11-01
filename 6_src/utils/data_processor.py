@@ -5,7 +5,7 @@ import os
 import json
 import joblib
 import pickle
-from global_setting import raw_data_path, basic_data_path, basic_lstm_data_path
+from global_setting import raw_data_folder, basic_data_folder, carma_data_folder, vanilla_lstm_data_folder
 from sklearn.preprocessing import MinMaxScaler
 np.random.seed(1)
 
@@ -16,11 +16,11 @@ class BasicDataProcessor:
         self.crts_id = crts_id
 
         # Configuration
-        self.load_config()
+        self.load_data_config()
 
         # Data Path
-        self.raw_data_path = raw_data_path
-        self.basic_data_path = basic_data_path
+        self.raw_data_folder = raw_data_folder
+        self.basic_data_folder = basic_data_folder
 
         # Data Name
         self.basic_data_name = str(self.crts_id) + '.pkl'
@@ -33,7 +33,7 @@ class BasicDataProcessor:
         # output: shape(mag_cross_train) = (num_cross_data, )
         # output: shape(mag_test_train) = (num_test_data, )
 
-    def load_config(self):
+    def load_data_config(self):
         self.data_config = json.load(open('./config/data_config.json'))
         self.train_percent = self.data_config['data_loader']['train_partition']
         self.cross_percent = self.data_config['data_loader']['cross_partition']
@@ -51,7 +51,7 @@ class BasicDataProcessor:
         return index_train, index_cross, index_test
 
     def prepare_basic_data(self):
-        with open(os.path.join(self.raw_data_path, str(self.crts_id) + '.csv')) as handle:
+        with open(os.path.join(self.raw_data_folder, str(self.crts_id) + '.csv')) as handle:
             content = pd.read_csv(handle)
             mag_list_ = np.array(content['Mag'])
             magerr_list_ = np.array(content['Magerr'])
@@ -86,18 +86,8 @@ class BasicDataProcessor:
                      't_list_cross': t_list_cross,
                      't_list_test': t_list_test}
 
-        with open(os.path.join(self.basic_data_path, self.basic_data_name), 'wb') as handle:
-            pickle.dump(data_dict, handle)
-
-class CarmaDataProcessor:
-    def __init__(self):
-        # Dimensions
-        # inputs: basic data
-        # output: t_shape = (num_steps, )
-        # output: y_shape = (num_steps, )
-        # output: yerr_shape = (num_steps, )
-        pass
-    pass
+        with open(os.path.join(self.basic_data_folder, self.basic_data_name), 'wb') as handle:
+            pickle.dump(data_dict, handle, protocol=2)
 
 class GPDataProcessor:
     def __init__(self):
@@ -118,22 +108,22 @@ class LSTMDataProcessor:
         # Configuration
         self.load_config()
 
-        # Data Paths
-        self.raw_data_path = raw_data_path
-        self.basic_data_path = basic_data_path
-        self.basic_lstm_data_path = basic_lstm_data_path
+        # Data Folder
+        self.raw_data_folder = raw_data_folder
+        self.basic_data_folder = basic_data_folder
+        self.vanilla_lstm_data_folder = vanilla_lstm_data_folder
 
         # Basic Data Name
         self.basic_data_name = str(self.crts_id) + '.pkl'
 
-        # LSTM Data Name
+        # Vanilla LSTM Data Name
         self.rescaled_mag_name = str(self.crts_id) + '_rescaled_mag' + '.pkl'
         self.mag_scaler_name = str(self.crts_id) + '_mag_scaler' + '.pkl'
         self.rescaled_delta_t_name = str(self.crts_id) + '_rescaled_delta_t' + '.pkl'
         self.delta_t_scaler_name = str(self.crts_id) + '_delta_t_scaler' + '.pkl'
 
-        basic_lstm_window_len = self.model_config['basic_lstm']['window_len']
-        self.basic_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(basic_lstm_window_len) + '.plk'
+        vanilla_lstm_window_len = self.model_config['vanilla_lstm']['window_len']
+        self.vanilla_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(vanilla_lstm_window_len) + '.plk'
 
         # self.prepare_rescale_mag()
         # input: shape(mag_list_train) = (num_train_data, )
@@ -183,7 +173,7 @@ class LSTMDataProcessor:
         return delta_list
 
     def prepare_rescale_mag(self):
-        with open(os.path.join(self.basic_data_path, self.basic_data_name), 'rb') as handle:
+        with open(os.path.join(self.basic_data_folder, self.basic_data_name), 'rb') as handle:
             data_dict = pickle.load(handle)
 
             # Retrieve Individual Data
@@ -208,12 +198,12 @@ class LSTMDataProcessor:
                                 'scaled_mag_list_test': scaled_mag_list_test}
 
         # Save Scaled Data
-        with open(os.path.join(self.basic_lstm_data_path, self.rescaled_mag_name), 'wb') as handle:
-            pickle.dump(scaled_mag_data_dict, handle)
+        with open(os.path.join(self.vanilla_lstm_data_folder, self.rescaled_mag_name), 'wb') as handle:
+            pickle.dump(scaled_mag_data_dict, handle, protocol=2)
 
         # Save Scaler
-        with open(os.path.join(self.basic_lstm_data_path, self.mag_scaler_name), 'wb') as handle:
-            joblib.dump(mag_scaler, handle)
+        with open(os.path.join(self.vanilla_lstm_data_folder, self.mag_scaler_name), 'wb') as handle:
+            joblib.dump(mag_scaler, handle, protocol=2)
 
         # print(np.shape(data_dict['mag_list_train'][1:]),
         #       np.shape(data_dict['mag_list_cross'][1:]),
@@ -222,7 +212,7 @@ class LSTMDataProcessor:
         # print(np.shape(scaled_mag_list_train), np.shape(scaled_mag_list_cross), np.shape(scaled_mag_list_test))
 
     def prepare_rescale_delta_t(self):
-        with open(os.path.join(self.basic_data_path, self.basic_data_name), 'rb') as handle:
+        with open(os.path.join(self.basic_data_folder, self.basic_data_name), 'rb') as handle:
             data_dict = pickle.load(handle)
 
             # Retrieve Individual Data
@@ -247,12 +237,12 @@ class LSTMDataProcessor:
                                     'scaled_delta_t_list_test': scaled_delta_t_list_test}
 
         # Save Scaled Data
-        with open(os.path.join(self.basic_lstm_data_path, self.rescaled_delta_t_name), 'wb') as handle:
-            pickle.dump(scaled_delta_t_data_dict, handle)
+        with open(os.path.join(self.vanilla_lstm_data_folder, self.rescaled_delta_t_name), 'wb') as handle:
+            pickle.dump(scaled_delta_t_data_dict, handle, protocol=2)
 
         # Save Scaler
-        with open(os.path.join(self.basic_lstm_data_path, self.delta_t_scaler_name), 'wb') as handle:
-            joblib.dump(delta_t_scaler, handle)
+        with open(os.path.join(self.vanilla_lstm_data_folder, self.delta_t_scaler_name), 'wb') as handle:
+            joblib.dump(delta_t_scaler, handle, protocol=2)
 
         # print(np.shape(self.delta_list(data_dict['t_list_train'])),
         #       np.shape(self.delta_list(data_dict['t_list_cross'])),
@@ -282,13 +272,13 @@ class LSTMDataProcessor:
 
     def prepare_basic_lstm_data(self):
         # Load Scaled Data
-        with open(os.path.join(self.basic_lstm_data_path, self.rescaled_mag_name), 'rb') as handle:
+        with open(os.path.join(self.vanilla_lstm_data_folder, self.rescaled_mag_name), 'rb') as handle:
             scaled_mag_data_dict = pickle.load(handle)
             scaled_mag_list_train = scaled_mag_data_dict['scaled_mag_list_train']
             scaled_mag_list_cross = scaled_mag_data_dict['scaled_mag_list_cross']
             scaled_mag_list_test = scaled_mag_data_dict['scaled_mag_list_test']
 
-        with open(os.path.join(self.basic_lstm_data_path, self.rescaled_delta_t_name), 'rb') as handle:
+        with open(os.path.join(self.vanilla_lstm_data_folder, self.rescaled_delta_t_name), 'rb') as handle:
             scaled_delta_t_data_dict = pickle.load(handle)
             scaled_delta_t_list_train = scaled_delta_t_data_dict['scaled_delta_t_list_train']
             scaled_delta_t_list_cross = scaled_delta_t_data_dict['scaled_delta_t_list_cross']
@@ -303,8 +293,8 @@ class LSTMDataProcessor:
                          'test_X': X_test, 'test_y': y_test}
 
         # Save X, y Data
-        with open(os.path.join(self.basic_lstm_data_path, self.basic_X_y_name), 'wb') as handle:
-            pickle.dump(X_y_data_dict, handle)
+        with open(os.path.join(self.vanilla_lstm_data_folder, self.vanilla_X_y_name), 'wb') as handle:
+            pickle.dump(X_y_data_dict, handle, protocol=2)
 
         # print(np.shape(X_train), np.shape(y_train))
         # print(np.shape(X_cross), np.shape(y_cross))

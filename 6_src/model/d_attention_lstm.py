@@ -8,27 +8,10 @@ from keras.models import Model
 
 
 class AttentionLstm():
-    '''
-
-    ------------------------------
-    Attributes
-    ----------
-    a -- hidden state output of the Bi-LSTM, numpy-array of shape (m, Tx, 2*n_a)
-    s_prev -- previous hidden state of the (post-attention) LSTM, numpy-array of shape (m, n_s)
-
-    ------------------------------
-
-    Functions
-    ----------
-
-
-    :return
-    context -- context vector, input of the next (post-attetion) LSTM cell
-    '''
 
     config_path = '../config/config.json'
 
-    def __init__(self, config, dim, Tx, Ty, a_dim, s_dim, feature_dim, output_dim):
+    def __init__(self):
         self.load_config()
 
     def load_config(self):
@@ -45,20 +28,6 @@ class AttentionLstm():
 
 
     def compute_attention(self, a, s_prev):
-        """
-        Performs one step of attention: the attention model calculates the attention weights 'alphas' that is later used
-        to evaluate 's_curr', based upon 's_prev' and 'a', using a small neural network (so we don't need to handcraft)
-        ------------------------------
-        :param
-        a: np.array (T_x, latent_dim)
-            the output from all time-steps of the pre-attention LSTM
-        s_prev: np.array (latent_dim,)
-            the output from the previous time-step of the post-attention LSTM
-        :return
-        context: np.array (latent_dim,)
-            context vector computed as a dot product of the attention weights "alphas" and the hidden states "a" of the
-            Bi-LSTM, and serves as the input of the next (post-attetion) LSTM cell
-        """
         repeator = RepeatVector(self.Tx)
         s_prev = repeator(s_prev)
 
@@ -69,7 +38,7 @@ class AttentionLstm():
         e = densor(concat) # e: scalar - un-normalized attention weight
 
         activator = Softmax(axis=-1)
-        alphas = activator(e) # alphas: scalar - normalized attention weight
+        alphas = activator(e)  # alphas: scalar - normalized attention weight
 
         dotor = Dot(axes=1)
         context = dotor([alphas, a])
@@ -77,14 +46,6 @@ class AttentionLstm():
         return context
 
     def build_attention_lstm(self):
-        """
-        Build the attention LSTM model: including the pre-attention LSTM, attention blocks and the post-attention LSTM
-        ------------------------------
-        :return
-        model: keras.models.Model
-            attention based LSTM model
-        """
-
         # Step 1.1: Input
         X = Input(shape=(self.Tx, self.feature_dim))
         s0 = Input(shape=(self.s_dim,), name='s0')

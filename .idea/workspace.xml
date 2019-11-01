@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="" />
+    <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/6_src/model/e_bayssian_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/.ipynb_checkpoints/carma_test-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/carma_test.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/config/model_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/config/model_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/global_setting.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/global_setting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/main_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/main_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/model/1_carma.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/a_carma.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/model/2_gp.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/b_gp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/model/3_basic_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/model/5_attention_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/d_attention_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/model/6_bayssian_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/utils/data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/utils/data_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/utils/io.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/utils/phased_lstm_layer.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/utils/phased_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/utils/right_lstm_layer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/utils/test_lstm_layer.py" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,12 +32,69 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/6_src/model/1_carma.py">
+        <entry file="file://$PROJECT_DIR$/6_src/model/a_carma.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-837">
-              <caret line="15" column="9" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+            <state relative-caret-position="690">
+              <caret line="95" selection-start-line="95" selection-end-line="95" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/6_src/config/model_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="4" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-87">
+              <caret line="63" column="25" selection-start-line="63" selection-start-column="25" selection-end-line="63" selection-end-column="25" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/6_src/main_pipeline.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1470">
+              <caret line="204" column="90" selection-start-line="204" selection-start-column="66" selection-end-line="204" selection-end-column="90" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/6_src/utils/data_processor.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="305">
+              <caret line="286" column="31" selection-start-line="286" selection-start-column="26" selection-end-line="286" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/6_src/global_setting.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="406">
+              <caret line="41" selection-start-line="41" selection-end-line="41" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -36,36 +111,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.basic_lstm_data_path</find>
-      <find>X_y_name</find>
-      <find>standard_lstm_data_path</find>
-      <find>standard_lstm</find>
-      <find>phased_lstm_model</find>
-      <find>load_model</find>
-      <find>self.phased_lstm_model_path</find>
-      <find>prepare_standard_lstm_data</find>
+      <find>data_dict</find>
+      <find>mag_list_train</find>
       <find>phased_lstm_model_path</find>
-      <find>test_y_pred</find>
-      <find>eager</find>
-      <find>timegate_regularizer</find>
-      <find>lstm</find>
-      <find>self.alpha = alpha</find>
-      <find>self.alpha</find>
-      <find>_timegate_init</find>
-      <find>PhasedLSTM</find>
-      <find>phased_lstm_model_folder</find>
+      <find>self.sample.</find>
+      <find>carma_data_folder</find>
+      <find>joblib</find>
+      <find>rescaled_mag_name</find>
+      <find>delta_t_scaler_name</find>
+      <find>crts_id</find>
+      <find>basic_data_folder</find>
+      <find>vanilla_phased_lstm_model_folder</find>
+      <find>carma_average_figure_name</find>
+      <find>dump</find>
+      <find>t_list_train</find>
       <find>standard_lstm_model_folder</find>
-      <find>loa</find>
-      <find>save</find>
-      <find>load</find>
-      <find>reg</find>
-      <find>build_model</find>
-      <find>get_default_graph</find>
-      <find>N</find>
-      <find>build_dnn_model</find>
-      <find>tau</find>
-      <find>y_test</find>
-      <find>PHASED</find>
+      <find>basic_X_y_name</find>
+      <find>raw_data_folder</find>
+      <find>basic_lstm_window_len</find>
+      <find>basic_data_name</find>
+      <find>str(self.crts_id)</find>
+      <find>vanilla_standard_lstm_model_folder</find>
+      <find>carma_model_folder</find>
+      <find>carma_sample_figure_name</find>
+      <find>vanilla_X_y_name</find>
+      <find>model</find>
+      <find>carma_model</find>
+      <find>mag_scaler</find>
+      <find>mag_scaler_name</find>
+      <find>fit_model</find>
+      <find>y_pred_cross</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -108,6 +183,15 @@
         <option value="$PROJECT_DIR$/src/config/model_config.json" />
         <option value="$PROJECT_DIR$/src/misc/mc_dnn.py" />
         <option value="$PROJECT_DIR$/src/global_setting.py" />
+        <option value="$PROJECT_DIR$/6_src/model/5_attention_lstm.py" />
+        <option value="$PROJECT_DIR$/6_src/model/c_basic_lstm.py" />
+        <option value="$PROJECT_DIR$/6_src/__init__.py" />
+        <option value="$PROJECT_DIR$/6_src/config/model_config.json" />
+        <option value="$PROJECT_DIR$/6_src/utils/data_processor.py" />
+        <option value="$PROJECT_DIR$/6_src/global_setting.py" />
+        <option value="$PROJECT_DIR$/6_src/main_pipeline.py" />
+        <option value="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" />
+        <option value="$PROJECT_DIR$/6_src/model/a_carma.py" />
       </list>
     </option>
   </component>
@@ -120,7 +204,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -132,6 +215,12 @@
               <item name="Attention-Mechanism-in-Predictive-Astronomy" type="b2602c69:ProjectViewProjectNode" />
               <item name="Attention-Mechanism-in-Predictive-Astronomy" type="462c0819:PsiDirectoryNode" />
               <item name="6_src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Attention-Mechanism-in-Predictive-Astronomy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Attention-Mechanism-in-Predictive-Astronomy" type="462c0819:PsiDirectoryNode" />
+              <item name="6_src" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Attention-Mechanism-in-Predictive-Astronomy" type="b2602c69:ProjectViewProjectNode" />
@@ -149,6 +238,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -183,6 +273,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49879518" visible="true" weight="0.21353066" />
       <window_info id="Structure" order="1" weight="0.25" />
@@ -249,13 +340,97 @@
     <entry file="file://$PROJECT_DIR$/src/model/3_basic_lstm.py" />
     <entry file="file://$PROJECT_DIR$/src/global_setting.py" />
     <entry file="file://$PROJECT_DIR$/src/config/model_config.json" />
+    <entry file="file://$PROJECT_DIR$/6_src/utils/io.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/utils/visualization.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/6_src/main_pipeline.ipynb">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/6_src/model/1_carma.py">
+    <entry file="file://$PROJECT_DIR$/6_src/model/d_attention_lstm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-837">
-          <caret line="15" column="9" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+        <state relative-caret-position="347">
+          <caret line="40" column="30" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/utils/phased_lstm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/config/data_config.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/utils/data_processor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="305">
+          <caret line="286" column="31" selection-start-line="286" selection-start-column="26" selection-end-line="286" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/global_setting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/main_pipeline.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1470">
+          <caret line="204" column="90" selection-start-line="204" selection-start-column="66" selection-end-line="204" selection-end-column="90" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/config/model_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="4" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-87">
+          <caret line="63" column="25" selection-start-line="63" selection-start-column="25" selection-end-line="63" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/model/a_carma.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="690">
+          <caret line="95" selection-start-line="95" selection-end-line="95" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

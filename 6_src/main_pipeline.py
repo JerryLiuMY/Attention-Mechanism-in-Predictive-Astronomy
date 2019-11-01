@@ -3,28 +3,35 @@ import os
 import json
 import pickle
 import joblib
-from global_setting import DATA_FOLDER
-from global_setting import raw_data_path, basic_data_path, basic_lstm_data_path
+import matplotlib.pyplot as plt
 from utils.data_processor import BasicDataProcessor, LSTMDataProcessor
-from model.basic_lstm import BasicLSTM
-from model.test_lstm import TestLSTM
+from global_setting import DATA_FOLDER
+from global_setting import raw_data_folder, basic_data_folder, carma_data_folder, vanilla_lstm_data_folder
+from global_setting import carma_model_folder, vanilla_lstm_model_folder
+from global_setting import carma_figure_folder, vanilla_lstm_figure_folder
+from model.a_carma import Carma
+from model.b_gp import GP
+from model.c_vanilla_lstm import VanillaLSTM
+
 
 
 class MainPipeline:
     def __init__(self, crts_id):
         # Configuration
         self.crts_id = crts_id
-        self.laod_config()
+        self.laod_data_config()
+        self.load_model_config()
         self.load_crts_list()
         # self.prepare_all_data()
 
-        # Data Path
-        self.raw_data_path = raw_data_path
-        self.basic_data_path = basic_data_path
-        self.basic_lstm_data_path = basic_lstm_data_path
-
         # Basic Data Name
         self.basic_data_name = str(self.crts_id) + '.pkl'
+
+        # Data Folder
+        self.raw_data_folder = raw_data_folder
+        self.basic_data_folder = basic_data_folder
+        self.carma_data_folder = carma_data_folder
+        self.vanilla_lstm_data_folder = vanilla_lstm_data_folder
 
         # LSTM Data Name
         self.rescaled_mag_name = str(self.crts_id) + '_rescaled_mag' + '.pkl'
@@ -33,10 +40,26 @@ class MainPipeline:
         self.delta_t_scaler_name = str(self.crts_id) + '_delta_t_scaler' + '.pkl'
         self.standard_X_y_name = str(self.crts_id) + '_X_y' + '_window_len_' + str(self.basic_lstm_window_len) + '.plk'
 
+        # Model Folder
+        self.carma_model_folder = carma_model_folder
+        self.vanilla_lstm_model_folder = vanilla_lstm_model_folder
+
+        # Figure Folder
+        self.carma_figure_folder = carma_figure_folder
+        self.vanilla_lstm_figure_folder = vanilla_lstm_figure_folder
+
+        # Load Data
+        # self.load_individual_data()
+
     # ----------------------------------- Load Configuration -----------------------------------
-    def laod_config(self):
+    def laod_data_config(self):
         self.data_config = json.load(open('./config/data_config.json'))
+
+    def load_model_config(self):
         self.model_config = json.load(open('./config/model_config.json'))
+        self.carma_model_config = self.model_config["carma"]
+        self.vanilla_lstm_model_config = self.model_config["vanilla_lstm"]
+        self.attention_lstm_model_config = self.model_config["attention_lstm"]
         self.basic_lstm_window_len = self.model_config["basic_lstm"]["window_len"]
 
     def load_crts_list(self):
@@ -46,7 +69,7 @@ class MainPipeline:
                 crts_list.append(file.split('.')[0])
         self.crts_list = crts_list
 
-    # ----------------------------------- Load Data -----------------------------------
+    # ----------------------------------- Prepare Data -----------------------------------
     def prepare_all_data(self):
         for crts_id in self.crts_list:
             # Basic Data
@@ -54,10 +77,10 @@ class MainPipeline:
             basic_data_processor.prepare_basic_data()
 
             # LSTM Data
-            lstm_data_processor = LSTMDataProcessor(crts_id)
-            lstm_data_processor.prepare_rescale_mag()
-            lstm_data_processor.prepare_rescale_delta_t()
-            lstm_data_processor.prepare_basic_lstm_data()
+            # lstm_data_processor = LSTMDataProcessor(crts_id)
+            # lstm_data_processor.prepare_rescale_mag()
+            # lstm_data_processor.prepare_rescale_delta_t()
+            # lstm_data_processor.prepare_basic_lstm_data()
 
     def prepare_individual_data(self):
         # Basic Data
@@ -70,10 +93,11 @@ class MainPipeline:
         lstm_data_processor.prepare_rescale_delta_t()
         lstm_data_processor.prepare_basic_lstm_data()
 
+    # ----------------------------------- Load Data -----------------------------------
     def load_individual_data(self):
-        # Individual data
-        self.basic_data_load_path = os.path.join(DATA_FOLDER, 'processed_data', 'basic', str(self.crts_id) + '.pkl')
-        with open(self.basic_data_load_path, 'rb') as handle:
+        # Basic Data
+        basic_data_path = os.path.join(self.basic_data_folder, self.basic_data_name + '.pkl')
+        with open(basic_data_path, 'rb') as handle:
             data_dict = pickle.load(handle)
         self.mag_list_train = data_dict['mag_list_train']
         self.mag_list_cross = data_dict['mag_list_cross']
@@ -85,78 +109,109 @@ class MainPipeline:
         self.t_list_cross = data_dict['t_list_cross']
         self.t_list_test = data_dict['t_list_test']
 
+        # LSTM Data
+        self.mag_scaler = joblib.load(os.path.join(self.vanilla_lstm_data_folder, self.mag_scaler_name))
+        with open(os.path.join(self.vanilla_lstm_data_folder, self.standard_X_y_name), 'rb') as handle:
+            X_y_data_dict = pickle.load(handle)
+            self.train_X = X_y_data_dict['train_X']
+            self.train_y = X_y_data_dict['train_y']
+            self.cross_X = X_y_data_dict['cross_X']
+            self.cross_y = X_y_data_dict['cross_y']
+            self.test_X = X_y_data_dict['test_X']
+            self.test_y = X_y_data_dict['test_y']
+
     # ----------------------------------- Run Single Model -----------------------------------
-    def run_standard_lstm(self, implementation='multi'):
-        standard_lstm = BasicLSTM(self.crts_id, phased=False)
-        standard_lstm.build_model()
+    def run_carama(self):
+        # Model & Figure Path
+        carma_model_name = str(self.crts_id) + '_carma_model.pkl'
+        carma_average_figure_name = str(self.crts_id) + '_carma_average_figure.png'
+        carma_sample_figure_name = str(self.crts_id) + '_carma_sample_figure.png'
 
-        mag_scaler = joblib.load(os.path.join(self.basic_lstm_data_path, self.mag_scaler_name))
-        with open(os.path.join(self.basic_lstm_data_path, self.standard_X_y_name), 'rb') as handle:
-            X_y_data_dict = pickle.load(handle)
-            train_X = X_y_data_dict['train_X']
-            train_y = X_y_data_dict['train_y']
-            cross_X = X_y_data_dict['cross_X']
-            cross_y = X_y_data_dict['cross_y']
-            test_X = X_y_data_dict['test_X']
-            test_y = X_y_data_dict['test_y']
+        # Model config
+        p = self.carma_model_config["p"]
+        q = self.carma_model_config["q"]
+        nwalkers = self.carma_model_config["nwalkers"]
 
-        standard_lstm.fit_model(train_X, train_y, cross_X, cross_y, test_X, test_y)
-        if implementation == 'multi':
-            y_inter, cross_y_pred, test_y_pred = standard_lstm.multiple_step_prediction(train_X, cross_X, test_X, mag_scaler)
+        # Build & Load Model
+        carma = Carma(p, q, nwalkers)
+        if os.path.isdir(os.path.join(self.carma_model_folder, carma_model_name)):
+            with open(os.path.join(self.carma_model_folder, carma_model_name), 'rb') as handle:
+                carma.model = pickle.load(handle)
+                print('carma model %s is loaded' % carma_model_name)
+
         else:
-            y_inter, cross_y_pred, test_y_pred = standard_lstm.one_step_prediction(train_X, cross_X, test_X, mag_scaler)
+            print('fitting %s model' % carma_model_name)
+            carma_model = carma.fit_model(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+                                          p, q, nwalkers)
+            with open(os.path.join(self.carma_model_folder, carma_model_name), 'wb') as handle:
+                pickle.dump(carma_model, handle)
+                print('carma model %s is loaded' % carma_model_name)
 
-        standard_lstm.plot_prediction(self.mag_list_train, self.mag_list_cross, self.mag_list_test, self.t_list_cross,
-                                      self.t_list_train, self.t_list_test, self.magerr_list_train,
-                                      self.magerr_list_cross, self.magerr_list_test, y_inter, cross_y_pred, test_y_pred)
+        # Run Average Simulation
+        average_figure = carma.simulate_average_process(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+                                                        self.t_list_cross, self.mag_list_cross, self.magerr_list_cross)
+        average_figure.savefig(os.path.join(self.carma_figure_folder, carma_average_figure_name))
 
-    def run_phased_lstm(self, implementation='multi'):
-        phased_lstm = BasicLSTM(self.crts_id, phased=True)
-        phased_lstm.build_model()
+        # Run Sample Simulation
+        sample_figure = carma.simulate_sample_process(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+                                                      self.t_list_cross, self.mag_list_cross, self.magerr_list_cross)
+        sample_figure.savefig(os.path.join(self.carma_figure_folder, carma_sample_figure_name))
 
-        mag_scaler = joblib.load(os.path.join(self.basic_lstm_data_path, self.mag_scaler_name))
-        with open(os.path.join(self.basic_lstm_data_path, self.standard_X_y_name), 'rb') as handle:
-            X_y_data_dict = pickle.load(handle)
-            train_X = X_y_data_dict['train_X']
-            train_y = X_y_data_dict['train_y']
-            cross_X = X_y_data_dict['cross_X']
-            cross_y = X_y_data_dict['cross_y']
-            test_X = X_y_data_dict['test_X']
-            test_y = X_y_data_dict['test_y']
 
-        phased_lstm.fit_model(train_X, train_y, cross_X, cross_y, test_X, test_y)
+    def run_vanilla_lstm(self, implementation='multi'):
+
         if implementation == 'multi':
-            y_inter, cross_y_pred, test_y_pred = phased_lstm.multiple_step_prediction(train_X, cross_X, test_X, mag_scaler)
+            implementation_name = '_multi'
         else:
-            y_inter, cross_y_pred, test_y_pred = phased_lstm.one_step_prediction(train_X, cross_X, test_X, mag_scaler)
+            implementation_name = '_single'
 
-        phased_lstm.plot_prediction(self.mag_list_train, self.mag_list_cross, self.mag_list_test, self.t_list_cross,
-                                    self.t_list_train, self.t_list_test, self.magerr_list_train,
-                                    self.magerr_list_cross, self.magerr_list_test, y_inter, cross_y_pred, test_y_pred)
+        for phased in [True, False]:
 
-    def run_test_lstm(self, implementation='multi'):
-        phased_lstm = TestLSTM(self.crts_id, phased=True)
-        phased_lstm.build_model()
+            if phased is True:
+                phase_name = '_phased'
+            else:
+                phase_name = '_standard'
 
-        mag_scaler = joblib.load(os.path.join(self.basic_lstm_data_path, self.mag_scaler_name))
-        with open(os.path.join(self.basic_lstm_data_path, self.standard_X_y_name), 'rb') as handle:
-            X_y_data_dict = pickle.load(handle)
-            train_X = X_y_data_dict['train_X']
-            train_y = X_y_data_dict['train_y']
-            cross_X = X_y_data_dict['cross_X']
-            cross_y = X_y_data_dict['cross_y']
-            test_X = X_y_data_dict['test_X']
-            test_y = X_y_data_dict['test_y']
+            # Model & Figure Path
+            vanilla_lstm_model_name = str(self.crts_id) + '_vanilla_lstm' + phase_name + '_model.pkl'
+            vanilla_lstm_figure_name = str(self.crts_id) + '_vanilla_lstm' + phase_name + implementation_name + '_figure.png'
 
-        phased_lstm.fit_model(train_X, train_y, cross_X, cross_y, test_X, test_y)
-        if implementation == 'multi':
-            y_inter, cross_y_pred, test_y_pred = phased_lstm.multiple_step_prediction(train_X, cross_X, test_X, mag_scaler)
-        else:
-            y_inter, cross_y_pred, test_y_pred = phased_lstm.one_step_prediction(train_X, cross_X, test_X, mag_scaler)
+            # Model config
+            window_len = self.vanilla_lstm_model_config["window_len"]
+            epochs = self.vanilla_lstm_model_config["epochs"]
+            batch_size = self.vanilla_lstm_model_config["batch_size"]
+            hidden_dim = self.vanilla_lstm_model_config["hidden_dim"]
 
-        phased_lstm.plot_prediction(self.mag_list_train, self.mag_list_cross, self.mag_list_test, self.t_list_cross,
-                                    self.t_list_train, self.t_list_test, self.magerr_list_train,
-                                    self.magerr_list_cross, self.magerr_list_test, y_inter, cross_y_pred, test_y_pred)
+            # Build & Load Model
+            vanilla_lstm = VanillaLSTM(window_len, hidden_dim, epochs, batch_size, phased=phased)
+
+            if os.path.isdir(os.path.join(self.vanilla_lstm_model_folder, vanilla_lstm_model_name)):
+                with open(os.path.join(self.vanilla_lstm_model_folder, vanilla_lstm_model_name), 'rb') as handle:
+                    vanilla_lstm.model = pickle.load(handle)
+                    print('carma model %s is loaded' % vanilla_lstm_model_name)
+
+            else:
+                print('fitting %s model' % vanilla_lstm_model_name)
+                vanilla_lstm.build_model()
+                vanilla_lstm_model = vanilla_lstm.fit_model(self.train_X, self.train_y, self.cross_X, self.cross_y, self.test_X, self.test_y)
+                with open(os.path.join(self.vanilla_lstm_data_folder, vanilla_lstm_model), 'wb') as handle:
+                    pickle.dump(vanilla_lstm_model, handle)
+                    print('carma model %s is loaded' % vanilla_lstm_model_name)
+
+                print('vanilla lstm model: %s is loaded' % vanilla_lstm_model_name)
+
+            # Run Simulation
+            if implementation == 'multi':
+                y_inter, cross_y_pred, test_y_pred = vanilla_lstm.multiple_step_prediction(self.train_X, self.cross_X, self.test_X, self.mag_scaler)
+            else:
+                y_inter, cross_y_pred, test_y_pred = vanilla_lstm.one_step_prediction(self.train_X, self.cross_X, self.test_X, self.mag_scaler)
+
+            figure = vanilla_lstm.plot_prediction(self.mag_list_train, self.mag_list_cross, self.mag_list_test,
+                                                  self.t_list_cross, self.t_list_train, self.t_list_test,
+                                                  self.magerr_list_train, self.magerr_list_cross, self.magerr_list_test,
+                                                  y_inter, cross_y_pred, test_y_pred)
+
+            figure.savefig(os.path.join(self.vanilla_lstm_figure_folder, vanilla_lstm_figure_name))
 
     # ----------------------------------- Run Hybrid Model -----------------------------------
 
@@ -165,7 +220,5 @@ if __name__ == 'main':
     instance.prepare_all_data()
     instance.prepare_individual_data()
     instance.load_individual_data()
-
-    instance.run_phased_lstm()
-
-
+    instance.run_carama()
+    instance.run_vanilla_lstm()

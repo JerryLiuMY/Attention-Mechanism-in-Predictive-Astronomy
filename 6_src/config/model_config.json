@@ -4,17 +4,18 @@
     "q": 0,
     "nwalkers": 1000
   },
+  "vanilla_lstm": {
+    "window_len": 10,
+    "hidden_dim": 4,
+    "epochs": 100,
+    "batch_size": 32
+  },
   "attention_lstm":{
     "window_len": 10,
     "look_back": 50,
     "T_x": 0.5
   },
-  "basic_lstm": {
-    "window_len": 10,
-    "epochs": 100,
-    "batch_size":32,
-    "hidden_dim": 4
-  },
+
   "dnn": {
     "n_layers": 5,
     "n_units": 800,
@@ -25,4 +26,4 @@
     "batch_size": 128,
     "lengthscale": 1e-2
   }
-}
+},
