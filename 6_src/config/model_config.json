@@ -12,8 +12,9 @@
   },
   "attention_lstm":{
     "window_len": 10,
-    "look_back": 50,
-    "T_x": 0.5
+    "hidden_dim": 0.5,
+    "epochs": 100,
+    "batch_size": 32
   },
 
   "dnn": {
@@ -26,4 +27,4 @@
     "batch_size": 128,
     "lengthscale": 1e-2
   }
-},
+}

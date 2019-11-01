@@ -8,7 +8,7 @@ np.random.seed(1)
 
 class VanillaLSTM:
     # The model is now trained individually for each sample, so we feed in the crts_id for now
-    def __init__(self, window_len, hidden_dim, epochs, batch_size, phased=False):
+    def __init__(self, window_len, hidden_dim, epochs, batch_size, phased='phased'):
         # Configuration
         self.window_len = window_len
         self.hidden_dim = hidden_dim
@@ -20,7 +20,7 @@ class VanillaLSTM:
     def build_model(self):
         # Build Model
         self.model = Sequential()
-        if self.phased:
+        if self.phased == 'phased':
             self.model.add(PhasedLSTM(self.hidden_dim, input_shape=(self.window_len, 2)))
         else:
             self.model.add(LSTM(self.hidden_dim, input_shape=(self.window_len, 2)))
@@ -35,22 +35,30 @@ class VanillaLSTM:
 
         return self.model
 
-    def multi_step_prediction(self, X_train, X_cross, X_test, mag_scaler):
+    def multi_step_prediction(self, t_list_train, mag_list_train, magerr_list_train,
+                              t_list_cross, mag_list_cross, magerr_list_cross,
+                              X_train, X_cross, X_test, mag_scaler):
         # Train Interpolation
         scaled_y_inter = self.model.predict(X_train)
         y_inter = mag_scaler.inverse_transform(scaled_y_inter)
 
         # Cross Prediction
         scaled_cross_y_pred = self.model.predict(X_cross)
-        cross_y_pred = mag_scaler.inverse_transform(scaled_cross_y_pred)
+        y_pred_cross = mag_scaler.inverse_transform(scaled_cross_y_pred)
 
-        # Test Prediction
-        scaled_test_y_pred = self.model.predict(X_test)
-        test_y_pred = mag_scaler.inverse_transform(scaled_test_y_pred)
+        # # Test Prediction
+        # scaled_test_y_pred = self.model.predict(X_test)
+        # y_pred_test = mag_scaler.inverse_transform(scaled_test_y_pred)
 
-        return y_inter, cross_y_pred, test_y_pred
+        fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
+                                   t_list_cross, mag_list_cross, magerr_list_cross,
+                                   y_inter, y_pred_cross)
 
-    def one_step_prediction(self, X_train, X_cross, X_test, mag_scaler):
+        return fig
+
+    def one_step_prediction(self, t_list_train, mag_list_train, magerr_list_train,
+                            t_list_cross, mag_list_cross, magerr_list_cross,
+                            X_train, X_cross, X_test, mag_scaler):
         # Train Interpolation
         scaled_y_inter = self.model.predict(X_train)
         y_inter = mag_scaler.inverse_transform(scaled_y_inter)
@@ -58,10 +66,12 @@ class VanillaLSTM:
         # Cross Prediction
         y_pred_cross = self.one_step(X_cross, mag_scaler)
 
-        # Test Prediction
-        y_pred_test = self.one_step(X_test, mag_scaler)
+        # # Test Prediction
+        # y_pred_test = self.one_step(X_test, mag_scaler)
 
-        # Plot Prediction
+        fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
+                                   t_list_cross, mag_list_cross, magerr_list_cross,
+                                   y_inter, y_pred_cross)
 
         return fig
 
@@ -86,10 +96,12 @@ class VanillaLSTM:
 
         return y
 
-    def plot_prediction(self, mag_list_train, mag_list_cross, mag_list_test, t_list_cross, t_list_train, t_list_test,
-                        magerr_list_train, magerr_list_cross, magerr_list_test, y_inter, y_pred_cross, y_pred_test):
+    def plot_prediction(self, t_list_train, mag_list_train, magerr_list_train,
+                        t_list_cross, mag_list_cross, magerr_list_cross,
+                        y_inter, y_pred_cross):
+
         # Specify parameters
-        max_time = t_list_test.max()
+        max_time = t_list_cross.max()
         min_time = t_list_train.min()
         upper_limit = max_time
         lower_limit = min_time
@@ -100,11 +112,8 @@ class VanillaLSTM:
                      fmt='k.', markersize=10, label='Training')
         plt.errorbar(t_list_cross, mag_list_cross, magerr_list_cross,
                      fmt='k.', markersize=10, label='Validation')
-        plt.errorbar(t_list_test, mag_list_test, magerr_list_test,
-                     fmt='k.', markersize=10, label='Test')
         plt.scatter(t_list_train[self.window_len+1: -1], y_inter, color='g')
         plt.scatter(t_list_cross[self.window_len+1: -1], y_pred_cross, color='b')
-        plt.scatter(t_list_test[self.window_len+1: -1], y_pred_test, color='r')
         plt.xlim(lower_limit, upper_limit)
         plt.xlabel('MJD')
         plt.ylabel('Mag')

@@ -270,7 +270,7 @@ class LSTMDataProcessor:
 
         return X, y
 
-    def prepare_basic_lstm_data(self):
+    def prepare_vanilla_lstm_data(self):
         # Load Scaled Data
         with open(os.path.join(self.vanilla_lstm_data_folder, self.rescaled_mag_name), 'rb') as handle:
             scaled_mag_data_dict = pickle.load(handle)
@@ -284,7 +284,7 @@ class LSTMDataProcessor:
             scaled_delta_t_list_cross = scaled_delta_t_data_dict['scaled_delta_t_list_cross']
             scaled_delta_t_list_test = scaled_delta_t_data_dict['scaled_delta_t_list_test']
 
-        window_len = self.model_config['basic_lstm']['window_len']
+        window_len = self.model_config["vanilla_lstm"]["window_len"]
         X_train, y_train = self.create_X_y(scaled_mag_list_train, scaled_delta_t_list_train, window_len)
         X_cross, y_cross = self.create_X_y(scaled_mag_list_cross, scaled_delta_t_list_cross, window_len)
         X_test, y_test = self.create_X_y(scaled_mag_list_test, scaled_delta_t_list_test, window_len)
@@ -307,4 +307,4 @@ if __name__ == 'main':
     lstm_data_processor = LSTMDataProcessor(1001115026824)
     lstm_data_processor.prepare_rescale_mag()
     lstm_data_processor.prepare_rescale_delta_t()
-    lstm_data_processor.prepare_basic_lstm_data()
+    lstm_data_processor.prepare_vanilla_lstm_data()

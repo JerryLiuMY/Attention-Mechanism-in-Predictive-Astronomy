@@ -2,23 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/6_src/model/e_bayssian_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/.ipynb_checkpoints/carma_test-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/carma_test.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/.ipynb_checkpoints/main_pipeline-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/.ipynb_checkpoints/main_pipeline-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/6_src/config/model_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/config/model_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/global_setting.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/global_setting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/main_pipeline.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/main_pipeline.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/6_src/main_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/main_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/1_carma.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/a_carma.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/2_gp.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/b_gp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/3_basic_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/5_attention_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/d_attention_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/6_bayssian_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6_src/model/d_attention_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/d_attention_lstm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/6_src/utils/data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/utils/data_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/utils/io.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/utils/phased_lstm_layer.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/utils/phased_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/utils/right_lstm_layer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/utils/test_lstm_layer.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,35 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/6_src/model/a_carma.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="690">
-              <caret line="95" selection-start-line="95" selection-end-line="95" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/6_src/config/model_config.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="4" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-87">
-              <caret line="63" column="25" selection-start-line="63" selection-start-column="25" selection-end-line="63" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="225">
+              <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -67,8 +33,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/6_src/main_pipeline.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1470">
-              <caret line="204" column="90" selection-start-line="204" selection-start-column="66" selection-end-line="204" selection-end-column="90" />
+            <state relative-caret-position="1582">
+              <caret line="152" column="47" selection-start-line="152" selection-start-column="47" selection-end-line="152" selection-end-column="47" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -77,24 +43,21 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/6_src/utils/data_processor.py">
+        <entry file="file://$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="305">
-              <caret line="286" column="31" selection-start-line="286" selection-start-column="26" selection-end-line="286" selection-end-column="31" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="15">
+              <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="31" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/6_src/global_setting.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/6_src/model/d_attention_lstm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
-              <caret line="41" selection-start-line="41" selection-end-line="41" />
+            <state relative-caret-position="678">
+              <caret line="126" lean-forward="true" selection-start-line="126" selection-end-line="126" />
               <folding>
-                <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -111,36 +74,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>data_dict</find>
-      <find>mag_list_train</find>
-      <find>phased_lstm_model_path</find>
-      <find>self.sample.</find>
-      <find>carma_data_folder</find>
-      <find>joblib</find>
-      <find>rescaled_mag_name</find>
       <find>delta_t_scaler_name</find>
       <find>crts_id</find>
       <find>basic_data_folder</find>
       <find>vanilla_phased_lstm_model_folder</find>
       <find>carma_average_figure_name</find>
-      <find>dump</find>
       <find>t_list_train</find>
       <find>standard_lstm_model_folder</find>
       <find>basic_X_y_name</find>
       <find>raw_data_folder</find>
       <find>basic_lstm_window_len</find>
-      <find>basic_data_name</find>
       <find>str(self.crts_id)</find>
       <find>vanilla_standard_lstm_model_folder</find>
       <find>carma_model_folder</find>
       <find>carma_sample_figure_name</find>
       <find>vanilla_X_y_name</find>
-      <find>model</find>
       <find>carma_model</find>
       <find>mag_scaler</find>
       <find>mag_scaler_name</find>
       <find>fit_model</find>
       <find>y_pred_cross</find>
+      <find>model</find>
+      <find>self.basic_lstm_window_len</find>
+      <find>window_len = self.model_config['basic_lstm']['window_len']</find>
+      <find>prepare_basic_lstm_data</find>
+      <find>basic_data_name</find>
+      <find>with open(os.path.join(self.vanilla_lstm_data_folder, vanilla_lstm_model</find>
+      <find>vanilla_lstm_model</find>
+      <find>dump</find>
+      <find>pickle.dump(vanilla_lstm_model, handle)</find>
+      <find>compute_attention</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -186,12 +149,13 @@
         <option value="$PROJECT_DIR$/6_src/model/5_attention_lstm.py" />
         <option value="$PROJECT_DIR$/6_src/model/c_basic_lstm.py" />
         <option value="$PROJECT_DIR$/6_src/__init__.py" />
-        <option value="$PROJECT_DIR$/6_src/config/model_config.json" />
-        <option value="$PROJECT_DIR$/6_src/utils/data_processor.py" />
         <option value="$PROJECT_DIR$/6_src/global_setting.py" />
-        <option value="$PROJECT_DIR$/6_src/main_pipeline.py" />
-        <option value="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" />
         <option value="$PROJECT_DIR$/6_src/model/a_carma.py" />
+        <option value="$PROJECT_DIR$/6_src/utils/data_processor.py" />
+        <option value="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" />
+        <option value="$PROJECT_DIR$/6_src/main_pipeline.py" />
+        <option value="$PROJECT_DIR$/6_src/config/model_config.json" />
+        <option value="$PROJECT_DIR$/6_src/model/d_attention_lstm.py" />
       </list>
     </option>
   </component>
@@ -355,16 +319,6 @@
     <entry file="file://$PROJECT_DIR$/6_src/main_pipeline.ipynb">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/6_src/model/d_attention_lstm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="40" column="30" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/6_src/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -380,10 +334,20 @@
     <entry file="file://$PROJECT_DIR$/6_src/config/data_config.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/6_src/model/a_carma.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="74" lean-forward="true" selection-start-line="74" selection-end-line="74" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/6_src/utils/data_processor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="286" column="31" selection-start-line="286" selection-start-column="26" selection-end-line="286" selection-end-column="31" />
+        <state relative-caret-position="361">
+          <caret line="286" column="66" selection-start-line="286" selection-start-column="66" selection-end-line="286" selection-end-column="66" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -400,37 +364,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/6_src/main_pipeline.py">
+    <entry file="file://$PROJECT_DIR$/6_src/config/model_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1470">
-          <caret line="204" column="90" selection-start-line="204" selection-start-column="66" selection-end-line="204" selection-end-column="90" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="225">
+          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/6_src/config/model_config.json">
+    <entry file="file://$PROJECT_DIR$/6_src/main_pipeline.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="4" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
+        <state relative-caret-position="1582">
+          <caret line="152" column="47" selection-start-line="152" selection-start-column="47" selection-end-line="152" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-87">
-          <caret line="63" column="25" selection-start-line="63" selection-start-column="25" selection-end-line="63" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="15">
+          <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="31" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/6_src/model/a_carma.py">
+    <entry file="file://$PROJECT_DIR$/6_src/model/d_attention_lstm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
-          <caret line="95" selection-start-line="95" selection-end-line="95" />
+        <state relative-caret-position="678">
+          <caret line="126" lean-forward="true" selection-start-line="126" selection-end-line="126" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
