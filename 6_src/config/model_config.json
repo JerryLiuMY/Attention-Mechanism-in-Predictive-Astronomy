@@ -12,7 +12,7 @@
   },
   "attention_lstm":{
     "window_len": 10,
-    "hidden_dim": 0.5,
+    "hidden_dim": 20,
     "epochs": 100,
     "batch_size": 32
   },

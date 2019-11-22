@@ -1,7 +1,15 @@
 import os
 import json
+import fnmatch
 DATA_FOLDER = '/Users/mingyu/Desktop/dataset'
 
+
+# ----------------------------------- List of Lightcurves -----------------------------------
+lightcurve_list = []
+for file in os.listdir('/Users/mingyu/Desktop/dataset/raw_data'):
+    if fnmatch.fnmatch(file, '*.csv'):
+        lightcurve = file.split('.')[0]
+        lightcurve_list.append(lightcurve)
 
 # ----------------------------------- Configuration -----------------------------------
 data_config = json.load(open('./config/data_config.json'))
@@ -34,8 +42,8 @@ carma_model_name = 'str(crts_id)_carma_model.pkl'
 
 # vanilla_lstm model
 vanilla_lstm_model_folder = os.path.join(DATA_FOLDER, 'model', 'vanilla_lstm')
-vanilla_lstm_standard_model_name = 'str(crts_id)_vanilla_lstm_standard_model.pkl'
-vanilla_lstm_phased_model_name = 'str(crts_id)_vanilla_lstm_phased_modell.pkl'
+vanilla_lstm_standard_model_name = 'str(crts_id)_vanilla_lstm_standard_model.h5'
+vanilla_lstm_phased_model_name = 'str(crts_id)_vanilla_lstm_phased_model.h5'
 
 # attention_lstm_model
 attention_lstm_model_folder = os.path.join(DATA_FOLDER, 'model', 'attention_lstm')
@@ -54,7 +62,8 @@ vanilla_lstm_phased_multi_figure_name = 'str(crts_id)_vanilla_lstm_phased_multi_
 vanilla_lstm_phased_single_figure_name = 'str(crts_id)_vanilla_lstm_phased_single_figure.png'
 
 # attention_lstm_figure
-attention_standard_lstm_figure_folder = os.path.join(DATA_FOLDER, 'figure', 'attention_lstm')
+attention_lstm_figure_folder = os.path.join(DATA_FOLDER, 'figure', 'attention_lstm')
+
 
 # ----------------------------------- Outline -----------------------------------
 # CARIMA Process / OU Process
