@@ -1,13 +1,15 @@
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from keras.layers import Bidirectional, Input, LSTM, Softmax
-from keras.layers import RepeatVector, Concatenate, Dense, Dot, Activation, Lambda
-from utils.phased_lstm import PhasedLSTM
 from keras.models import Model
+from keras.layers import Bidirectional, Input, LSTM, Softmax
+from keras.layers import RepeatVector, Concatenate, Dense, Dot
+from utils.phased_lstm import PhasedLSTM
 from model.c_vanilla_lstm import VanillaLSTM
 from sklearn.metrics import mean_squared_error
-from keras.optimizers import Adam
+
+
+self.model.summary()
+model = Model(inputs=self.model.input,
+              outputs=[self.model.output, self.model.get_layer('attention_vec').output])
 
 
 class AttentionLstm(VanillaLSTM):
@@ -30,7 +32,7 @@ class AttentionLstm(VanillaLSTM):
     def compute_attention(self, a, s_prev):
         s_prev = self.repeator(s_prev)
         concat = self.concatenator([a, s_prev])
-        e = self.densor(concat)  # e: scalar - un-normalized attention weight
+        e = self.densor(concat, name='attention_vec')  # e: scalar - un-normalized attention weight
         alphas = self.activator(e)  # alphas: scalar - normalized attention weight
         context = self.dotor([alphas, a])
 
@@ -75,7 +77,6 @@ class AttentionLstm(VanillaLSTM):
         self.model = Model(inputs=[X, s0, c0], outputs=outputs)
         self.model.summary()
 
-
     def fit_model(self, X_train, y_train, X_cross, y_cross, X_test, y_test):
         # Initialize State
         s0_train = np.zeros((np.shape(X_train)[0], self.hidden_dim))
@@ -108,6 +109,7 @@ class AttentionLstm(VanillaLSTM):
         # Train Interpolation
         scaled_y_inter = self.model.predict([X_train, s0_train, c0_train])
         y_inter = mag_scaler.inverse_transform(scaled_y_inter)
+        single_train_loss = mean_squared_error(y_inter[:, 0], magerr_list_train[self.window_len + 1: -1])
 
         # Cross Prediction
         scaled_cross_y_pred = self.model.predict([X_cross, s0_cross, c0_cross])
@@ -117,6 +119,7 @@ class AttentionLstm(VanillaLSTM):
         # # Test Prediction
         # scaled_test_y_pred = self.model.predict([X_test, s0_test, c0_test])
         # y_pred_test = mag_scaler.inverse_transform(scaled_test_y_pred)
+        # single_test_loss = mean_squared_error(y_pred_test[:, 0], magerr_list_test[self.window_len + 1: -1])
 
         fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
                                        t_list_cross, mag_list_cross, magerr_list_cross,
@@ -126,7 +129,7 @@ class AttentionLstm(VanillaLSTM):
                                      t_list_cross, mag_list_cross, magerr_list_cross,
                                      y_inter, y_pred_cross)
 
-        return single_cross_loss, fit_fig, res_fig
+        return single_train_loss, single_cross_loss, attention_weight_matrix, fit_fig, res_fig
 
     def multi_step_prediction(self, t_list_train, mag_list_train, magerr_list_train,
                               t_list_cross, mag_list_cross, magerr_list_cross,

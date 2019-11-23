@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import json
 from keras.layers import LSTM, Dense
 from keras.models import Sequential
 from utils.phased_lstm import PhasedLSTM
 from sklearn.metrics import mean_squared_error
+
 np.random.seed(1)
 
 class VanillaLSTM:
