@@ -25,7 +25,10 @@ class VanillaLSTM:
             self.model.add(PhasedLSTM(self.hidden_dim, input_shape=(self.window_len, 2)))
         else:
             self.model.add(LSTM(self.hidden_dim, input_shape=(self.window_len, 2)))
-        self.model.add(Dense(1))
+
+        self.model.add(Dense(10, activation='tanh'))
+        self.model.add(Dense(1, activation='linear'))
+        print(self.model.summary())
 
     def fit_model(self, train_X, train_y, cross_X, cross_y, test_X, test_y):
         self.model.compile(loss='mean_squared_error', optimizer='adam')
@@ -39,27 +42,27 @@ class VanillaLSTM:
         # Train Interpolation
         scaled_y_inter = self.model.predict(X_train)
         y_inter_train = mag_scaler.inverse_transform(scaled_y_inter)
+        single_train_loss = mean_squared_error(y_inter_train[:, 0], mag_list_train[self.window_len + 1: -1])
 
         # Cross Prediction
         scaled_cross_y_pred = self.model.predict(X_cross)
         y_pred_cross = mag_scaler.inverse_transform(scaled_cross_y_pred)
         single_cross_loss = mean_squared_error(y_pred_cross[:, 0], mag_list_cross[self.window_len+1: -1])
-        print('Vanilla LSTM single_cross_loss:' + str(single_cross_loss))
 
 
         # # Test Prediction
         # scaled_test_y_pred = self.model.predict(X_test)
         # y_pred_test = mag_scaler.inverse_transform(scaled_test_y_pred)
 
-        fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
-                                       t_list_cross, mag_list_cross, magerr_list_cross,
-                                       y_inter_train, y_pred_cross)
+        single_fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
+                                              t_list_cross, mag_list_cross, magerr_list_cross,
+                                              y_inter_train, y_pred_cross)
 
-        res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
-                                     t_list_cross, mag_list_cross, magerr_list_cross,
-                                     y_inter_train, y_pred_cross)
+        single_res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
+                                            t_list_cross, mag_list_cross, magerr_list_cross,
+                                            y_inter_train, y_pred_cross)
 
-        return fit_fig, res_fig
+        return single_train_loss, single_cross_loss, single_fit_fig, single_res_fig
 
     def multi_step_prediction(self, t_list_train, mag_list_train, magerr_list_train,
                               t_list_cross, mag_list_cross, magerr_list_cross,
@@ -67,24 +70,24 @@ class VanillaLSTM:
         # Train Interpolation
         scaled_y_inter = self.model.predict(X_train)
         y_inter_train = mag_scaler.inverse_transform(scaled_y_inter)
+        multi_train_loss = mean_squared_error(y_inter_train[:, 0], mag_list_train[self.window_len + 1: -1])
 
         # Cross Prediction
         y_pred_cross = self.one_step(X_cross, mag_scaler)
         multi_cross_loss = mean_squared_error(y_pred_cross[:, 0], mag_list_cross[self.window_len+1: -1])
-        print('Vanilla LSTM multi_cross_loss:' + str(multi_cross_loss))
 
         # # Test Prediction
         # y_pred_test = self.one_step(X_test, mag_scaler)
 
-        fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
-                                       t_list_cross, mag_list_cross, magerr_list_cross,
-                                       y_inter_train, y_pred_cross)
+        multi_fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
+                                             t_list_cross, mag_list_cross, magerr_list_cross,
+                                             y_inter_train, y_pred_cross)
 
-        res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
-                                     t_list_cross, mag_list_cross, magerr_list_cross,
-                                     y_inter_train, y_pred_cross)
+        multi_res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
+                                           t_list_cross, mag_list_cross, magerr_list_cross,
+                                           y_inter_train, y_pred_cross)
 
-        return fit_fig, res_fig
+        return multi_train_loss, multi_cross_loss, multi_fit_fig, multi_res_fig
 
     def one_step(self, X, mag_scaler):
         # Cross Prediction
@@ -119,10 +122,8 @@ class VanillaLSTM:
 
         # Plot the function, the prediction and the 95% confidence interval based on the MSE
         fit_fig = plt.figure(figsize=(12, 8))
-        plt.errorbar(t_list_train, mag_list_train, magerr_list_train,
-                     fmt='k.', markersize=10, label='Training')
-        plt.errorbar(t_list_cross, mag_list_cross, magerr_list_cross,
-                     fmt='k.', markersize=10, label='Validation')
+        plt.errorbar(t_list_train, mag_list_train, magerr_list_train, fmt='k.', markersize=10, label='Training')
+        plt.errorbar(t_list_cross, mag_list_cross, magerr_list_cross, fmt='k.', markersize=10, label='Validation')
         plt.scatter(t_list_train[self.window_len+1: -1], y_inter, color='g')
         plt.scatter(t_list_cross[self.window_len+1: -1], y_pred_cross, color='b')
         plt.xlim(lower_limit, upper_limit)

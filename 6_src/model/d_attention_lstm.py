@@ -1,15 +1,19 @@
 import numpy as np
 from keras.models import Model
-from keras.layers import Bidirectional, Input, LSTM, Softmax
-from keras.layers import RepeatVector, Concatenate, Dense, Dot
+import keras.backend as K
+from keras.layers import Bidirectional, Input, LSTM
+from keras.layers import RepeatVector, Concatenate, Dense, Dot, Activation
+import matplotlib.pyplot as plt
 from utils.phased_lstm import PhasedLSTM
 from model.c_vanilla_lstm import VanillaLSTM
 from sklearn.metrics import mean_squared_error
 
-
-self.model.summary()
-model = Model(inputs=self.model.input,
-              outputs=[self.model.output, self.model.get_layer('attention_vec').output])
+def softmax(x, axis=1):
+    # x = K.l2_normalize(x, axis=axis)
+    # e = K.exp(x - K.max(x, axis=axis, keepdims=True))
+    e = K.exp(x)
+    s = K.sum(e, axis=axis, keepdims=True)
+    return e / s
 
 
 class AttentionLstm(VanillaLSTM):
@@ -22,21 +26,22 @@ class AttentionLstm(VanillaLSTM):
         self.batch_size = batch_size
         self.phased = phased
         self.model = None
+        self.alpha_model = None
 
         self.repeator = RepeatVector(self.window_len)
         self.concatenator = Concatenate(axis=-1)
-        self.densor = Dense(1, activation="relu")
-        self.activator = Softmax(axis=-1)
+        self.densor = Dense(1, activation='tanh')
+        self.activator = Activation(softmax, name='attention_weights')
         self.dotor = Dot(axes=1)
 
     def compute_attention(self, a, s_prev):
         s_prev = self.repeator(s_prev)
         concat = self.concatenator([a, s_prev])
-        e = self.densor(concat, name='attention_vec')  # e: scalar - un-normalized attention weight
-        alphas = self.activator(e)  # alphas: scalar - normalized attention weight
-        context = self.dotor([alphas, a])
+        e = self.densor(concat)
+        alpha = self.activator(e)
+        context = self.dotor([alpha, a])
 
-        return context
+        return context, alpha
 
     def build_model(self):
         # Step 1.1: Input
@@ -46,36 +51,36 @@ class AttentionLstm(VanillaLSTM):
 
         if self.phased == 'phased':
             # Step 1.2: Pre-attention Bidirectional LSTM
-            a = Bidirectional(PhasedLSTM(self.hidden_dim, return_sequences=True))(X)
-
-            # Step 1.3: Post-attention Bidirectional LSTM
-            post_attention_LSTM_cell = LSTM(self.hidden_dim, return_state=True)
+            a = PhasedLSTM(self.hidden_dim, return_sequences=True)(X)
 
         else:
             # Step 1.2: Pre-attention Bidirectional LSTM
-            a = Bidirectional(LSTM(self.hidden_dim, return_sequences=True))(X)
+            a = LSTM(self.hidden_dim, return_sequences=True)(X)
 
-            # Step 1.3: Post-attention Bidirectional LSTM
-            post_attention_LSTM_cell = PhasedLSTM(self.hidden_dim, return_state=True)
+        # Step 1.3: Post-attention Bidirectional LSTM
+        post_attention_LSTM_cell = LSTM(self.hidden_dim, return_state=True)
 
         # Step 1.4: Output
-        output_layer = Dense(1)
+        output_layer = Dense(1, activation='linear')  # TODO: Try softmax activation (change input as well)
 
         # Step 2.1: Initialize
         outputs = []
+        alphas = []
         s = s0
         c = c0
 
         # Step 2.2: Iterate for Ty steps
         for t in range(1):
-            context = self.compute_attention(a, s)
+            context, alpha = self.compute_attention(a, s)
             s, _, c = post_attention_LSTM_cell(context, initial_state=[s, c])
             output = output_layer(s)
             outputs.append(output)
+            alphas.append(alpha)
 
         # Step 3: Create model instance taking three inputs and returning the list of outputs
         self.model = Model(inputs=[X, s0, c0], outputs=outputs)
         self.model.summary()
+        self.alpha_model = Model(inputs=[X, s0, c0], outputs=alphas)
 
     def fit_model(self, X_train, y_train, X_cross, y_cross, X_test, y_test):
         # Initialize State
@@ -90,8 +95,6 @@ class AttentionLstm(VanillaLSTM):
         # adam = Adam(lr=0.01)
         self.model.compile(loss='mean_squared_error', optimizer='adam')
         self.model.fit([X_train, s0_train, c0_train], y_train, epochs=self.epochs, batch_size=self.batch_size)
-        self.model.evaluate([X_cross, s0_cross, c0_cross], y_cross, batch_size=self.batch_size)
-        self.model.evaluate([X_test, s0_test, c0_test], y_test, batch_size=self.batch_size)
 
         return self.model
 
@@ -108,8 +111,10 @@ class AttentionLstm(VanillaLSTM):
 
         # Train Interpolation
         scaled_y_inter = self.model.predict([X_train, s0_train, c0_train])
-        y_inter = mag_scaler.inverse_transform(scaled_y_inter)
-        single_train_loss = mean_squared_error(y_inter[:, 0], magerr_list_train[self.window_len + 1: -1])
+        # attention_weight = np.zeros([50, 50])
+        attention_weight = self.alpha_model.predict([X_train, s0_train, c0_train])
+        y_inter_train = mag_scaler.inverse_transform(scaled_y_inter)
+        single_train_loss = mean_squared_error(y_inter_train[:, 0], mag_list_train[self.window_len + 1: -1])
 
         # Cross Prediction
         scaled_cross_y_pred = self.model.predict([X_cross, s0_cross, c0_cross])
@@ -121,15 +126,17 @@ class AttentionLstm(VanillaLSTM):
         # y_pred_test = mag_scaler.inverse_transform(scaled_test_y_pred)
         # single_test_loss = mean_squared_error(y_pred_test[:, 0], magerr_list_test[self.window_len + 1: -1])
 
-        fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
-                                       t_list_cross, mag_list_cross, magerr_list_cross,
-                                       y_inter, y_pred_cross)
+        single_fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
+                                              t_list_cross, mag_list_cross, magerr_list_cross,
+                                              y_inter_train, y_pred_cross)
 
-        res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
-                                     t_list_cross, mag_list_cross, magerr_list_cross,
-                                     y_inter, y_pred_cross)
+        single_res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
+                                            t_list_cross, mag_list_cross, magerr_list_cross,
+                                            y_inter_train, y_pred_cross)
 
-        return single_train_loss, single_cross_loss, attention_weight_matrix, fit_fig, res_fig
+        attention_fig = self.attention_visualization(attention_weight)
+
+        return single_train_loss, single_cross_loss, attention_fig, single_fit_fig, single_res_fig
 
     def multi_step_prediction(self, t_list_train, mag_list_train, magerr_list_train,
                               t_list_cross, mag_list_cross, magerr_list_cross,
@@ -144,7 +151,8 @@ class AttentionLstm(VanillaLSTM):
 
         # Train Interpolation
         scaled_y_inter = self.model.predict([X_train, s0_train, c0_train])
-        y_inter = mag_scaler.inverse_transform(scaled_y_inter)
+        y_inter_train = mag_scaler.inverse_transform(scaled_y_inter)
+        multi_train_loss = mean_squared_error(y_inter_train[:, 0], mag_list_train[self.window_len + 1: -1])
 
         # Cross Prediction
         y_pred_cross = self.one_step(X_cross, s0_cross, c0_cross, mag_scaler)
@@ -153,15 +161,15 @@ class AttentionLstm(VanillaLSTM):
         # # Test Prediction
         # y_pred_test = self.one_step(X_test, s0_test, c0_test, mag_scaler)
 
-        fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
-                                       t_list_cross, mag_list_cross, magerr_list_cross,
-                                       y_inter, y_pred_cross)
+        multi_fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
+                                             t_list_cross, mag_list_cross, magerr_list_cross,
+                                             y_inter_train, y_pred_cross)
 
-        res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
-                                     t_list_cross, mag_list_cross, magerr_list_cross,
-                                     y_inter, y_pred_cross)
+        multi_res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
+                                           t_list_cross, mag_list_cross, magerr_list_cross,
+                                           y_inter_train, y_pred_cross)
 
-        return multi_cross_loss, fit_fig, res_fig
+        return multi_train_loss, multi_cross_loss, multi_fit_fig, multi_res_fig
 
     def one_step(self, X, s0, c0, mag_scaler):
         # Cross Prediction
@@ -183,3 +191,17 @@ class AttentionLstm(VanillaLSTM):
         y = mag_scaler.inverse_transform(scaled_y)  # shape = (num_step, num_feature)
 
         return y
+
+    @staticmethod
+    def attention_visualization(attention_weight):
+        print('attention')
+        print(np.shape(attention_weight))
+        attention_weight = attention_weight[:, :, 0]
+        attention_fig = plt.figure(figsize=(12, 8))
+        plt.matshow(attention_weight)
+        plt.colorbar()
+        plt.show()
+        plt.xlabel('look back')
+        plt.ylabel('sample')
+
+        return attention_fig

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import carmcmc as cm
+from sklearn.metrics import mean_squared_error
 import json
 np.random.seed(1)
 
@@ -47,18 +48,18 @@ class Carma():
     def simulate_sample_process(self, t_list_train, mag_list_train, magerr_list_train,
                                 t_list_cross, mag_list_cross, magerr_list_cross, n_paths=3):
 
-        fig = plt.figure(1, figsize=(12, 8))
+        sample_fig = plt.figure(figsize=(12, 8))
         plt.errorbar(t_list_train, mag_list_train, yerr=magerr_list_train, fmt='k.')
         plt.errorbar(t_list_cross, mag_list_cross, yerr=magerr_list_cross, fmt='k.')
 
-        # Interpolation plot
+        # Interpolation
         num = (t_list_train.max() - t_list_train.min())/0.2
         t_inter = np.linspace(t_list_train.min(), t_list_train.max(), num=num)
         for i in range(n_paths):
             y_inter = self.model.simulate(t_inter, bestfit='random')
             plt.plot(t_inter, y_inter, color='green', alpha=(1-i/float(n_paths)))
 
-        # Forecasting plot
+        # Prediction
         num = (t_list_cross.max() - t_list_cross.min())/0.2
         t_fore = np.linspace(t_list_cross.min(), t_list_cross.max(), num=num)
         for i in range(n_paths):
@@ -71,28 +72,45 @@ class Carma():
         plt.ylabel('Magnitude')
         plt.title('Simulated Sample Paths')
 
-        return fig
+        return sample_fig
+
+    @staticmethod
+    def match_list(model, t_list):
+        y_pred_num = int((t_list.max() - t_list.min()) / 0.2)
+        t_pred = np.linspace(t_list.min(), t_list.max(), num=y_pred_num)
+        y_pred, y_pred_var = model.predict(t_pred)
+
+        y_pred_match = []
+        y_pred_var_match = []
+        for t in t_list:
+            t_id = min(range(len(t_pred)), key=lambda i: abs(t_pred[i] - t))
+            y_pred_match.append(y_pred[t_id])
+            y_pred_var_match.append(y_pred_var[t_id])
+
+        return t_pred, y_pred, y_pred_var, y_pred_match, y_pred_var_match
 
     def simulate_average_process(self, t_list_train, mag_list_train, magerr_list_train,
                                  t_list_cross, mag_list_cross, magerr_list_cross):
 
-        fig = plt.figure(1, figsize=(12, 8))
+        average_fig = plt.figure(figsize=(12, 8))
         plt.errorbar(t_list_train, mag_list_train, yerr=magerr_list_train, fmt='k.')
         plt.errorbar(t_list_cross, mag_list_cross, yerr=magerr_list_cross, fmt='k.')
 
-        # Interpolation plot
-        num = (t_list_train.max() - t_list_train.min())/0.2
-        t_inter = np.linspace(t_list_train.min(), t_list_train.max(), num=num)
-        y_inter, y_inter_var = self.model.predict(t_inter)
-        plt.plot(t_inter, y_inter, color='green', ls='-')
-        plt.fill_between(t_inter, y1=y_inter + np.sqrt(y_inter_var), y2=y_inter - np.sqrt(y_inter_var), color='limegreen', alpha=0.5)
+        # Interpolation
+        inter_train_match_return = self.match_list(self.model, t_list_train)
+        t_inter_train, y_inter_train, y_inter_train_var, y_inter_train_match, y_inter_train_var_match = inter_train_match_return
+        train_loss = mean_squared_error(y_inter_train_match, mag_list_train)
+        plt.plot(t_inter_train, y_inter_train, color='green', ls='-')
+        plt.fill_between(t_inter_train, y1=y_inter_train + np.sqrt(y_inter_train_var),
+                         y2=y_inter_train - np.sqrt(y_inter_train_var), color='limegreen', alpha=0.5)
 
-        # Forecasting plot
-        num = (t_list_cross.max() - t_list_cross.min())/0.2
-        t_fore = np.linspace(t_list_cross.min(), t_list_cross.max(), num=num)
-        y_fore, y_fore_var = self.model.predict(t_fore)
-        plt.plot(t_fore, y_fore, color='blue', ls='-')
-        plt.fill_between(t_fore, y1=y_fore + np.sqrt(y_fore_var), y2=y_fore - np.sqrt(y_fore_var), color='DodgerBlue', alpha=0.5)
+        # Prediction
+        pred_cross_match_return = self.match_list(self.model, t_list_cross)
+        t_pred_cross, y_pred_cross, y_pred_cross_var, y_pred_cross_match, y_pred_cross_var_match = pred_cross_match_return
+        cross_loss = mean_squared_error(y_pred_cross_match, mag_list_cross)
+        plt.plot(t_pred_cross, y_pred_cross, color='blue', ls='-')
+        plt.fill_between(t_pred_cross, y1=y_pred_cross + np.sqrt(y_pred_cross_var),
+                         y2=y_pred_cross - np.sqrt(y_pred_cross_var), color='DodgerBlue', alpha=0.5)
 
         # Decoration
         plt.xlim(t_list_train.min(), t_list_cross.max())
@@ -100,5 +118,5 @@ class Carma():
         plt.ylabel('Magnitude')
         plt.title('Simulated Average Paths')
 
-        return fig
+        return train_loss, cross_loss, average_fig
 

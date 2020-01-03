@@ -89,16 +89,6 @@ class BasicDataProcessor:
         with open(os.path.join(self.basic_data_folder, self.basic_data_name), 'wb') as handle:
             pickle.dump(data_dict, handle, protocol=2)
 
-class GPDataProcessor:
-    def __init__(self):
-
-        # prepare_rescale_mag():
-        # inputs: basic data
-        # output: X_shape = (num_steps, num_features)
-        # output: y_shape = (num_steps, )
-        pass
-    pass
-
 class LSTMDataProcessor:
 
     def __init__(self, crts_id):
