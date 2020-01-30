@@ -13,7 +13,7 @@
   "attention_lstm":{
     "window_len": 10,
     "hidden_dim": 40,
-    "epochs": 1200,
+    "epochs": 300,
     "batch_size": 256
   },
 

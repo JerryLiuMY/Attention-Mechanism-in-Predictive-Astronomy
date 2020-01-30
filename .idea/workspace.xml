@@ -2,24 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/model/e_baysian_lstm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/Attention-Mechanism-in-Predictive-Astronomy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Attention-Mechanism-in-Predictive-Astronomy.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/10_misc/right_lstm_layer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/10_misc/test_lstm_layer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/.ipynb_checkpoints/main_pipeline-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/.ipynb_checkpoints/main_pipeline-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/.ipynb_checkpoints/test-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/.ipynb_checkpoints/test-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/utils/data_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/config/model_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/config/model_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/evaluation/aka.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/global_setting.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/global_setting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/main_pipeline.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/main_pipeline.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/main_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/main_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/a_carma.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/a_carma.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/b_gp.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/b_gp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/c_vanilla_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/model/d_attention_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/model/d_attention_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/test.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/6_src/utils/data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/6_src/utils/data_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/model_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/model_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main_pipeline.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main_pipeline_py2.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mc_dnn_co2.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mc_dnn_random.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/misc/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/misc/mc_dnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/mc_dnn/mc_dnn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/e_bayssian_lstm.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/summary/Weekly Summary 13th Dec.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/summary/Weekly Summary 1st Dec.docx" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,6 +43,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.notebooks.jupyter.connections.configuration.JupyterServerConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/mc_dnn" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -59,7 +60,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.data_generator">
+  <component name="RunManager" selected="Python.main">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Attention-Mechanism-in-Predictive-Astronomy" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -104,6 +105,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Attention-Mechanism-in-Predictive-Astronomy" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main_pipeline" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Attention-Mechanism-in-Predictive-Astronomy" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -128,6 +151,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.data_generator" />
         <item itemvalue="Python.main_pipeline" />
       </list>
@@ -148,6 +172,8 @@
       <workItem from="1575465113696" duration="42128000" />
       <workItem from="1576246683834" duration="10227000" />
       <workItem from="1576790937730" duration="1000" />
+      <workItem from="1578423794759" duration="55000" />
+      <workItem from="1578670848735" duration="7776000" />
     </task>
     <servers />
   </component>

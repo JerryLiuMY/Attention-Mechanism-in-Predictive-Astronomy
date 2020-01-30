@@ -43,22 +43,6 @@ class DNN:
         # self.tau = [0.25, 0.5, 0.75]
         # self.dropout = [0.005, 0.01, 0.05, 0.1]
 
-    def build_dnn_model(self, X_train, y_train):
-        N = X_train.shape[0]
-        reg = self.lengthscale ** 2 * (1 - self.dropout) / (2. * N * self.tau)
-
-        inputs = Input(shape=(X_train.shape[1],))
-        inter = Dense(self.n_units, activation='relu', kernel_regularizer=l2(reg))(inputs)
-        for _ in range(self.n_layers - 1):
-            inter = Dense(self.n_units, activation='relu', kernel_regularizer=l2(reg))(inter)
-        outputs = Dense(y_train.shape[1], kernel_regularizer=l2(reg))(inter)
-        model = Model(inputs, outputs)
-
-        model.compile(loss='mean_squared_error', optimizer='adam')
-        model.fit(X_train, y_train, batch_size=self.batch_size, epochs=self.epochs, verbose=1)
-
-        return model
-
     def build_mc_dnn_model(self, X_train, y_train):
         N = X_train.shape[0]
         reg = self.lengthscale ** 2 * (1 - self.dropout) / (2. * N * self.tau)

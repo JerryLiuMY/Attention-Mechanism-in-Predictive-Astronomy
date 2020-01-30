@@ -16,6 +16,7 @@ from global_setting import result_csv
 from model.b_gp import GP
 from model.c_vanilla_lstm import VanillaLSTM
 from model.d_attention_lstm import AttentionLstm
+from model.e_baysian_lstm import BayesianLSTM
 from utils.phased_lstm import PhasedLSTM
 
 def initialize_csv():
@@ -351,6 +352,27 @@ class MainPipeline:
 
         result_df.to_csv(result_csv)
 
+    def run_bayesian_lstm(self, train=True):
+        from keras.models import load_model
+        attention_lstm_model_config = self.model_config["attention_lstm"]
+        window_len = self.attention_lstm_model_config["window_len"]
+        epochs = self.attention_lstm_model_config["epochs"]
+        batch_size = self.attention_lstm_model_config["batch_size"]
+        hidden_dim = self.attention_lstm_model_config["hidden_dim"]
+
+        bayesian_lstm = BayesianLSTM(window_len, hidden_dim, epochs, batch_size, 1000, 0.2, 'standard')
+        model = bayesian_lstm.build_model(self.train_X, self.train_y)
+        model.save('/Users/mingyu/Desktop/model.h5')
+        model = load_model('/Users/mingyu/Desktop/model.h5')
+        print('fitted')
+
+        y_train_std, y_cross_std, single_train_loss, single_cross_loss, single_fit_fig, single_res_fig = \
+            bayesian_lstm.single_step_prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+                                                 self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
+                                                 self.train_X, self.cross_X, self.test_X, self.mag_scaler, model)
+
+        return y_train_std, y_cross_std
+
     # ----------------------------------- Evaluation -----------------------------------
     @staticmethod
     def mean_std():
@@ -364,21 +386,16 @@ class MainPipeline:
 
 
 if __name__ == 'main':
-    # initialize_result_csv()
 
     for lightcurve in lightcurve_list:
         print(lightcurve)
         instance = MainPipeline(lightcurve)
-
-        # Prepare Data
-        # instance.prepare_all_data()
-        # instance.prepare_individual_data()
-
-        # Load Data
-        # instance.load_individual_data()
+        instance.prepare_individual_data()
+        instance.load_individual_data()
 
         # Run Model
         # instance.run_carama()
         # instance.run_gp()
         # instance.run_vanilla_lstm()
-        instance.run_attention_lstm()
+        # instance.run_attention_lstm()
+        # y_train_std, y_cross_pred = instance.run_bayesian_lstm()
