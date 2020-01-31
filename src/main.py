@@ -7,7 +7,7 @@ import joblib
 from keras.models import load_model
 from utils.data_processor import BasicDataProcessor, LSTMDataProcessor
 from global_setting import DATA_FOLDER, lightcurve_list
-from global_setting import raw_data_folder, basic_data_folder, carma_data_folder, vanilla_lstm_data_folder
+from global_setting import raw_data_folder, basic_data_folder, carma_data_folder, lstm_data_folder
 from global_setting import carma_model_folder, gp_model_folder, vanilla_lstm_model_folder, attention_lstm_model_folder
 from global_setting import carma_figure_folder, gp_figure_folder, vanilla_lstm_figure_folder, attention_lstm_figure_folder
 from global_setting import result_csv
@@ -50,15 +50,15 @@ class MainPipeline:
         self.raw_data_folder = raw_data_folder
         self.basic_data_folder = basic_data_folder
         self.carma_data_folder = carma_data_folder
-        self.vanilla_lstm_data_folder = vanilla_lstm_data_folder
+        self.vanilla_lstm_data_folder = lstm_data_folder
 
         # LSTM Data Name
-        self.vanilla_lstm_window_len = self.vanilla_lstm_model_config["window_len"]
+        self.lstm_window_len = self.lstm_model_config["window_len"]
         self.rescaled_mag_name = self.crts_id + '_rescaled_mag' + '.pkl'
         self.mag_scaler_name = self.crts_id + '_mag_scaler' + '.pkl'
         self.rescaled_delta_t_name = self.crts_id + '_rescaled_delta_t' + '.pkl'
         self.delta_t_scaler_name = self.crts_id + '_delta_t_scaler' + '.pkl'
-        self.standard_X_y_name = self.crts_id + '_X_y' + '_window_len_' + str(self.vanilla_lstm_window_len) + '.plk'
+        self.standard_X_y_name = self.crts_id + '_X_y' + '_window_len_' + str(self.lstm_window_len) + '.plk'
 
         # Model Folder
         self.carma_model_folder = carma_model_folder
@@ -79,8 +79,7 @@ class MainPipeline:
     def load_model_config(self):
         self.model_config = json.load(open('./config/model_config.json'))
         self.carma_model_config = self.model_config["carma"]
-        self.vanilla_lstm_model_config = self.model_config["vanilla_lstm"]
-        self.attention_lstm_model_config = self.model_config["attention_lstm"]
+        self.lstm_model_config = self.model_config["lstm"]
 
     def load_crts_list(self):
         crts_list = []
@@ -111,7 +110,7 @@ class MainPipeline:
         lstm_data_processor = LSTMDataProcessor(self.crts_id)
         lstm_data_processor.prepare_rescale_mag()
         lstm_data_processor.prepare_rescale_delta_t()
-        lstm_data_processor.prepare_vanilla_lstm_data()
+        lstm_data_processor.prepare_lstm_data()
 
     # ----------------------------------- Load Data -----------------------------------
     def load_individual_data(self):
@@ -224,69 +223,68 @@ class MainPipeline:
 
         result_df.to_csv(result_csv)
 
-    def run_vanilla_lstm(self, train=True):
+    def run_lstm(self, type, phased, train=True):
+        # Model config
+        window_len = self.lstm_model_config["window_len"]
+        epochs = self.lstm_model_config["epochs"]
+        batch_size = self.lstm_model_config["batch_size"]
+        hidden_dim = self.lstm_model_config["hidden_dim"]
         result_df = pd.read_csv(result_csv, index_col=0, encoding='utf-8')
-        for phased in ['standard', 'phased']:
 
-            if phased == 'phased':
-                phase_name = '_phased'
-            else:
-                phase_name = '_standard'
+        phase_name = phased
+        type_name = type + '_lstm'
+        model_map = {'vanilla': VanillaLSTM,
+                     'attention': AttentionLstm,
+                     'bayesian': BayesianLSTM}
 
-            # Model config
-            window_len = self.vanilla_lstm_model_config["window_len"]
-            epochs = self.vanilla_lstm_model_config["epochs"]
-            batch_size = self.vanilla_lstm_model_config["batch_size"]
-            hidden_dim = self.vanilla_lstm_model_config["hidden_dim"]
+        # Model, figure & df name
+        lstm_model_name = '_'.join([self.crts_id, type_name, phase_name, 'model.h5'])
+        lstm_single_fit_figure_name = '_'.join([self.crts_id, type_name, phase_name, 'single_fit_figure.png'])
+        lstm_single_res_figure_name = '_'.join([self.crts_id, type_name, phase_name, 'single_res_figure.png'])
+        lstm_multi_fit_figure_name = '_'.join([self.crts_id, type_name, phase_name, 'multi_fit_figure.png'])
+        lstm_multi_res_figure_name = '_'.join([self.crts_id, type_name, phase_name, 'multi_res_figure.png'])
 
-            # Model, figure & df name
-            vanilla_lstm_model_name = self.crts_id + '_vanilla_lstm' + phase_name + '_model.h5'
-            vanilla_lstm_single_fit_figure_name = self.crts_id + '_vanilla_lstm' + phase_name + '_single_fit_figure.png'
-            vanilla_lstm_single_res_figure_name = self.crts_id + '_vanilla_lstm' + phase_name + '_single_res_figure.png'
-            vanilla_lstm_multi_fit_figure_name = self.crts_id + '_vanilla_lstm' + phase_name + '_multi_fit_figure.png'
-            vanilla_lstm_multi_res_figure_name = self.crts_id + '_vanilla_lstm' + phase_name + '_multi_res_figure.png'
+        lstm_single_train_loss_name = '_'.join([type_name, phase_name, 'single_train_loss'])
+        lstm_single_cross_loss_name = '_'.join([type_name, phase_name, 'single_cross_loss'])
+        lstm_multi_train_loss_name = '_'.join([type_name, phase_name, 'multi_train_loss'])
+        lstm_multi_cross_loss_name = '_'.join([type_name, phase_name, 'multi_cross_loss'])
 
-            vanilla_lstm_single_train_loss_name = 'vanilla' + phase_name + '_single_train_loss'
-            vanilla_lstm_single_cross_loss_name = 'vanilla' + phase_name + '_single_cross_loss'
-            vanilla_lstm_multi_train_loss_name = 'vanilla' + phase_name + '_multi_train_loss'
-            vanilla_lstm_multi_cross_loss_name = 'vanilla' + phase_name + '_multi_cross_loss'
+        # Build & Load Model
+        lstm = VanillaLSTM(window_len, hidden_dim, epochs, batch_size, phased=phased)
 
-            # Build & Load Model
-            vanilla_lstm = VanillaLSTM(window_len, hidden_dim, epochs, batch_size, phased=phased)
+        if train is True:
+            print('fitting %s model' % lstm_model_name)
+            lstm.build_model()
+            vanilla_lstm_model = lstm.fit_model(self.train_X, self.train_y, self.cross_X, self.cross_y, self.test_X, self.test_y)
+            vanilla_lstm_model.save(os.path.join(self.vanilla_lstm_model_folder, lstm_model_name))
 
-            if train is True:
-                print('fitting %s model' % vanilla_lstm_model_name)
-                vanilla_lstm.build_model()
-                vanilla_lstm_model = vanilla_lstm.fit_model(self.train_X, self.train_y, self.cross_X, self.cross_y, self.test_X, self.test_y)
-                vanilla_lstm_model.save(os.path.join(self.vanilla_lstm_model_folder, vanilla_lstm_model_name))
+        else:
+            lstm.model = load_model(os.path.join(self.vanilla_lstm_model_folder, lstm_model_name),
+                                    custom_objects={'PhasedLSTM': PhasedLSTM})
+            print('vanilla lstm model %s is loaded' % lstm_model_name)
 
-            else:
-                vanilla_lstm.model = load_model(os.path.join(self.vanilla_lstm_model_folder, vanilla_lstm_model_name),
-                                                custom_objects={'PhasedLSTM': PhasedLSTM})
-                print('vanilla lstm model %s is loaded' % vanilla_lstm_model_name)
+        # Run Single Step Simulation
+        single_return = lstm.single_step_prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+                                                    self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
+                                                    self.train_X, self.cross_X, self.test_X, self.mag_scaler)
+        single_train_loss, single_cross_loss, single_fit_fig, single_res_fig = single_return
+        result_df.loc['id_' + str(self.crts_id), lstm_single_train_loss_name] = single_train_loss
+        result_df.loc['id_' + str(self.crts_id), lstm_single_cross_loss_name] = single_cross_loss
+        single_fit_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, lstm_single_fit_figure_name))
+        single_res_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, lstm_single_res_figure_name))
 
-            # Run Single Step Simulation
-            single_return = vanilla_lstm.single_step_prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
-                                                                self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
-                                                                self.train_X, self.cross_X, self.test_X, self.mag_scaler)
-            single_train_loss, single_cross_loss, single_fit_fig, single_res_fig = single_return
-            result_df.loc['id_'+str(self.crts_id), vanilla_lstm_single_train_loss_name] = single_train_loss
-            result_df.loc['id_'+str(self.crts_id), vanilla_lstm_single_cross_loss_name] = single_cross_loss
-            single_fit_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, vanilla_lstm_single_fit_figure_name))
-            single_res_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, vanilla_lstm_single_res_figure_name))
-
-
-            # Run Multiple Step Simulation
-            multi_return = vanilla_lstm.multi_step_prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
-                                                              self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
-                                                              self.train_X, self.cross_X, self.test_X, self.mag_scaler)
-            multi_train_loss, multi_cross_loss, multi_fit_fig, multi_res_fig = multi_return
-            result_df.loc['id_'+str(self.crts_id), vanilla_lstm_multi_train_loss_name] = multi_train_loss
-            result_df.loc['id_'+str(self.crts_id), vanilla_lstm_multi_cross_loss_name] = multi_cross_loss
-            multi_fit_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, vanilla_lstm_multi_fit_figure_name))
-            multi_res_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, vanilla_lstm_multi_res_figure_name))
+        # Run Multiple Step Simulation
+        multi_return = lstm.multi_step_prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+                                                  self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
+                                                  self.train_X, self.cross_X, self.test_X, self.mag_scaler)
+        multi_train_loss, multi_cross_loss, multi_fit_fig, multi_res_fig = multi_return
+        result_df.loc['id_'+str(self.crts_id), lstm_multi_train_loss_name] = multi_train_loss
+        result_df.loc['id_'+str(self.crts_id), lstm_multi_cross_loss_name] = multi_cross_loss
+        multi_fit_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, lstm_multi_fit_figure_name))
+        multi_res_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, lstm_multi_res_figure_name))
 
         result_df.to_csv(result_csv)
+
 
     def run_attention_lstm(self, train=True):
         result_df = pd.read_csv(result_csv, index_col=0, encoding='utf-8')

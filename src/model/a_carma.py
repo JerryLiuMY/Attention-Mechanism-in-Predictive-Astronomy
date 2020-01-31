@@ -91,32 +91,10 @@ class Carma():
 
     def simulate_average_process(self, t_list_train, mag_list_train, magerr_list_train,
                                  t_list_cross, mag_list_cross, magerr_list_cross):
-
-        average_fig = plt.figure(figsize=(12, 8))
-        plt.errorbar(t_list_train, mag_list_train, yerr=magerr_list_train, fmt='k.')
-        plt.errorbar(t_list_cross, mag_list_cross, yerr=magerr_list_cross, fmt='k.')
-
-        # Interpolation
         inter_train_match_return = self.match_list(self.model, t_list_train)
-        t_inter_train, y_inter_train, y_inter_train_var, y_inter_train_match, y_inter_train_var_match = inter_train_match_return
-        train_loss = mean_squared_error(y_inter_train_match, mag_list_train)
-        plt.plot(t_inter_train, y_inter_train, color='green', ls='-')
-        plt.fill_between(t_inter_train, y1=y_inter_train + np.sqrt(y_inter_train_var),
-                         y2=y_inter_train - np.sqrt(y_inter_train_var), color='limegreen', alpha=0.5)
+        t_pred_train, y_pred_train, y_pred_train_var, y_pred_train_match, y_pred_train_var_match = inter_train_match_return
 
-        # Prediction
         pred_cross_match_return = self.match_list(self.model, t_list_cross)
         t_pred_cross, y_pred_cross, y_pred_cross_var, y_pred_cross_match, y_pred_cross_var_match = pred_cross_match_return
-        cross_loss = mean_squared_error(y_pred_cross_match, mag_list_cross)
-        plt.plot(t_pred_cross, y_pred_cross, color='blue', ls='-')
-        plt.fill_between(t_pred_cross, y1=y_pred_cross + np.sqrt(y_pred_cross_var),
-                         y2=y_pred_cross - np.sqrt(y_pred_cross_var), color='DodgerBlue', alpha=0.5)
 
-        # Decoration
-        plt.xlim(t_list_train.min(), t_list_cross.max())
-        plt.xlabel('Time[days]')
-        plt.ylabel('Magnitude')
-        plt.title('Simulated Average Paths')
-
-        return train_loss, cross_loss, average_fig
 

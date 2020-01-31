@@ -32,7 +32,7 @@ carma_data_folder = os.path.join(DATA_FOLDER, 'processed_data', 'basic')
 
 
 # vanilla_lstm_data
-vanilla_lstm_data_folder = os.path.join(DATA_FOLDER, 'processed_data', 'vanilla_lstm')
+lstm_data_folder = os.path.join(DATA_FOLDER, 'processed_data', 'vanilla_lstm')
 # rescaled_mag_name = 'str(crts_id)_rescaled_mag.pkl'
 # mag_scaler_name = 'str(crts_id)_mag_scaler.pkl'
 # rescaled_delta_t_name = 'str(crts_id)_rescaled_delta_t.pkl'

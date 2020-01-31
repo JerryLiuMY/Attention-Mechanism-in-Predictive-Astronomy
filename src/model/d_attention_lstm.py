@@ -17,7 +17,7 @@ def softmax(x, axis=1):
 
 
 class AttentionLstm(VanillaLSTM):
-    def __init__(self, window_len, hidden_dim, epochs, batch_size, phased='phased'):
+    def __init__(self, window_len, hidden_dim, epochs, batch_size, phased):
         super().__init__(window_len, hidden_dim, epochs, batch_size, phased)
         # Configuration
         self.window_len = window_len

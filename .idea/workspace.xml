@@ -2,20 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/model/e_baysian_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Attention-Mechanism-in-Predictive-Astronomy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Attention-Mechanism-in-Predictive-Astronomy.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/plot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/config/model_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/model_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main_pipeline.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main_pipeline_py2.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mc_dnn_co2.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mc_dnn_random.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/misc/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/misc/mc_dnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/mc_dnn/mc_dnn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/e_bayssian_lstm.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/summary/Weekly Summary 13th Dec.docx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/summary/Weekly Summary 1st Dec.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/global_setting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/global_setting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/a_carma.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/a_carma.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/c_vanilla_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/c_vanilla_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/d_attention_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/d_attention_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/e_baysian_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/e_baysian_lstm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/data_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/visualization.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -174,6 +171,7 @@
       <workItem from="1576790937730" duration="1000" />
       <workItem from="1578423794759" duration="55000" />
       <workItem from="1578670848735" duration="7776000" />
+      <workItem from="1580419700846" duration="13845000" />
     </task>
     <servers />
   </component>

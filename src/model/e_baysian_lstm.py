@@ -6,12 +6,12 @@ from utils.phased_lstm import PhasedLSTM
 from sklearn.metrics import mean_squared_error
 from keras import Input, Model
 from keras.layers import Dropout
-
 np.random.seed(1)
+
 
 class BayesianLSTM:
     # The model is now trained individually for each sample, so we feed in the crts_id for now
-    def __init__(self, window_len, hidden_dim, epochs, batch_size, walkers, dropout, phased='phased'):
+    def __init__(self, window_len, hidden_dim, epochs, batch_size, phased, walkers, dropout):
         # Configuration
         self.window_len = window_len
         self.hidden_dim = hidden_dim

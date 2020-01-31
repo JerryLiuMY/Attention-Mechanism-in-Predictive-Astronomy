@@ -4,16 +4,11 @@
     "q": 0,
     "nwalkers": 1000
   },
-  "vanilla_lstm": {
+
+  "lstm": {
     "window_len": 10,
     "hidden_dim": 40,
     "epochs": 1200,
-    "batch_size": 256
-  },
-  "attention_lstm":{
-    "window_len": 10,
-    "hidden_dim": 40,
-    "epochs": 300,
     "batch_size": 256
   },
 
