@@ -98,8 +98,8 @@ class AttentionLstm(VanillaLSTM):
 
         return self.model
 
-    def single_step_prediction(self, t_list_train, mag_list_train, magerr_list_train,
-                               t_list_cross, mag_list_cross, magerr_list_cross,
+    def single_step_prediction(self, t_train, mag_train, magerr_train,
+                               t_cross, mag_cross, magerr_cross,
                                X_train, X_cross, X_test, mag_scaler):
         # Initialize State
         s0_train = np.zeros((np.shape(X_train)[0], self.hidden_dim))
@@ -114,32 +114,32 @@ class AttentionLstm(VanillaLSTM):
         # attention_weight = np.zeros([50, 50])
         attention_weight = self.alpha_model.predict([X_train, s0_train, c0_train])
         y_inter_train = mag_scaler.inverse_transform(scaled_y_inter)
-        single_train_loss = mean_squared_error(y_inter_train[:, 0], mag_list_train[self.window_len + 1: -1])
+        single_train_loss = mean_squared_error(y_inter_train[:, 0], mag_train[self.window_len + 1: -1])
 
         # Cross Prediction
         scaled_cross_y_pred = self.model.predict([X_cross, s0_cross, c0_cross])
         y_pred_cross = mag_scaler.inverse_transform(scaled_cross_y_pred)
-        single_cross_loss = mean_squared_error(y_pred_cross[:, 0], mag_list_cross[self.window_len + 1: -1])
+        single_cross_loss = mean_squared_error(y_pred_cross[:, 0], mag_cross[self.window_len + 1: -1])
 
         # # Test Prediction
         # scaled_test_y_pred = self.model.predict([X_test, s0_test, c0_test])
         # y_pred_test = mag_scaler.inverse_transform(scaled_test_y_pred)
         # single_test_loss = mean_squared_error(y_pred_test[:, 0], magerr_list_test[self.window_len + 1: -1])
 
-        single_fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
-                                              t_list_cross, mag_list_cross, magerr_list_cross,
+        single_fit_fig = self.plot_prediction(t_train, mag_train, magerr_train,
+                                              t_cross, mag_cross, magerr_cross,
                                               y_inter_train, y_pred_cross)
 
-        single_res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
-                                            t_list_cross, mag_list_cross, magerr_list_cross,
+        single_res_fig = self.plot_residual(t_train, mag_train, magerr_train,
+                                            t_cross, mag_cross, magerr_cross,
                                             y_inter_train, y_pred_cross)
 
         attention_fig = self.attention_visualization(attention_weight)
 
         return single_train_loss, single_cross_loss, attention_fig, single_fit_fig, single_res_fig
 
-    def multi_step_prediction(self, t_list_train, mag_list_train, magerr_list_train,
-                              t_list_cross, mag_list_cross, magerr_list_cross,
+    def multi_step_prediction(self, t_train, mag_train, magerr_train,
+                              t_cross, mag_cross, magerr_cross,
                               X_train, X_cross, X_test, mag_scaler):
         # Initialize State
         s0_train = np.zeros((np.shape(X_train)[0], self.hidden_dim))
@@ -152,21 +152,21 @@ class AttentionLstm(VanillaLSTM):
         # Train Interpolation
         scaled_y_inter = self.model.predict([X_train, s0_train, c0_train])
         y_inter_train = mag_scaler.inverse_transform(scaled_y_inter)
-        multi_train_loss = mean_squared_error(y_inter_train[:, 0], mag_list_train[self.window_len + 1: -1])
+        multi_train_loss = mean_squared_error(y_inter_train[:, 0], mag_train[self.window_len + 1: -1])
 
         # Cross Prediction
         y_pred_cross = self.one_step(X_cross, s0_cross, c0_cross, mag_scaler)
-        multi_cross_loss = mean_squared_error(y_pred_cross[:, 0], mag_list_cross[self.window_len+1: -1])
+        multi_cross_loss = mean_squared_error(y_pred_cross[:, 0], mag_cross[self.window_len + 1: -1])
 
         # # Test Prediction
         # y_pred_test = self.one_step(X_test, s0_test, c0_test, mag_scaler)
 
-        multi_fit_fig = self.plot_prediction(t_list_train, mag_list_train, magerr_list_train,
-                                             t_list_cross, mag_list_cross, magerr_list_cross,
+        multi_fit_fig = self.plot_prediction(t_train, mag_train, magerr_train,
+                                             t_cross, mag_cross, magerr_cross,
                                              y_inter_train, y_pred_cross)
 
-        multi_res_fig = self.plot_residual(t_list_train, mag_list_train, magerr_list_train,
-                                           t_list_cross, mag_list_cross, magerr_list_cross,
+        multi_res_fig = self.plot_residual(t_train, mag_train, magerr_train,
+                                           t_cross, mag_cross, magerr_cross,
                                            y_inter_train, y_pred_cross)
 
         return multi_train_loss, multi_cross_loss, multi_fit_fig, multi_res_fig

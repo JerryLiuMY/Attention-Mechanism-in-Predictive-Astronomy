@@ -5,7 +5,7 @@ import os
 import json
 import joblib
 import pickle
-from global_setting import raw_data_folder, basic_data_folder, carma_data_folder, lstm_data_folder
+from global_setting import raw_data_folder, basic_data_folder, lstm_data_folder, data_config, model_config
 from sklearn.preprocessing import MinMaxScaler
 np.random.seed(1)
 
@@ -15,39 +15,14 @@ class BasicDataProcessor:
         self.crts_id = crts_id
         self.load_data_config()
         self.load_data_folder()
-        self.load_data_name()
 
     def load_data_config(self):
-        self.data_config = json.load(open('./config/data_config.json'))
-        self.train_percent = self.data_config['data_loader']['train_partition']
-        self.cross_percent = self.data_config['data_loader']['cross_partition']
-        self.model_config = json.load(open('./config/model_config.json'))
+        self.train_ratio = data_config['data_loader']['train_ratio']
+        self.cross_ratio = data_config['data_loader']['cross_ratio']
 
     def load_data_folder(self):
         self.raw_data_folder = raw_data_folder
         self.basic_data_folder = basic_data_folder
-
-    def load_data_name(self):
-        self.basic_data_name = str(self.crts_id) + '.pkl'
-
-        # self.prepare_basic_data()
-        # inputs: len(content['Mag']) = (num_data, )
-        # inputs: len(content['Magerr']) = (num_data, )
-        # inputs: len(content['MJD']) = (num_data, )
-        # output: shape(mag_list_train) = (num_train_data, )
-        # output: shape(mag_cross_train) = (num_cross_data, )
-        # output: shape(mag_test_train) = (num_test_data, )
-
-    def partition_index(self, length):
-        p1 = int(math.floor(length * self.train_percent))
-        p2 = int(math.floor(length * (self.train_percent + self.cross_percent)))
-
-        index_list = list(range(length))
-        index_train = np.array(index_list[0:p1])
-        index_cross = np.array(index_list[p1:p2])
-        index_test = np.array(index_list[p2:])
-
-        return index_train, index_cross, index_test
 
     def prepare_basic_data(self):
         with open(os.path.join(self.raw_data_folder, str(self.crts_id) + '.csv')) as handle:
@@ -63,24 +38,28 @@ class BasicDataProcessor:
             mjd_list = mjd_list_[index_list]
             t_list = mjd_list - mjd_list.min()
 
-        # Save Individual Data
+        # Save Basic Data
         index_train, index_cross, index_test = self.partition_index(len(mag_list))
-        t_train = t_list[index_train]
-        t_cross = t_list[index_cross]
-        t_test = t_list[index_test]
-        mag_train = mag_list[index_train]
-        mag_cross = mag_list[index_cross]
-        mag_test = mag_list[index_test]
-        magerr_train = magerr_list[index_train]
-        magerr_cross = magerr_list[index_cross]
-        magerr_test = magerr_list[index_test]
-
+        t_train, t_cross, t_test = t_list[index_train], t_list[index_cross], t_list[index_test]
+        mag_train, mag_cross, mag_test = mag_list[index_train], mag_list[index_cross], mag_list[index_test]
+        magerr_train, magerr_cross, magerr_test = magerr_list[index_train], magerr_list[index_cross], magerr_list[index_test]
         data_dict = {'t_train': t_train, 't_cross': t_cross, 't_test': t_test,
                      'mag_train': mag_train, 'mag_cross': mag_cross, 'mag_test': mag_test,
                      'magerr_train': magerr_train, 'magerr_cross': magerr_cross, 'magerr_test': magerr_test}
 
-        with open(os.path.join(self.basic_data_folder, self.basic_data_name), 'wb') as handle:
+        with open(os.path.join(self.basic_data_folder, str(self.crts_id) + '.pkl'), 'wb') as handle:
             pickle.dump(data_dict, handle, protocol=2)
+
+    def partition_index(self, length):
+        p1 = int(math.floor(length * self.train_ratio))
+        p2 = int(math.floor(length * (self.train_ratio + self.cross_ratio)))
+
+        index_list = list(range(length))
+        index_train = np.array(index_list[0:p1])
+        index_cross = np.array(index_list[p1:p2])
+        index_test = np.array(index_list[p2:])
+
+        return index_train, index_cross, index_test
 
 
 class LSTMDataProcessor:
@@ -90,9 +69,8 @@ class LSTMDataProcessor:
         self.load_data_folder()
 
     def load_config(self):
-        self.data_config = json.load(open('./config/data_config.json'))
-        self.train_percent = self.data_config['data_loader']['train_partition']
-        self.cross_percent = self.data_config['data_loader']['cross_partition']
+        self.train_percent = data_config['data_loader']['train_ratio']
+        self.cross_percent = data_config['data_loader']['cross_ratio']
         self.model_config = json.load(open('./config/model_config.json'))
 
     def load_data_folder(self):
@@ -100,42 +78,10 @@ class LSTMDataProcessor:
         self.basic_data_folder = basic_data_folder
         self.lstm_data_folder = lstm_data_folder
 
-        # self.prepare_rescale_mag()
-        # input: shape(mag_list_train) = (num_train_data, )
-        # input: shape(mag_list_cross) = (num_cross_data, )
-        # input: shape(mag_list_test) = (num_test_data, )
-        # output: shape(scaled_mag_list_train) = (num_train_data - 1, 1)
-        # output: shape(scaled_mag_list_cross) = (num_cross_data - 1, 1)
-        # output: shape(scaled_mag_list_test) = (num_test_data - 1, 1)
-
-        # self.prepare_rescale_delta_t()
-        # input: shape(t_list_train) = (num_train_data, )
-        # input: shape(t_list_cross) = (num_cross_data, )
-        # input: shape(t_list_test) = (num_test_data, )
-        # output: shape(scaled_delta_t_list_train) = (num_train_data - 1, 1)
-        # output: shape(scaled_delta_t_list_cross) = (num_cross_data - 1, 1)
-        # output: shape(scaled_delta_t_list_test) = (num_test_data - 1, 1)
-
-        # self.create_X_y()
-        # input: shape(scaled_mag_list) = (num_data - 1, 1)
-        # input: shape(scaled_delta_t_list) = (num_data - 1, 1)
-        # output: shape(X) = (num_data - window_len - 2, window_len, 2)
-        # output: shape(y) = (num_data - window_len - 2, 1)
-
-        # self.prepare_lstm_data()
-        # input: scaled_mag_list & scaled_delta_t_list
-        # output: shape(X_train) = (num_train_data - window_len - 2, window_len, 2)
-        # output: shale(y_train) = (num_train_data - window_len - 2, 1)
-        # output: shape(X_cross) = (num_cross_data - window_len - 2, window_len, 2)
-        # output: shale(y_cross) = (num_cross_data - window_len - 2, 1)
-        # output: shape(X_test) = (num_test_data - window_len - 2, window_len, 2)
-        # output: shale(y_test) = (num_test_data - window_len - 2, 1)
-
     def prepare_lstm_data(self):
         with open(os.path.join(self.basic_data_folder, str(self.crts_id) + '.pkl'), 'rb') as handle:
             data_dict = pickle.load(handle)
 
-            # Retrieve Individual Data
             mag_train = data_dict['mag_train'][1:].reshape(-1, 1)
             mag_cross = data_dict['mag_cross'][1:].reshape(-1, 1)
             mag_test = data_dict['mag_test'][1:].reshape(-1, 1)
@@ -147,7 +93,7 @@ class LSTMDataProcessor:
         scaled_mag_train, scaled_mag_cross, scaled_mag_test, mag_scaler = self.split_rescale(mag_train, mag_cross, mag_test, 'mag')
         scaled_delta_t_train, scaled_delta_t_cross, scaled_delta_t_test, delta_t_scaler = self.split_rescale(delta_t_train, delta_t_cross, delta_t_test, 'delta_t')
 
-        window_len = self.model_config["vanilla_lstm"]["window_len"]
+        window_len = self.model_config["lstm"]["window_len"]
         X_train, y_train = self.create_X_y(scaled_mag_train, scaled_delta_t_train, window_len)
         X_cross, y_cross = self.create_X_y(scaled_mag_cross, scaled_delta_t_cross, window_len)
         X_test, y_test = self.create_X_y(scaled_mag_test, scaled_delta_t_test, window_len)
@@ -155,8 +101,8 @@ class LSTMDataProcessor:
         X_y_data_dict = {'train_X': X_train, 'train_y': y_train, 'cross_X': X_cross, 'cross_y': y_cross,
                          'test_X': X_test, 'test_y': y_test}
 
-        # Save X, y Data
-        X_y_name = '_'.join([str(self.crts_id), 'X_y', 'window_len', window_len + '.plk'])
+        # Save X_y Data
+        X_y_name = '_'.join([str(self.crts_id), 'X_y', 'window_len', str(window_len) + '.plk'])
         with open(os.path.join(self.lstm_data_folder, X_y_name), 'wb') as handle:
             pickle.dump(X_y_data_dict, handle, protocol=2)
 
@@ -220,3 +166,4 @@ if __name__ == 'main':
 
     lstm_data_processor = LSTMDataProcessor(1001115026824)
     lstm_data_processor.prepare_lstm_data()
+

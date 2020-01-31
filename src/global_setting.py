@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import json
 import fnmatch
-DATA_FOLDER = '/Users/mingyu/Desktop/dataset_2'  # '/Users/mingyu/Desktop/dataset'
+DATA_FOLDER = '/Users/mingyu/Desktop/dataset'  # '/Users/mingyu/Desktop/dataset'
 
 # ----------------------------------- List of Lightcurves -----------------------------------
 lightcurve_list = []
@@ -18,25 +18,8 @@ model_config = json.load(open('./config/model_config.json'))
 # ----------------------------------- Data Path -----------------------------------
 # raw_data
 raw_data_folder = os.path.join(DATA_FOLDER, 'raw_data')
-# raw_data_name = 'str(crts_id).csv'
-
-
-# basic_data
 basic_data_folder = os.path.join(DATA_FOLDER, 'processed_data', 'basic')
-# basic_data_name = 'str(crts_id).pkl'
-
-
-# carma_data
-carma_data_folder = os.path.join(DATA_FOLDER, 'processed_data', 'basic')
-# carma_data_name = 'str(crts_id).pkl'
-
-
-# vanilla_lstm_data
-lstm_data_folder = os.path.join(DATA_FOLDER, 'processed_data', 'vanilla_lstm')
-# rescaled_mag_name = 'str(crts_id)_rescaled_mag.pkl'
-# mag_scaler_name = 'str(crts_id)_mag_scaler.pkl'
-# rescaled_delta_t_name = 'str(crts_id)_rescaled_delta_t.pkl'
-# delta_t_scaler_name = 'str(crts_id)_delta_t_scaler.pkl'
+lstm_data_folder = os.path.join(DATA_FOLDER, 'processed_data', 'lstm')
 
 # ----------------------------------- Model Path -----------------------------------
 # gp model
@@ -99,3 +82,35 @@ result_csv = os.path.join(DATA_FOLDER, 'result', 'result.csv')
 # Attention Standard LSTM
 # Phased LSTM
 # Attention Phased LSTM
+
+
+# self.prepare_basic_data()
+# inputs: len(content['Mag']) = (num_data, )
+# inputs: len(content['Magerr']) = (num_data, )
+# inputs: len(content['MJD']) = (num_data, )
+# output: shape(mag_list_train) = (num_train_data, )
+# output: shape(mag_cross_train) = (num_cross_data, )
+# output: shape(mag_test_train) = (num_test_data, )
+
+# self.prepare_rescale_mag()
+# input: shape(mag_list_train) = (num_train_data, )
+# input: shape(mag_list_cross) = (num_cross_data, )
+# input: shape(mag_list_test) = (num_test_data, )
+# output: shape(scaled_mag_list_train) = (num_train_data - 1, 1)
+# output: shape(scaled_mag_list_cross) = (num_cross_data - 1, 1)
+# output: shape(scaled_mag_list_test) = (num_test_data - 1, 1)
+
+# self.create_X_y()
+# input: shape(scaled_mag_list) = (num_data - 1, 1)
+# input: shape(scaled_delta_t_list) = (num_data - 1, 1)
+# output: shape(X) = (num_data - window_len - 2, window_len, 2)
+# output: shape(y) = (num_data - window_len - 2, 1)
+
+# self.prepare_lstm_data()
+# input: scaled_mag_list & scaled_delta_t_list
+# output: shape(X_train) = (num_train_data - window_len - 2, window_len, 2)
+# output: shale(y_train) = (num_train_data - window_len - 2, 1)
+# output: shape(X_cross) = (num_cross_data - window_len - 2, window_len, 2)
+# output: shale(y_cross) = (num_cross_data - window_len - 2, 1)
+# output: shape(X_test) = (num_test_data - window_len - 2, window_len, 2)
+# output: shale(y_test) = (num_test_data - window_len - 2, 1)
