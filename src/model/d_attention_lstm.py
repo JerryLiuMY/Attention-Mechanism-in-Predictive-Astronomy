@@ -43,7 +43,7 @@ class AttentionLstm(VanillaLSTM):
 
         return context, alpha
 
-    def build_model(self):
+    def build_model(self, X_train, y_train):
         # Step 1.1: Input
         X = Input(shape=(self.window_len, 2))
         s0 = Input(shape=(self.hidden_dim,), name='s0')
@@ -82,21 +82,13 @@ class AttentionLstm(VanillaLSTM):
         self.model.summary()
         self.alpha_model = Model(inputs=[X, s0, c0], outputs=alphas)
 
-    def fit_model(self, X_train, y_train, X_cross, y_cross, X_test, y_test):
-        # Initialize State
         s0_train = np.zeros((np.shape(X_train)[0], self.hidden_dim))
         c0_train = np.zeros((np.shape(X_train)[0], self.hidden_dim))
-        s0_cross = np.zeros((np.shape(X_cross)[0], self.hidden_dim))
-        c0_cross = np.zeros((np.shape(X_cross)[0], self.hidden_dim))
-        s0_test = np.zeros((np.shape(X_test)[0], self.hidden_dim))
-        c0_test = np.zeros((np.shape(X_test)[0], self.hidden_dim))
-
         # adam = Adam(lr=0.01, beta_1=0.9, beta_2=0.999, decay=0.01)
         # adam = Adam(lr=0.01)
         self.model.compile(loss='mean_squared_error', optimizer='adam')
         self.model.fit([X_train, s0_train, c0_train], y_train, epochs=self.epochs, batch_size=self.batch_size)
 
-        return self.model
 
     def single_step_prediction(self, t_train, mag_train, magerr_train,
                                t_cross, mag_cross, magerr_cross,

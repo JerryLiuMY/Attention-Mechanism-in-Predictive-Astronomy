@@ -1,8 +1,11 @@
 import os
-import pandas as pd
 import json
 import fnmatch
-DATA_FOLDER = '/Users/mingyu/Desktop/dataset'  # '/Users/mingyu/Desktop/dataset'
+DATA_FOLDER = '/Users/mingyu/Desktop/dataset'
+WINDOW_LEN = 10
+TRAIN_RATIO = 0.6
+CROSS_RATIO = 0.2
+TEST_RATIO = 0.2
 
 # ----------------------------------- List of Lightcurves -----------------------------------
 lightcurve_list = []

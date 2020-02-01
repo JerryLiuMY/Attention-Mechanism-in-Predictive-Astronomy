@@ -264,9 +264,9 @@ class MainPipeline:
             print('vanilla lstm model %s is loaded' % lstm_model_name)
 
         # Run Single Step Simulation
-        single_return = lstm.single_step_prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
-                                                    self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
-                                                    self.train_X, self.cross_X, self.test_X, self.mag_scaler)
+        out = lstm.prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+                              self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
+                              self.train_X, self.cross_X, self.test_X, self.mag_scaler)
         single_train_loss, single_cross_loss, single_fit_fig, single_res_fig = single_return
         result_df.loc['id_' + str(self.crts_id), lstm_single_train_loss_name] = single_train_loss
         result_df.loc['id_' + str(self.crts_id), lstm_single_cross_loss_name] = single_cross_loss
@@ -274,9 +274,9 @@ class MainPipeline:
         single_res_fig.savefig(os.path.join(self.vanilla_lstm_figure_folder, lstm_single_res_figure_name))
 
         # Run Multiple Step Simulation
-        multi_return = lstm.multi_step_prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
-                                                  self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
-                                                  self.train_X, self.cross_X, self.test_X, self.mag_scaler)
+        out = lstm.prediction(self.t_list_train, self.mag_list_train, self.magerr_list_train,
+                              self.t_list_cross, self.mag_list_cross, self.magerr_list_cross,
+                              self.train_X, self.cross_X, self.test_X, self.mag_scaler)
         multi_train_loss, multi_cross_loss, multi_fit_fig, multi_res_fig = multi_return
         result_df.loc['id_'+str(self.crts_id), lstm_multi_train_loss_name] = multi_train_loss
         result_df.loc['id_'+str(self.crts_id), lstm_multi_cross_loss_name] = multi_cross_loss
