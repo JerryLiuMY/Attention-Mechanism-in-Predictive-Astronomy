@@ -3,12 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/main-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/.ipynb_checkpoints/main-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/global_setting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/global_setting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/c_vanilla_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/c_vanilla_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/d_attention_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/d_attention_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/data_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/tools.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -188,7 +183,7 @@
       <workItem from="1576790937730" duration="1000" />
       <workItem from="1578423794759" duration="55000" />
       <workItem from="1578670848735" duration="7776000" />
-      <workItem from="1580419700846" duration="75389000" />
+      <workItem from="1580419700846" duration="76532000" />
     </task>
     <servers />
   </component>

@@ -34,8 +34,7 @@ def discrete_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, 
 
 
 def continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_std_train, y_pred_train_n,
-                    t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_std_cross, y_pred_cross_n,
-                    fig_type):
+                    t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_std_cross, y_pred_cross_n):
 
     con_fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(24, 8))
     for ax in axes.ravel():
@@ -65,15 +64,17 @@ def continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train
     return con_fig
 
 
-def match_list(t, t_pred, y_pred, y_pred_var):
+def match_list(t, t_pred, y_pred, y_std):
+    t_pred_match = []
     y_pred_match = []
     y_pred_var_match = []
-    for date in t:
-        t_id = min(range(len(t_pred)), key=lambda i: abs(t_pred[i] - date))
+    for time in t:
+        t_id = min(range(len(t_pred)), key=lambda i: abs(t_pred[i] - time))
+        t_pred_match.append(t_pred[t_id])
         y_pred_match.append(y_pred[t_id])
-        y_pred_var_match.append(y_pred_var[t_id])
+        y_pred_var_match.append(y_std[t_id])
 
-    return y_pred_match, y_pred_var_match
+    return t_pred_match, y_pred_match, y_pred_var_match
 
 
 def plot_series():

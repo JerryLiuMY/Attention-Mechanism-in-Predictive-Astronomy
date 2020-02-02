@@ -24,7 +24,7 @@ def mc_std(func):
         y_pred_n = np.array(y_pred_n)
         y_pred = np.mean(y_pred_n, axis=0)
         y_std = np.std(y_pred_n, axis=0)
-        return t_pred, y_pred, y_std
+        return t_pred, y_pred, y_std, y_pred_n
     return wrapper
 
 
@@ -64,8 +64,9 @@ class VanillaLSTM:
         if dc_type == 'discrete':
             discrete_train = self.discrete(self.n_walkers, t_train, X_train, mag_scaler, delta_t_scaler, sm_type)
             discrete_cross = self.discrete(self.n_walkers, t_cross, X_cross, mag_scaler, delta_t_scaler, sm_type)
-            t_pred_cross, y_pred_cross, y_std_cross = discrete_cross
-            t_pred_train, y_pred_train, y_std_train = discrete_train
+            t_pred_cross, y_pred_cross, y_std_cross, _ = discrete_cross
+            t_pred_train, y_pred_train, y_std_train, _ = discrete_train
+
             train_loss = mean_squared_error(y_pred_train, mag_train[WINDOW_LEN:])
             cross_loss = mean_squared_error(y_pred_cross, mag_cross[WINDOW_LEN:])
 
@@ -75,13 +76,16 @@ class VanillaLSTM:
         elif dc_type == 'continuous':
             continuous_train = self.continuous(self.n_walkers, t_train, X_train, mag_scaler, delta_t_scaler, sm_type)
             continuous_cross = self.continuous(self.n_walkers, t_cross, X_cross, mag_scaler, delta_t_scaler, sm_type)
-            t_pred_train, y_pred_train, y_std_train = continuous_train
-            t_pred_cross, y_pred_cross, y_std_cross = continuous_cross
-            train_loss = mean_squared_error(y_pred_train[0], mag_train[WINDOW_LEN:])
-            cross_loss = mean_squared_error(y_pred_cross[0], mag_cross[WINDOW_LEN:])
+            t_pred_train, y_pred_train, y_std_train, y_pred_train_n = continuous_train
+            t_pred_cross, y_pred_cross, y_std_cross, y_pred_cross_n = continuous_cross
 
-            fig = continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_std_train,
-                                  t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_std_cross)
+            _, y_pred_train_match, y_std_train_match = match_list(t_train, t_pred_train, y_pred_train, y_std_train)
+            _, y_pred_cross_match, y_std_cross_match = match_list(t_train, t_pred_train, y_pred_train, y_std_train)
+            train_loss = mean_squared_error(y_pred_train_match, mag_train[WINDOW_LEN:])
+            cross_loss = mean_squared_error(y_pred_cross_match, mag_cross[WINDOW_LEN:])
+
+            fig = continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_std_train, y_pred_train_n,
+                                  t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_std_cross, y_pred_cross_n)
 
         else:
             raise Exception('Invalid dc_type')
