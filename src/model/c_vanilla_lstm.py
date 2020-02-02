@@ -11,7 +11,6 @@ np.random.seed(1)
 # phased / no phased -- training
 # discrete / continuous -- prediction
 # single / multiple -- prediction
-# discrete: simulated + residual or continuous: sample + average  -- plot
 
 
 def mc_std(func):
@@ -52,6 +51,8 @@ class VanillaLSTM:
         self.model = Model(inputs, outputs)
         self.model.compile(loss='mean_squared_error', optimizer='adam')
         self.model.fit(X_train, y_train, epochs=self.epochs, batch_size=self.batch_size, verbose=2)
+
+        return self.model
 
     def run_model(self, X, **kwargs):
         scaled_y_pred = self.model.predict(X)
