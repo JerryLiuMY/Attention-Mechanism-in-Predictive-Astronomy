@@ -3,6 +3,7 @@ import json
 import fnmatch
 DATA_FOLDER = '/Users/mingyu/Desktop/dataset'
 WINDOW_LEN = 10
+N_WALKERS = 1000
 TRAIN_RATIO = 0.6
 CROSS_RATIO = 0.2
 TEST_RATIO = 0.2
@@ -15,7 +16,6 @@ for file in os.listdir(os.path.join(DATA_FOLDER, 'raw_data')):
         lightcurve_list.append(lightcurve)
 
 # ----------------------------------- Configuration -----------------------------------
-data_config = json.load(open('./config/data_config.json'))
 model_config = json.load(open('./config/model_config.json'))
 
 # ----------------------------------- Data Path -----------------------------------
@@ -87,33 +87,35 @@ result_csv = os.path.join(DATA_FOLDER, 'result', 'result.csv')
 # Attention Phased LSTM
 
 
-# self.prepare_basic_data()
-# inputs: len(content['Mag']) = (num_data, )
-# inputs: len(content['Magerr']) = (num_data, )
-# inputs: len(content['MJD']) = (num_data, )
-# output: shape(mag_list_train) = (num_train_data, )
-# output: shape(mag_cross_train) = (num_cross_data, )
-# output: shape(mag_test_train) = (num_test_data, )
+# input: shape(t_train) = (num_data, )
+# input: shape(mag_train) = (num_train_data, )
+# input: shape(magerr_train) = (num_train_data, )
+# shape(X_train) = (num_train_data - window_len, window_len, 2)
+# shale(y_train) = (num_train_data - window_len, 1)
 
-# self.prepare_rescale_mag()
-# input: shape(mag_list_train) = (num_train_data, )
-# input: shape(mag_list_cross) = (num_cross_data, )
-# input: shape(mag_list_test) = (num_test_data, )
-# output: shape(scaled_mag_list_train) = (num_train_data - 1, 1)
-# output: shape(scaled_mag_list_cross) = (num_cross_data - 1, 1)
-# output: shape(scaled_mag_list_test) = (num_test_data - 1, 1)
 
-# self.create_X_y()
-# input: shape(scaled_mag_list) = (num_data - 1, 1)
-# input: shape(scaled_delta_t_list) = (num_data - 1, 1)
-# output: shape(X) = (num_data - window_len - 2, window_len, 2)
-# output: shape(y) = (num_data - window_len - 2, 1)
+# window_len = 3
+# 1(1) 2(2) 3(3) 4(4) 5(5) 6(6) 7(7)
+# 1-2(1) 2-3(2) 3-4(3) 4-5(4) 5-6(5) 6-7(6)
 
-# self.prepare_lstm_data()
-# input: scaled_mag_list & scaled_delta_t_list
-# output: shape(X_train) = (num_train_data - window_len - 2, window_len, 2)
-# output: shale(y_train) = (num_train_data - window_len - 2, 1)
-# output: shape(X_cross) = (num_cross_data - window_len - 2, window_len, 2)
-# output: shale(y_cross) = (num_cross_data - window_len - 2, 1)
-# output: shape(X_test) = (num_test_data - window_len - 2, window_len, 2)
-# output: shale(y_test) = (num_test_data - window_len - 2, 1)
+# X
+# 1-2(1) 2-3(2) 3-4(3)  --> 4
+# 2-3(2) 3-4(3) 4-5(4)  --> 5
+# 3-4(3) 4-5(4) 5-6(5)  --> 6
+# 4-5(4) 5-6(5) 6-7(6)  --> 7
+
+# DISCRETE t_pred
+# 3 4 5 6 7
+# DISCRETE
+# 1-2(1) 2-3(2) 3-4(3)  --> 4
+# 2-3(2) 3-4(3) 4-5(4)  --> 5
+# 3-4(3) 4-5(4) 5-6(5)  --> 6
+# 4-5(4) 5-6(5) 6-7(6)  --> 7
+
+# CONTINUOUS t_pred
+# 3.0 3.1 3.2 3.3 3.4
+# CONTINUOUS
+# 1-2(1)       2-3(2)       3.0-3.1(3)    --> 3.1
+# 2-3(2)       3.0-3.1(3)   3.1-3.2(3.1)  --> 3.2
+# 3.0-3.1(3)   3.1-3.2(3.1) 3.2-3.3(3.2)  --> 3.3
+# 3.1-3.2(3.1) 3.2-3.3(3.2) 3.3-3.4(3.3)  --> 3.4

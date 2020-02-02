@@ -6,84 +6,63 @@ import matplotlib.pyplot as plt
 from global_setting import DATA_FOLDER, WINDOW_LEN
 
 
-def discrete_decorator(original_function):
-    def wrapper(*args, **kwargs):
-        sim_fig = original_function(*args, **kwargs, fig_type='simulated')
-        res_fig = original_function(*args, **kwargs, fig_type='residual')
-        return sim_fig, res_fig
-    return wrapper
+def discrete_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_std_train,
+                  t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_std_cross):
+
+    dis_fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(24, 8))
+    for ax in axes.ravel():
+        ax.set_xlim(t_train.min(), t_cross.max())
+        ax.set_xlabel('MJD')
+        ax.set_ylabel('Mag')
+        plt.legend()
+
+    plt.subplot(1, 2, 1)
+    plt.errorbar(t_train, mag_train, magerr_train, fmt='k.', markersize=10)
+    plt.errorbar(t_cross, mag_cross, magerr_cross, fmt='k.', markersize=10)
+    plt.errorbar(t_pred_train, y_pred_train, y_std_train, fmt='g-', label='Training')
+    plt.errorbar(t_pred_cross, y_pred_cross, y_std_cross, fmt='b-', label='Validation')
+    plt.title('Prediction Plot')
+
+    plt.subplot(1, 2, 2)
+    plt.errorbar(t_train, np.zeros(len(mag_train)), magerr_train, fmt='k.', markersize=10)
+    plt.errorbar(t_cross, np.zeros(len(mag_train)), magerr_cross, fmt='k.', markersize=10)
+    plt.errorbar(t_pred_train, y_pred_train[:, 0] - mag_train[WINDOW_LEN+1: -1], y_std_train[:, 0], fmt='g-', label='Training')
+    plt.errorbar(t_pred_cross, y_pred_cross[:, 0] - mag_cross[WINDOW_LEN+1: -1], y_std_cross[:, 0], fmt='b-', label='Validation')
+    plt.title('Residual Plot')
+
+    return dis_fig
 
 
-def continuous_decorator(original_function):
-    def wrapper(*args, **kwargs):
-        sample_fig = original_function(*args, **kwargs, fig_type='sample')
-        average_fig = original_function(*args, **kwargs, fig_type='average')
-        return sample_fig, average_fig
-    return wrapper
-
-
-@discrete_decorator
-def discrete_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_pred_var_train,
-                  t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_pred_var_cross,
-                  fig_type):
-    discrete_fig = plt.figure(1, figsize=(12, 8))
-
-    if fig_type == 'simulated':
-        plt.errorbar(t_train, mag_train, magerr_train, fmt='k.', markersize=10, label='Training')
-        plt.errorbar(t_cross, mag_cross, magerr_cross, fmt='k.', markersize=10, label='Validation')
-        plt.scatter(t_pred_train, y_pred_train, color='g')
-        plt.scatter(t_pred_cross, y_pred_cross, color='b')
-
-    elif fig_type == 'residual':
-        plt.errorbar(t_train, np.zeros(len(mag_train)), magerr_train, fmt='k.', markersize=10, label='Training')
-        plt.errorbar(t_cross, np.zeros(len(mag_train)), magerr_cross, fmt='k.', markersize=10, label='Validation')
-        plt.scatter(t_pred_train, y_pred_train[:, 0] - mag_train[WINDOW_LEN+1: -1], color='g')
-        plt.scatter(t_pred_cross, y_pred_cross[:, 0] - mag_cross[WINDOW_LEN+1: -1], color='b')
-
-    else:
-        raise Exception('Not valid fig_type')
-
-    # Decoration
-    plt.xlim(t_train.min(), t_cross.max())
-    plt.xlabel('MJD')
-    plt.ylabel('Mag')
-    plt.title(' '.join([fig_type.capitalize(), 'Plot']))
-
-    return discrete_fig
-
-
-@continuous_decorator
-def continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_pred_var_train, y_pred_train_n,
-                    t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_pred_var_cross, y_pred_cross_n,
+def continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_std_train, y_pred_train_n,
+                    t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_std_cross, y_pred_cross_n,
                     fig_type):
-    continuous_fig = plt.figure(figsize=(12, 8))
-    plt.errorbar(t_train, mag_train, yerr=magerr_train, fmt='k.')
-    plt.errorbar(t_train, mag_cross, yerr=magerr_cross, fmt='k.')
 
-    if fig_type == 'sample':
-        n_paths = np.shape(y_pred_train_n)[0]
-        for i in range(n_paths):
-            plt.plot(t_pred_train, y_pred_train_n[i], color='green', alpha=(1 - i / float(n_paths)))
-            plt.plot(t_pred_cross, y_pred_cross_n[i], color='blue', alpha=(1 - i / float(n_paths)))
+    con_fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(24, 8))
+    for ax in axes.ravel():
+        ax.xlim(t_train.min(), t_cross.max())
+        ax.errorbar(t_train, mag_train, magerr_train, fmt='k.')
+        ax.errorbar(t_train, mag_cross, magerr_cross, fmt='k.')
+        ax.set_xlabel('MJD')
+        ax.set_ylabel('Mag')
+        plt.legend()
 
-    elif fig_type == 'average':
-        plt.plot(t_pred_train, y_pred_train, color='green', ls='-')
-        plt.plot(t_pred_cross, y_pred_cross, color='blue', ls='-')
-        plt.fill_between(t_pred_train, y1=y_pred_train + np.sqrt(y_pred_var_train),
-                         y2=y_pred_train - np.sqrt(y_pred_var_train), color='LimeGreen', alpha=0.5)
-        plt.fill_between(t_pred_cross, y1=y_pred_cross + np.sqrt(y_pred_var_cross),
-                         y2=y_pred_cross - np.sqrt(y_pred_var_cross), color='DodgerBlue', alpha=0.5)
+    plt.subplot(1, 2, 1)
+    n_paths = np.shape(y_pred_train_n)[0]
+    for i in range(n_paths):
+        plt.plot(t_pred_train, y_pred_train_n[i], color='green', alpha=(1 - i / float(n_paths)))
+        plt.plot(t_pred_cross, y_pred_cross_n[i], color='blue', alpha=(1 - i / float(n_paths)))
+    plt.title('Sample Plot')
 
-    else:
-        raise Exception('Not valid fig_type')
+    plt.subplot(1, 2, 2)
+    plt.plot(t_pred_train, y_pred_train, color='green', ls='-')
+    plt.plot(t_pred_cross, y_pred_cross, color='blue', ls='-')
+    plt.fill_between(t_pred_train, y1=y_pred_train + np.sqrt(y_std_train), y2=y_pred_train - np.sqrt(y_std_train),
+                     color='LimeGreen', alpha=0.5)
+    plt.fill_between(t_pred_cross, y1=y_pred_cross + np.sqrt(y_std_cross), y2=y_pred_cross - np.sqrt(y_std_cross),
+                     color='DodgerBlue', alpha=0.5)
+    plt.title('Average Plot')
 
-    # Decoration
-    plt.xlim(t_train.min(), t_cross.max())
-    plt.xlabel('Time[days]')
-    plt.ylabel('Magnitude')
-    plt.title(' '.join(['Simulated', fig_type.capitalize(), 'Paths']))
-
-    return continuous_fig
+    return con_fig
 
 
 def match_list(t, t_pred, y_pred, y_pred_var):

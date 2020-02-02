@@ -71,13 +71,13 @@ class LSTMDataProcessor:
         with open(os.path.join(self.basic_data_folder, str(self.crts_id) + '.pkl'), 'rb') as handle:
             data_dict = pickle.load(handle)
 
-            mag_train = data_dict['mag_train'][1:].reshape(-1, 1)
-            mag_cross = data_dict['mag_cross'][1:].reshape(-1, 1)
-            mag_test = data_dict['mag_test'][1:].reshape(-1, 1)
+            mag_train = data_dict['mag_train'].reshape(-1, 1)
+            mag_cross = data_dict['mag_cross'].reshape(-1, 1)
+            mag_test = data_dict['mag_test'].reshape(-1, 1)
 
-            delta_t_train = self.delta_list(data_dict['t_train']).reshape(-1, 1)
-            delta_t_cross = self.delta_list(data_dict['t_cross']).reshape(-1, 1)
-            delta_t_test = self.delta_list(data_dict['t_test']).reshape(-1, 1)
+            delta_t_train = np.diff(data_dict['t_train']).reshape(-1, 1)
+            delta_t_cross = np.diff(data_dict['t_cross']).reshape(-1, 1)
+            delta_t_test = np.diff(data_dict['t_test']).reshape(-1, 1)
 
         scaled_mag_train, scaled_mag_cross, scaled_mag_test, mag_scaler = self.split_rescale(mag_train, mag_cross, mag_test, 'mag')
         scaled_delta_t_train, scaled_delta_t_cross, scaled_delta_t_test, delta_t_scaler = self.split_rescale(delta_t_train, delta_t_cross, delta_t_test, 'delta_t')
@@ -94,16 +94,6 @@ class LSTMDataProcessor:
         with open(os.path.join(self.lstm_data_folder, X_y_name), 'wb') as handle:
             pickle.dump(X_y_data_dict, handle, protocol=2)
 
-    @staticmethod
-    def delta_list(raw_list):
-        delta_list = []
-        for i in range(1, len(raw_list)):
-            delta = raw_list[i] - raw_list[i - 1]
-            delta_list.append(delta)
-        delta_list = np.array(delta_list)
-
-        return delta_list
-
     def split_rescale(self, train, cross, test, data_type):
         # Scale Individual Data
         full = np.concatenate((train, cross, test), axis=0)
@@ -115,32 +105,23 @@ class LSTMDataProcessor:
         scaled_train = scaled_full[:train_len]
         scaled_cross = scaled_full[train_len:(train_len + cross_len)]
         scaled_test = scaled_full[(train_len + cross_len):]
-        train_name = '_'.join(['scaled', data_type, 'train'])
-        cross_name = '_'.join(['scaled', data_type, 'cross'])
-        test_name = '_'.join(['scaled', data_type, 'test'])
-        scaled_data_dict = {train_name: scaled_train,
-                            cross_name: scaled_cross,
-                            test_name: scaled_test}
-
-        rescaled_name = '_'.join([str(self.crts_id), 'rescaled', data_type + '.pkl'])
         scaler_name = '_'.join([str(self.crts_id), data_type, 'scaler.pkl'])
-        with open(os.path.join(self.lstm_data_folder, rescaled_name), 'wb') as handle:
-            pickle.dump(scaled_data_dict, handle, protocol=2)
+
         with open(os.path.join(self.lstm_data_folder, scaler_name), 'wb') as handle:
             joblib.dump(scaler, handle, protocol=2)
 
         return scaled_train, scaled_cross, scaled_test, scaler
 
     @staticmethod
-    def create_X_y(scaled_mag_list, scaled_delta_t_list, window_len):
+    def create_X_y(scaled_mag, scaled_delta_t, window_len):
         X, y = [], []
-        for i in range(1, np.shape(scaled_mag_list)[0] - window_len):
+        for i in range(0, np.shape(scaled_mag)[0] - window_len):
             features = []
             for j in range(i, i + window_len):
-                feature = np.concatenate((scaled_mag_list[j], scaled_delta_t_list[j]), axis=0)
+                feature = np.concatenate((scaled_mag[j], scaled_delta_t[j]), axis=0)
                 features.append(feature)
             X.append(features)
-            y.append(scaled_mag_list[i + window_len])
+            y.append(scaled_mag[i + window_len])
 
         X = np.array(X)
         y = np.array(y)

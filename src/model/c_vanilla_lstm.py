@@ -2,24 +2,45 @@ import numpy as np
 from keras.layers import LSTM, Dense
 from keras import Input, Model
 from utils.phased_lstm import PhasedLSTM
-from utils.tools import match_list, continuous_plot, discrete_plot
+from utils.tools import match_list, continuous_plot, discrete_plot, WINDOW_LEN
+from global_setting import N_WALKERS
 from sklearn.metrics import mean_squared_error
 np.random.seed(1)
+
+# standard / drop_out / mixture model
+# phased / no phased -- training
+# discrete / continuous -- prediction
+# single / multiple -- prediction
+# discrete: simulated + residual or continuous: sample + average  -- plot
+
+
+def mc_std(func):
+    def wrapper(n_walkers, *args, **kwargs):
+        t_pred, y_pred = func(*args, **kwargs)
+        y_pred_n = []
+        for i in range(n_walkers):
+            t_pred, y_pred = func(*args, **kwargs)
+            y_pred_n.append(y_pred)
+        y_pred_n = np.array(y_pred_n)
+        y_pred = np.mean(y_pred_n, axis=0)
+        y_std = np.std(y_pred_n, axis=0)
+        return t_pred, y_pred, y_std
+    return wrapper
 
 
 class VanillaLSTM:
     # The model is now trained individually for each sample, so we feed in the crts_id for now
-    def __init__(self, window_len, hidden_dim, epochs, batch_size, phased, **kwargs):
+    def __init__(self, hidden_dim, epochs, batch_size, phased, n_walkers, **kwargs):
         # Configuration
-        self.window_len = window_len
         self.hidden_dim = hidden_dim
         self.epochs = epochs
         self.batch_size = batch_size
         self.phased = phased
+        self.n_walkers = n_walkers
         self.model = None
 
-    def build_model(self, X_train, y_train):
-        inputs = Input(shape=(self.window_len, 2, ))
+    def fit_model(self, X_train, y_train):
+        inputs = Input(shape=(WINDOW_LEN, 2, ))
         if self.phased == 'phased':
             inter = PhasedLSTM(self.hidden_dim)(inputs, training=True)
         else:
@@ -32,97 +53,108 @@ class VanillaLSTM:
         self.model.compile(loss='mean_squared_error', optimizer='adam')
         self.model.fit(X_train, y_train, epochs=self.epochs, batch_size=self.batch_size, verbose=2)
 
-    def discrete_prediction(self, t_train, mag_train, magerr_train, t_pred_train, X_train,
-                         t_cross, mag_cross, magerr_cross, t_pred_cross, X_cross,
-                         mag_scaler, sm_type):
-
-        if sm_type == 'single':
-            y_pred_train, y_pred_var_train = self.discrete_single(X_train, mag_scaler)
-            y_pred_cross, y_pred_var_cross = self.discrete_single(X_cross, mag_scaler)
-        elif sm_type == 'multi':
-            y_pred_train, y_pred_var_train = self.discrete_multi(X_train, mag_scaler)
-            y_pred_cross, y_pred_var_cross = self.discrete_multi(X_cross, mag_scaler)
-
-        else:
-            raise Exception('Invalid sm_type')
-
-        train_loss = mean_squared_error(y_pred_train[:, 0], mag_train[self.window_len + 1: -1])
-        cross_loss = mean_squared_error(y_pred_cross[:, 0], mag_cross[self.window_len + 1: -1])
-
-        sim_fig, res_fig = discrete_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_pred_var_train,
-                                         t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_pred_var_cross)
-
-        return sim_fig, res_fig, train_loss, cross_loss
-
-    def continuous_prediction(self, t_train, mag_train, magerr_train, t_pred_train, X_train,
-                              t_cross, mag_cross, magerr_cross, t_pred_cross, X_cross,
-                              mag_scaler, sa_type):
-
-        if sa_type == 'simulated':
-            y_pred_train, y_pred_var_train = self.discrete_single(X_train, mag_scaler)
-            y_pred_cross, y_pred_var_cross = self.discrete_single(X_cross, mag_scaler)
-        elif sm_type == 'multi':
-            y_pred_train, y_pred_var_train = self.discrete_multi(X_train, mag_scaler)
-            y_pred_cross, y_pred_var_cross = self.discrete_multi(X_cross, mag_scaler)
-
-        else:
-            raise Exception('Invalid sm_type')
-
-        train_loss = mean_squared_error(y_pred_train[:, 0], mag_train[self.window_len + 1: -1])
-        cross_loss = mean_squared_error(y_pred_cross[:, 0], mag_cross[self.window_len + 1: -1])
-
-        sim_fig, res_fig = discrete_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_pred_var_train,
-                                         t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_pred_var_cross)
-
-        return sim_fig, res_fig, train_loss, cross_loss
-
-#     elif dc_type == 'continuous':
-#     if sm_type == 'single':
-#         pass
-#
-#     elif sm_type == 'multi':
-#         pass
-#
-#     else:
-#         raise Exception('Invalid sm_type')
-#
-# else:
-# raise Exception('Invalid dc_type')
-
-
-    def discrete_single(self, X, mag_scaler):
-        scaled_y_pred = []
-        X_step = X[[0]]  # shape = (1, window_len, 2)
-        for i in range(np.shape(X)[0]):
-            scaled_y_step = self.model.predict(X_step)  # shape = (1, 1)
-            scaled_y_pred.append(scaled_y_step[0])  # scaled_y_step[0] -> shape = (num_feature)
-            if i == np.shape(X)[0]-1:
-                break
-
-            scaled_t_step = X[i+1][[-1], -1:]  # shape = (1, 1)
-            new_feature = np.concatenate((scaled_y_step, scaled_t_step), axis=1)  # shape = (1, 2)
-            X_step = np.concatenate((X_step[0][1:, :], new_feature), axis=0)  # shape = (window_len, 2)
-            X_step = np.expand_dims(X_step, axis=0)  # shape = (1, window_len, 2)
-
-        scaled_y_pred = np.array(scaled_y_pred)  # shape = (num_step, 1)
-        scaled_y_pred_var = np.zeros(len(scaled_y_pred))
-        y_pred = mag_scaler.inverse_transform(scaled_y_pred)
-        y_pred_var = mag_scaler.inverse_transform(scaled_y_pred + scaled_y_pred_var) - y_pred
-
-        return y_pred, y_pred_var
-
-    def discrete_multi(self, X, mag_scaler):
+    def run_model(self, X, **kwargs):
         scaled_y_pred = self.model.predict(X)
-        scaled_y_pred_var = np.zeros(len(scaled_y_pred))
-        y_pred = mag_scaler.inverse_transform(scaled_y_pred)
-        y_pred_var = mag_scaler.inverse_transform(scaled_y_pred + scaled_y_pred_var) - y_pred
+        return scaled_y_pred
 
-        return y_pred, y_pred_var
+    def prediction(self, t_train, mag_train, magerr_train, X_train,
+                         t_cross, mag_cross, magerr_cross, X_cross,
+                         mag_scaler, delta_t_scaler, dc_type, sm_type):
 
-    def continuous_prediction(self, t, X, mag_scaler):
-        scaled_y_pred = []
-        X_step = X[[0]]  # shape = (1, window_len, 2)
-        t_pred = np.linspace(t.min(), t.max(), num=int((t.max() - t.min()) / 0.2))
-        y_pred_match, y_pred_var_match = match_list(t, t_pred, y_pred, y_pred_var)
+        if dc_type == 'discrete':
+            discrete_train = self.discrete(self.n_walkers, t_train, X_train, mag_scaler, delta_t_scaler, sm_type)
+            discrete_cross = self.discrete(self.n_walkers, t_cross, X_cross, mag_scaler, delta_t_scaler, sm_type)
+            t_pred_cross, y_pred_cross, y_std_cross = discrete_cross
+            t_pred_train, y_pred_train, y_std_train = discrete_train
+            train_loss = mean_squared_error(y_pred_train, mag_train[WINDOW_LEN:])
+            cross_loss = mean_squared_error(y_pred_cross, mag_cross[WINDOW_LEN:])
+
+            fig = discrete_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_std_train,
+                                t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_std_cross)
+
+        elif dc_type == 'continuous':
+            continuous_train = self.continuous(self.n_walkers, t_train, X_train, mag_scaler, delta_t_scaler, sm_type)
+            continuous_cross = self.continuous(self.n_walkers, t_cross, X_cross, mag_scaler, delta_t_scaler, sm_type)
+            t_pred_train, y_pred_train, y_std_train = continuous_train
+            t_pred_cross, y_pred_cross, y_std_cross = continuous_cross
+            train_loss = mean_squared_error(y_pred_train[0], mag_train[WINDOW_LEN:])
+            cross_loss = mean_squared_error(y_pred_cross[0], mag_cross[WINDOW_LEN:])
+
+            fig = continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, y_std_train,
+                                  t_cross, mag_cross, magerr_cross, t_pred_cross, y_pred_cross, y_std_cross)
+
+        else:
+            raise Exception('Invalid dc_type')
+
+        return fig, train_loss, cross_loss
+
+    @mc_std
+    def discrete(self, t, X, mag_scaler, delta_t_scaler, sm_type):
+
+        if sm_type == 'multiple':
+            t_pred = t[WINDOW_LEN-1:]
+            y_pred = mag_scaler.inverse_transform(self.model.predict(X))
+            t_pred = t_pred[1:]
+
+        elif sm_type == 'single':
+            t_pred = t[WINDOW_LEN-1:]
+            y_pred = self.recursive(t_pred, X, mag_scaler, delta_t_scaler)
+            t_pred = t_pred[1:]
+
+        else:
+            raise Exception('Invalid sm_type')
+
         return t_pred, y_pred
 
+    @mc_std
+    def continuous(self, t, X, mag_scaler, delta_t_scaler, sm_type):
+
+        if sm_type == 'multiple':
+            t_pred = np.linspace(t[WINDOW_LEN-1], t[len(t)-1], num=int((t[-1] - t[WINDOW_LEN+1]) / 0.2))
+            y_pred = self.recursive(t_pred, X, mag_scaler, delta_t_scaler)
+            t_pred = t_pred[1:]
+
+        elif sm_type == 'single':
+            t_pred = np.array([])
+            y_pred = np.array([])
+            for i in range(WINDOW_LEN-1, len(t)-1):
+                X_i = X[[i-(WINDOW_LEN-1)]]
+                t_pred_i = np.linspace(t[i], t[i+1], num=int((t[i+1] - t[i]) / 0.2))
+                y_pred_i = self.recursive(t_pred_i, X_i, mag_scaler, delta_t_scaler)
+                t_pred_i = t_pred_i[1:]
+
+                t_pred = np.concatenate([t_pred, t_pred_i])
+                y_pred = np.concatenate([y_pred, y_pred_i])
+
+        else:
+            raise Exception('Invalid sm_type')
+
+        return t_pred, y_pred
+
+    def recursive(self, t_pred, X, mag_scaler, delta_t_scaler):
+        # shape(X) = (num_train_data - window_len, window_len, 2)
+        # shape(scaled_delta_t_pred) = (num_train_data - window_len, 1)
+        scaled_delta_t_pred = delta_t_scaler.transform(np.diff(t_pred).reshape(-1, 1))
+        scaled_y_pred = []
+
+        # Initialize --> change time interval
+        initial_scaled_y_step = X[0, -1:, 0].reshape(1, 1)  # shape = (1, 1)
+        initial_scaled_delta_t_step = scaled_delta_t_pred[0].reshape(1, 1)  # shape = (1, 1)
+        initial_feature = np.concatenate((initial_scaled_y_step, initial_scaled_delta_t_step), axis=1)  # shape = (1, 2)
+        X_step = np.concatenate((X[0, :-1, :], initial_feature), axis=0)  # shape = (window_len, 2)
+        X_step = np.expand_dims(X_step, axis=0)  # shape = (1, window_len, 2)
+        scaled_y_step = self.run_model(X_step)  # shape = (1, 1)
+        scaled_y_pred.append(scaled_y_step[0])
+
+        for i in range(1, len(scaled_delta_t_pred)):
+            scaled_delta_t_step = scaled_delta_t_pred[i].reshape(1, 1)  # shape = (1, 1)
+            new_feature = np.concatenate((scaled_y_step, scaled_delta_t_step), axis=1)  # shape = (1, 2)
+            X_step = np.concatenate((X_step[0, 1:, :], new_feature), axis=0)  # shape = (window_len, 2)
+            X_step = np.expand_dims(X_step, axis=0)  # shape = (1, window_len, 2)
+            scaled_y_step = self.run_model(X_step)  # shape = (1, 1)
+            scaled_y_pred.append(scaled_y_step[0])
+
+        y_pred = mag_scaler.inverse_transform(np.array(scaled_y_pred))  # shape = (num_step, 1)
+        y_pred = y_pred.reshape(-1)
+
+        return y_pred

@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 from utils.phased_lstm import PhasedLSTM
 from model.c_vanilla_lstm import VanillaLSTM
 from sklearn.metrics import mean_squared_error
+from keras.optimizers import Adam
+
 
 def softmax(x, axis=1):
     # x = K.l2_normalize(x, axis=axis)
@@ -43,32 +45,22 @@ class AttentionLstm(VanillaLSTM):
 
         return context, alpha
 
-    def build_model(self, X_train, y_train):
-        # Step 1.1: Input
+    def fit_model(self, X_train, y_train):
         X = Input(shape=(self.window_len, 2))
         s0 = Input(shape=(self.hidden_dim,), name='s0')
         c0 = Input(shape=(self.hidden_dim,), name='c0')
 
         if self.phased == 'phased':
-            # Step 1.2: Pre-attention Bidirectional LSTM
             a = PhasedLSTM(self.hidden_dim, return_sequences=True)(X)
-
         else:
-            # Step 1.2: Pre-attention Bidirectional LSTM
             a = LSTM(self.hidden_dim, return_sequences=True)(X)
 
-        # Step 1.3: Post-attention Bidirectional LSTM
         post_attention_LSTM_cell = LSTM(self.hidden_dim, return_state=True)
-
-        # Step 1.4: Output
         output_layer = Dense(1, activation='linear')  # TODO: Try softmax activation (change input as well)
 
-        # Step 2.1: Initialize
         outputs = []
         alphas = []
-        s = s0
-        c = c0
-
+        s, c = s0, c0
         # Step 2.2: Iterate for Ty steps
         for t in range(1):
             context, alpha = self.compute_attention(a, s)
@@ -84,11 +76,15 @@ class AttentionLstm(VanillaLSTM):
 
         s0_train = np.zeros((np.shape(X_train)[0], self.hidden_dim))
         c0_train = np.zeros((np.shape(X_train)[0], self.hidden_dim))
-        # adam = Adam(lr=0.01, beta_1=0.9, beta_2=0.999, decay=0.01)
-        # adam = Adam(lr=0.01)
-        self.model.compile(loss='mean_squared_error', optimizer='adam')
+        adam = Adam(lr=0.01, beta_1=0.9, beta_2=0.999, decay=0.01)
+        self.model.compile(loss='mean_squared_error', optimizer=adam)
         self.model.fit([X_train, s0_train, c0_train], y_train, epochs=self.epochs, batch_size=self.batch_size)
 
+    def run_model(self, X, **kwargs):
+        s0 = kwargs['s0']
+        c0 = kwargs['c0']
+        scaled_y_pred = self.model.predict(X, s0, c0)
+        return scaled_y_pred
 
     def single_step_prediction(self, t_train, mag_train, magerr_train,
                                t_cross, mag_cross, magerr_cross,
@@ -163,7 +159,9 @@ class AttentionLstm(VanillaLSTM):
 
         return multi_train_loss, multi_cross_loss, multi_fit_fig, multi_res_fig
 
-    def one_step(self, X, s0, c0, mag_scaler):
+    def one_step(self, X, mag_scaler, **kwargs):
+        s0 = kwargs['s0']
+        c0 = kwargs['c0']
         # Cross Prediction
         scaled_y = []
         X_step = X[[0]]  # shape = (1, window_len, num_feature)
