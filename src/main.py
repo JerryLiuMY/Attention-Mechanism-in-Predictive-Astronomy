@@ -6,21 +6,21 @@ import pickle
 import joblib
 from keras.models import load_model
 from utils.data_processor import BasicDataProcessor, LSTMDataProcessor
-from global_setting import DATA_FOLDER, lightcurve_list
-from global_setting import raw_data_folder, basic_data_folder, carma_data_folder, lstm_data_folder
-from global_setting import model_folder, lstm_figure_folder
+from global_setting import DATA_FOLDER, crts_list
+from global_setting import raw_data_folder, basic_data_folder, lstm_data_folder
+from global_setting import model_folder, figure_folder
 from global_setting import result_csv
 
 # from model.a_carma import Carma
 from model.b_gp import GP
 from model.c_vanilla_lstm import VanillaLSTM
 from model.d_attention_lstm import AttentionLstm
-from model.e_baysian_lstm import BayesianLSTM
+from model.e_bayesian_lstm import BayesianLSTM
 from utils.phased_lstm import PhasedLSTM
 
 
 model_type = ['carma', 'gp', 'vanilla', 'attention']
-phased_type = ['standard, phased']
+phased_type = ['standard', 'phased']
 dc_type = ['discrete', 'continuous']
 sm_type = ['single', 'multiple']
 set_type = ['train', 'cross']
@@ -38,31 +38,33 @@ def initialize_csv():
     result_df = pd.DataFrame(columns=columns)
     result_df.to_csv(result_csv)
 
+
 class MainPipeline:
     def __init__(self, crts_id):
         # Configuration
         self.crts_id = crts_id
-        self.load_model_config()
-
-        # Basic Data Name
-        self.basic_data_name = self.crts_id + '.pkl'
 
         # Data Folder
         self.raw_data_folder = raw_data_folder
         self.basic_data_folder = basic_data_folder
-        self.carma_data_folder = carma_data_folder
-        self.vanilla_lstm_data_folder = lstm_data_folder
-
-        # LSTM Data Name
-        self.rescaled_mag_name = self.crts_id + '_rescaled_mag' + '.pkl'
-        self.mag_scaler_name = self.crts_id + '_mag_scaler' + '.pkl'
-        self.rescaled_delta_t_name = self.crts_id + '_rescaled_delta_t' + '.pkl'
-        self.delta_t_scaler_name = self.crts_id + '_delta_t_scaler' + '.pkl'
-        self.standard_X_y_name = self.crts_id + '_X_y.plk'
+        self.carma_data_folder = raw_data_folder
+        self.lstm_data_folder = lstm_data_folder
 
         # Model Folder
         self.model_folder = model_folder
-        self.lstm_figure_folder = lstm_figure_folder
+        self.figure_folder = figure_folder
+        self.load_name()
+        self.load_model_config()
+        self.prepare_individual_data()
+        self.load_individual_data()
+
+    def load_name(self):
+        self.basic_data_name = self.crts_id + '.pkl'
+        self.rescaled_mag_name = '_'.join([self.crts_id, 'rescaled_mag.pkl'])
+        self.mag_scaler_name = '_'.join([self.crts_id, 'mag_scaler.pkl'])
+        self.rescaled_delta_t_name = '_'.join([self.crts_id, 'rescaled_delta_t.pkl'])
+        self.delta_t_scaler_name = '_'.join([self.crts_id, 'delta_t_scaler.pkl'])
+        self.standard_X_y_name = '_'.join([self.crts_id, 'X_y.plk'])
 
     def load_model_config(self):
         self.model_config = json.load(open('./config/model_config.json'))
@@ -70,32 +72,30 @@ class MainPipeline:
         self.lstm_config = self.model_config["lstm"]
 
     def prepare_individual_data(self):
-        # Basic Data
         basic_data_processor = BasicDataProcessor(self.crts_id)
         basic_data_processor.prepare_basic_data()
         lstm_data_processor = LSTMDataProcessor(self.crts_id)
         lstm_data_processor.prepare_lstm_data()
 
-    # ----------------------------------- Load Data -----------------------------------
     def load_individual_data(self):
         # Basic Data
         basic_data_path = os.path.join(self.basic_data_folder, self.basic_data_name)
         with open(basic_data_path, 'rb') as handle:
             data_dict = pickle.load(handle)
-        self.mag_train = data_dict['mag_list_train']
-        self.mag_cross = data_dict['mag_list_cross']
-        self.mag_test = data_dict['mag_list_test']
-        self.magerr_train = data_dict['magerr_list_train']
-        self.magerr_cross = data_dict['magerr_list_cross']
-        self.magerr_test = data_dict['magerr_list_test']
-        self.t_train = data_dict['t_list_train']
-        self.t_cross = data_dict['t_list_cross']
-        self.t_test = data_dict['t_list_test']
+        self.mag_train = data_dict['mag_train']
+        self.mag_cross = data_dict['mag_cross']
+        self.mag_test = data_dict['mag_test']
+        self.magerr_train = data_dict['magerr_train']
+        self.magerr_cross = data_dict['magerr_cross']
+        self.magerr_test = data_dict['magerr_test']
+        self.t_train = data_dict['t_train']
+        self.t_cross = data_dict['t_cross']
+        self.t_test = data_dict['t_test']
 
         # LSTM Data
-        self.mag_scaler = joblib.load(os.path.join(self.vanilla_lstm_data_folder, self.mag_scaler_name))
-        self.delta_t_scaler = joblib.load(os.path.join(self.vanilla_lstm_data_folder, self.delta_t_scaler_name))
-        with open(os.path.join(self.vanilla_lstm_data_folder, self.standard_X_y_name), 'rb') as handle:
+        self.mag_scaler = joblib.load(os.path.join(self.lstm_data_folder, self.mag_scaler_name))
+        self.delta_t_scaler = joblib.load(os.path.join(self.lstm_data_folder, self.delta_t_scaler_name))
+        with open(os.path.join(self.lstm_data_folder, self.standard_X_y_name), 'rb') as handle:
             X_y_data_dict = pickle.load(handle)
             self.X_train = X_y_data_dict['X_train']
             self.y_train = X_y_data_dict['y_train']
@@ -104,16 +104,16 @@ class MainPipeline:
             self.X_test = X_y_data_dict['X_test']
             self.y_test = X_y_data_dict['y_test']
 
-    # ----------------------------------- Run Single Model -----------------------------------
+    # run model
     def run_lstm(self, model_type, phased_type, dc_type, sm_type, n_walkers, train=True):
         # Model config
         result_df = pd.read_csv(result_csv, index_col=0, encoding='utf-8')
         epochs = self.lstm_config["epochs"]
         batch_size = self.lstm_config["batch_size"]
         hidden_dim = self.lstm_config["hidden_dim"]
-        model_map = {'vanilla': VanillaLSTM,
-                     'attention': AttentionLstm,
-                     'bayesian': BayesianLSTM}
+        model_map = {'vanilla_lstm': VanillaLSTM,
+                     'attention_lstm': AttentionLstm,
+                     'bayesian_lstm': BayesianLSTM}
         model = model_map[model_type]
 
         # Model, figure & df name
@@ -138,11 +138,18 @@ class MainPipeline:
         fig, train_loss, cross_loss = lstm.prediction(self.t_train, self.mag_train, self.magerr_train, self.X_train,
                                                       self.t_cross, self.mag_cross, self.magerr_cross, self.X_cross,
                                                       self.mag_scaler, self.delta_t_scaler, dc_type, sm_type)
-        fig.savefig(os.path.join(self.lstm_figure_folder, model_type, lstm_figure_name))
+        fig.savefig(os.path.join(self.figure_folder, model_type, lstm_figure_name))
 
         result_df.loc['id_' + str(self.crts_id), lstm_train_loss_name] = train_loss
         result_df.loc['id_' + str(self.crts_id), lstm_cross_loss_name] = cross_loss
         result_df.to_csv(result_csv)
+
+
+
+
+
+
+
 
 
     def run_carama(self, train=False):
@@ -238,16 +245,8 @@ def mean_std():
 
 
 if __name__ == 'main':
-
-    for lightcurve in lightcurve_list:
-        print(lightcurve)
-        instance = MainPipeline(lightcurve)
+    for crts in crts_list:
+        print(crts)
+        instance = MainPipeline(crts)
         instance.prepare_individual_data()
         instance.load_individual_data()
-
-        # Run Model
-        # instance.run_carama()
-        # instance.run_gp()
-        # instance.run_vanilla_lstm()
-        # instance.run_attention_lstm()
-        # y_train_std, y_cross_pred = instance.run_bayesian_lstm()

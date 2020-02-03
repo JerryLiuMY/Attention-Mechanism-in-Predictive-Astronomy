@@ -14,11 +14,12 @@ np.random.seed(1)
 
 
 def mc_std(func):
-    def wrapper(n_walkers, *args, **kwargs):
-        t_pred, y_pred = func(*args, **kwargs)
+    def wrapper(self, n_walkers, *args, **kwargs):
+        print(n_walkers)
+        t_pred, y_pred = func(self, *args, **kwargs)
         y_pred_n = []
         for i in range(n_walkers):
-            t_pred, y_pred = func(*args, **kwargs)
+            t_pred, y_pred = func(self, *args, **kwargs)
             y_pred_n.append(y_pred)
         y_pred_n = np.array(y_pred_n)
         y_pred = np.mean(y_pred_n, axis=0)
@@ -80,8 +81,8 @@ class VanillaLSTM:
             t_pred_train, y_pred_train, y_std_train, y_pred_train_n = continuous_train
             t_pred_cross, y_pred_cross, y_std_cross, y_pred_cross_n = continuous_cross
 
-            _, y_pred_train_match, y_std_train_match = match_list(t_train, t_pred_train, y_pred_train, y_std_train)
-            _, y_pred_cross_match, y_std_cross_match = match_list(t_train, t_pred_train, y_pred_train, y_std_train)
+            _, y_pred_train_match, y_std_train_match = match_list(t_train[WINDOW_LEN:], t_pred_train, y_pred_train, y_std_train)
+            _, y_pred_cross_match, y_std_cross_match = match_list(t_cross[WINDOW_LEN:], t_pred_cross, y_pred_cross, y_std_cross)
             train_loss = mean_squared_error(y_pred_train_match, mag_train[WINDOW_LEN:])
             cross_loss = mean_squared_error(y_pred_cross_match, mag_cross[WINDOW_LEN:])
 
@@ -113,9 +114,8 @@ class VanillaLSTM:
 
     @mc_std
     def continuous(self, t, X, mag_scaler, delta_t_scaler, sm_type):
-
         if sm_type == 'multiple':
-            t_pred = np.linspace(t[WINDOW_LEN-1], t[len(t)-1], num=int((t[-1] - t[WINDOW_LEN+1]) / 0.2))
+            t_pred = np.linspace(t[WINDOW_LEN-1], t[len(t)-1], num=int((t[len(t)-1] - t[WINDOW_LEN-1]) / 0.2))
             y_pred = self.recursive(t_pred, X, mag_scaler, delta_t_scaler)
             t_pred = t_pred[1:]
 
@@ -125,11 +125,11 @@ class VanillaLSTM:
             for i in range(WINDOW_LEN-1, len(t)-1):
                 X_i = X[[i-(WINDOW_LEN-1)]]
                 t_pred_i = np.linspace(t[i], t[i+1], num=int((t[i+1] - t[i]) / 0.2))
-                y_pred_i = self.recursive(t_pred_i, X_i, mag_scaler, delta_t_scaler)
-                t_pred_i = t_pred_i[1:]
-
-                t_pred = np.concatenate([t_pred, t_pred_i])
-                y_pred = np.concatenate([y_pred, y_pred_i])
+                if len(t_pred_i) != 0:
+                    y_pred_i = self.recursive(t_pred_i, X_i, mag_scaler, delta_t_scaler)
+                    t_pred_i = t_pred_i[1:]
+                    t_pred = np.concatenate([t_pred, t_pred_i])
+                    y_pred = np.concatenate([y_pred, y_pred_i])
 
         else:
             raise Exception('Invalid sm_type')
@@ -137,9 +137,11 @@ class VanillaLSTM:
         return t_pred, y_pred
 
     def recursive(self, t_pred, X, mag_scaler, delta_t_scaler):
+        # print(t_pred)
         # shape(X) = (num_train_data - window_len, window_len, 2)
         # shape(scaled_delta_t_pred) = (num_train_data - window_len, 1)
-        scaled_delta_t_pred = delta_t_scaler.transform(np.diff(t_pred).reshape(-1, 1))
+        # scaled_delta_t_pred = delta_t_scaler.transform(np.diff(t_pred).reshape(-1, 1))
+        scaled_delta_t_pred = np.diff(t_pred).reshape(-1, 1)
         scaled_y_pred = []
 
         # Initialize --> change time interval

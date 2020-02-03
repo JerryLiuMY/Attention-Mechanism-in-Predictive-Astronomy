@@ -19,15 +19,18 @@ def discrete_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train, 
     plt.subplot(1, 2, 1)
     plt.errorbar(t_train, mag_train, magerr_train, fmt='k.', markersize=10)
     plt.errorbar(t_cross, mag_cross, magerr_cross, fmt='k.', markersize=10)
-    plt.errorbar(t_pred_train, y_pred_train, y_std_train, fmt='g-', label='Training')
-    plt.errorbar(t_pred_cross, y_pred_cross, y_std_cross, fmt='b-', label='Validation')
+    plt.errorbar(t_pred_train, y_pred_train, y_std_train, fmt='g.', legend='Training')
+    plt.errorbar(t_pred_cross, y_pred_cross, y_std_cross, fmt='b.', legend='Validation')
     plt.title('Prediction Plot')
 
     plt.subplot(1, 2, 2)
+    print(np.shape(t_pred_train))
+    print(np.shape(y_pred_train - mag_train[WINDOW_LEN:]))
+    print(np.shape(y_std_train))
     plt.errorbar(t_train, np.zeros(len(mag_train)), magerr_train, fmt='k.', markersize=10)
-    plt.errorbar(t_cross, np.zeros(len(mag_train)), magerr_cross, fmt='k.', markersize=10)
-    plt.errorbar(t_pred_train, y_pred_train[:, 0] - mag_train[WINDOW_LEN+1: -1], y_std_train[:, 0], fmt='g-', label='Training')
-    plt.errorbar(t_pred_cross, y_pred_cross[:, 0] - mag_cross[WINDOW_LEN+1: -1], y_std_cross[:, 0], fmt='b-', label='Validation')
+    plt.errorbar(t_cross, np.zeros(len(mag_cross)), magerr_cross, fmt='k.', markersize=10)
+    plt.errorbar(t_pred_train, y_pred_train - mag_train[WINDOW_LEN:], y_std_train, fmt='g.', legend='Training')
+    plt.errorbar(t_pred_cross, y_pred_cross - mag_cross[WINDOW_LEN:], y_std_cross, fmt='b.', legend='Validation')
     plt.title('Residual Plot')
 
     return dis_fig
@@ -38,14 +41,14 @@ def continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train
 
     con_fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(24, 8))
     for ax in axes.ravel():
-        ax.xlim(t_train.min(), t_cross.max())
-        ax.errorbar(t_train, mag_train, magerr_train, fmt='k.')
-        ax.errorbar(t_train, mag_cross, magerr_cross, fmt='k.')
+        ax.set_xlim(t_train.min(), t_cross.max())
         ax.set_xlabel('MJD')
         ax.set_ylabel('Mag')
-        plt.legend()
+        ax.legend()
 
     plt.subplot(1, 2, 1)
+    plt.errorbar(t_train, mag_train, magerr_train, fmt='k.')
+    plt.errorbar(t_cross, mag_cross, magerr_cross, fmt='k.')
     n_paths = np.shape(y_pred_train_n)[0]
     for i in range(n_paths):
         plt.plot(t_pred_train, y_pred_train_n[i], color='green', alpha=(1 - i / float(n_paths)))
@@ -53,6 +56,8 @@ def continuous_plot(t_train, mag_train, magerr_train, t_pred_train, y_pred_train
     plt.title('Sample Plot')
 
     plt.subplot(1, 2, 2)
+    plt.errorbar(t_train, mag_train, magerr_train, fmt='k.')
+    plt.errorbar(t_cross, mag_cross, magerr_cross, fmt='k.')
     plt.plot(t_pred_train, y_pred_train, color='green', ls='-')
     plt.plot(t_pred_cross, y_pred_cross, color='blue', ls='-')
     plt.fill_between(t_pred_train, y1=y_pred_train + np.sqrt(y_std_train), y2=y_pred_train - np.sqrt(y_std_train),

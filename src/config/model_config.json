@@ -7,7 +7,7 @@
 
   "lstm": {
     "hidden_dim": 40,
-    "epochs": 1200,
+    "epochs": 20,
     "batch_size": 256
   },
 

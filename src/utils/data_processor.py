@@ -86,11 +86,11 @@ class LSTMDataProcessor:
         X_cross, y_cross = self.create_X_y(scaled_mag_cross, scaled_delta_t_cross, WINDOW_LEN)
         X_test, y_test = self.create_X_y(scaled_mag_test, scaled_delta_t_test, WINDOW_LEN)
 
-        X_y_data_dict = {'train_X': X_train, 'train_y': y_train, 'cross_X': X_cross, 'cross_y': y_cross,
-                         'test_X': X_test, 'test_y': y_test}
+        X_y_data_dict = {'X_train': X_train, 'y_train': y_train, 'X_cross': X_cross, 'y_cross': y_cross,
+                         'X_test': X_test, 'y_test': y_test}
 
         # Save X_y Data
-        X_y_name = '_'.join([str(self.crts_id), 'X_y', 'window_len', str(WINDOW_LEN) + '.plk'])
+        X_y_name = '_'.join([str(self.crts_id), 'X_y.plk'])
         with open(os.path.join(self.lstm_data_folder, X_y_name), 'wb') as handle:
             pickle.dump(X_y_data_dict, handle, protocol=2)
 

@@ -22,7 +22,7 @@ lstm_data_folder = os.path.join(DATA_FOLDER, 'processed_data', 'lstm')
 
 # ----------------------------------- Model Path -----------------------------------
 model_folder = os.path.join(DATA_FOLDER, 'model')
-gp_figure_folder = os.path.join(DATA_FOLDER, 'figure')
+figure_folder = os.path.join(DATA_FOLDER, 'figure')
 result_csv = os.path.join(DATA_FOLDER, 'result', 'result.csv')
 
 # ----------------------------------- Outline -----------------------------------
