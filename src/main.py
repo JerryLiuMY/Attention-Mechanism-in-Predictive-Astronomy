@@ -12,10 +12,10 @@ from global_setting import model_folder, figure_folder
 from global_setting import result_csv
 
 # from model.a_carma import Carma
-from model.b_gp import GP
-from model.c_vanilla_lstm import VanillaLSTM
-from model.d_attention_lstm import AttentionLstm
-from model.e_bayesian_lstm import BayesianLSTM
+from model.gp import GP
+from model.vanilla_lstm import VanillaLSTM
+from model.attention_lstm import AttentionLstm
+from model.bayesian_lstm import BayesianLSTM
 from utils.phased_lstm import PhasedLSTM
 
 
