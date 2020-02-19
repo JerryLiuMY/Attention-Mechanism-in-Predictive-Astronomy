@@ -3,13 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="034375cd-0c2c-4856-b590-6d9525e2083b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/a_carma.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/carma.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/b_gp.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/gp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/c_vanilla_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/vanilla_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/d_attention_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/attention_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/e_bayesian_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/bayesian_lstm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/mc_lstm.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/test_lstm.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/vanilla_lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/vanilla_lstm.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -195,7 +190,7 @@
       <workItem from="1581085975867" duration="639000" />
       <workItem from="1581691970008" duration="177000" />
       <workItem from="1581985905429" duration="79000" />
-      <workItem from="1582115600907" duration="1932000" />
+      <workItem from="1582115600907" duration="2296000" />
     </task>
     <servers />
   </component>

@@ -39,14 +39,14 @@ class RunVanillaLSTM:
         self.epochs = epochs
         self.batch_size = batch_size
         self.n_walkers = n_walkers
-        
+
         if self.implementation == 'dropout':
             if 'dropout' in kwargs:
                 self.dropout = kwargs['dropout']
             else:
                 raise Exception('param:dropout not found')
 
-    def vanilla_lstm(self, X_train, y_train):
+    def build_model(self, X_train, y_train):
         inputs = Input(shape=(X_train.shape[1], X_train.shape[2],))
         if self.implementation == 'standard':
             inter = LSTM(self.hidden_dim)(inputs, training=True)
@@ -63,7 +63,7 @@ class RunVanillaLSTM:
         self.model.compile(loss='mean_squared_error', optimizer='adam')
         self.model.fit(X_train, y_train, epochs=self.epochs, batch_size=self.batch_size, verbose=2)
 
-    def run_model(self, X, **kwargs):
+    def run_model(self, X):
         scaled_y_pred = self.model.predict(X)
         return scaled_y_pred
 
